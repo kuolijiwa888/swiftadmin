@@ -50,6 +50,7 @@ class User extends ApiController
      * 用户中心
      * @param Request $request
      * @return Response
+     * @return array{"code":int,"msg":string,"data":array,"count":int,"url":string,"wait":int} 成功返回: {"code":200,"msg":"获取成功","data":{"id":1,"nickname":"用户名","mobile":"13800138000","email":"user@example.com"},"count":0,"url":"","wait":3}
      */
     public function center(Request $request): Response
     {
@@ -62,6 +63,7 @@ class User extends ApiController
      * 修改用户资料
      * @param string $nickname 昵称
      * @return Response
+     * @return array{"code":int,"msg":string,"data":mixed,"count":int,"url":string,"wait":int} 成功返回:{"code":200,"msg":"修改成功","data":"","count":0,"url":"/","wait":3}
      * @throws DataNotFoundException
      * @throws DbException
      * @throws ModelNotFoundException
@@ -83,6 +85,7 @@ class User extends ApiController
      * @param string $pwd 密码
      * @param string $captcha 验证码
      * @return Response
+     * @return array{"code":int,"msg":string,"data":array,"count":int,"url":string,"wait":int} 成功返回:{"code":200,"msg":"注册成功","data":{"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."},"count":0,"url":"/","wait":3}
      * @throws DbException
      * @throws InvalidArgumentException
      * @throws OperateException
@@ -100,6 +103,8 @@ class User extends ApiController
      * @param string $nickname 用户名
      * @param string $pwd 密码
      * @return Response
+     * @return array{"code":int,"msg":string,"data":array,"count":int,"url":string,"wait":int} 成功返回:{"code":200,"msg":"登录成功","data":{"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."},"count":0,"url":"/","wait":3}
+     * @return array{"code":int,"msg":string,"data":mixed,"url":string,"wait":int} 失败返回:{"code":101,"msg":"请输入用户名或密码","data":"","url":"","wait":3}
      * @throws InvalidArgumentException
      * @throws OperateException
      */
@@ -119,6 +124,7 @@ class User extends ApiController
      * @param string $mobile 手机号
      * @param string $captcha 验证码
      * @return Response
+     * @return array{"code":int,"msg":string,"data":array,"count":int,"url":string,"wait":int} 成功返回:{"code":200,"msg":"登录成功","data":{"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."},"count":0,"url":"/","wait":3}
      * @throws DataNotFoundException
      * @throws DbException
      * @throws InvalidArgumentException
@@ -138,6 +144,7 @@ class User extends ApiController
      * @param string $oldpwd 旧密码
      * @param string $newpwd 新密码
      * @return Response
+     * @return array{"code":int,"msg":string,"data":mixed,"count":int,"url":string,"wait":int} 成功返回:{"code":200,"msg":"修改密码成功！","data":"","count":0,"url":"","wait":3}
      * @throws OperateException
      */
     public function changePwd(Request $request): Response
@@ -153,6 +160,7 @@ class User extends ApiController
      * @param string $captcha 验证码
      * @param string $password 新密码
      * @return Response
+     * @return array{"code":int,"msg":string,"data":mixed,"count":int,"url":string,"wait":int} 成功返回:{"code":200,"msg":"修改密码成功！","data":"","count":0,"url":"","wait":3}
      * @throws DataNotFoundException
      * @throws DbException
      * @throws ModelNotFoundException
@@ -169,9 +177,10 @@ class User extends ApiController
     /**
      * 获取消息列表
      * @param int $page 页码，默认1
-     * @param int $limit 每页数量，默认1
-     * @param string $status 状态，默认all
+     * @param int $limit 每页数量，默认10
+     * @param string $status 状态，默认all（all-全部，read-已读，unread-未读）
      * @return Response
+     * @return array{"code":int,"msg":string,"data":array,"count":int,"url":string,"wait":int} 成功返回:{"code":200,"msg":"查询成功","data":[{"id":1,"title":"消息标题","content":"消息内容","status":"unread","create_time":"2024-01-01 12:00:00"}],"count":10,"url":"/","wait":3}
      * @throws DataNotFoundException
      * @throws DbException
      * @throws ModelNotFoundException
@@ -193,6 +202,7 @@ class User extends ApiController
      * 查看消息
      * @param int $id 消息ID
      * @return Response
+     * @return array{"code":int,"msg":string,"data":array,"count":int,"url":string,"wait":int} 成功返回:{"code":200,"msg":"查询成功","data":{"id":1,"title":"消息标题","content":"消息内容","status":"read","create_time":"2024-01-01 12:00:00"},"count":0,"url":"/","wait":3}
      * @throws DataNotFoundException
      * @throws DbException
      * @throws ModelNotFoundException
@@ -208,8 +218,10 @@ class User extends ApiController
     /**
      * 批量操作消息
      * @param string|array $id 消息ID，多个用逗号分隔或数组
-     * @param string $type 操作类型，默认del
+     * @param string $type 操作类型，默认del（del-删除，read-标记已读，unread-标记未读）
      * @return Response
+     * @return array{"code":int,"msg":string,"data":mixed,"count":int,"url":string,"wait":int} 成功返回:{"code":200,"msg":"操作成功","data":"","count":0,"url":"","wait":3}
+     * @return array{"code":int,"msg":string,"data":mixed,"url":string,"wait":int} 失败返回:{"code":101,"msg":"操作失败原因","data":"","url":"","wait":3}
      */
     public function batchMessage(Request $request): Response
     {
@@ -227,6 +239,8 @@ class User extends ApiController
      * 申请APP_KEY
      * @param Request $request
      * @return Response
+     * @return array{"code":int,"msg":string,"data":array,"count":int,"url":string,"wait":int} 成功返回:{"code":200,"msg":"申请成功！","data":{"id":1,"app_id":10001,"app_secret":"abcdefghijklmnopqrstuv"},"count":0,"url":"/","wait":3}
+     * @return array{"code":int,"msg":string,"data":mixed,"url":string,"wait":int} 失败返回:{"code":101,"msg":"申请失败！","data":"","url":"","wait":3}
      */
     public function appid(Request $request): Response
     {
@@ -244,8 +258,9 @@ class User extends ApiController
      * 修改邮箱地址
      * @param string $email 新邮箱地址
      * @param string $captcha 验证码
-     * @param string $event 事件类型，默认change
+     * @param string $event 事件类型，默认change（change-修改邮箱）
      * @return Response
+     * @return array{"code":int,"msg":string,"data":mixed,"count":int,"url":string,"wait":int} 成功返回:{"code":200,"msg":"修改邮箱成功！","data":"","count":0,"url":"","wait":3}
      * @throws Exception|UserException|OperateException
      */
     public function changeEmail(Request $request): Response
@@ -261,8 +276,9 @@ class User extends ApiController
      * 修改手机号
      * @param string $mobile 新手机号
      * @param string $captcha 验证码
-     * @param string $event 事件类型，默认change
+     * @param string $event 事件类型，默认change（change-修改手机号）
      * @return Response
+     * @return array{"code":int,"msg":string,"data":mixed,"count":int,"url":string,"wait":int} 成功返回:{"code":200,"msg":"修改手机号成功！","data":"","count":0,"url":"","wait":3}
      * @throws DataNotFoundException
      * @throws DbException
      * @throws ModelNotFoundException
@@ -283,6 +299,8 @@ class User extends ApiController
      * @param string $type 反馈类型
      * @param string $content 反馈内容
      * @return Response
+     * @return array{"code":int,"msg":string,"data":mixed,"count":int,"url":string,"wait":int} 成功返回:{"code":200,"msg":"反馈成功","data":"","count":0,"url":"","wait":3}
+     * @return array{"code":int,"msg":string,"data":mixed,"url":string,"wait":int} 失败返回:{"code":101,"msg":"参数错误","data":"","url":"","wait":3}
      */
     public function feedback(): Response
     {
@@ -296,8 +314,11 @@ class User extends ApiController
     }
 
     /**
-     * 文件上传函数
+     * 文件上传
+     * @param file $file 上传的文件
      * @return Response
+     * @return array{"code":int,"msg":string,"data":array,"count":int,"url":string,"wait":int} 成功返回:{"code":200,"msg":"上传成功","data":{"url":"/upload/file.jpg","name":"file.jpg","size":1024},"count":0,"url":"","wait":3}
+     * @return array{"code":int,"msg":string,"data":mixed,"url":string,"wait":int} 失败返回:{"code":101,"msg":"上传失败原因","data":"","url":"","wait":3}
      * @throws DataNotFoundException
      * @throws DbException
      * @throws InvalidArgumentException

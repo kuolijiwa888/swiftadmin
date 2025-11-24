@@ -273,6 +273,7 @@ class ApiDoc extends Command
                 'type' => $returnTypeName,
                 'description' => $doc['return'] ?? ''
             ],
+            'returns' => $doc['returns'] ?? [], // 多个返回示例
             'url' => rtrim($baseUrl, '/') . $apiPath,
             'needLogin' => $needLogin
         ];
@@ -286,7 +287,8 @@ class ApiDoc extends Command
         $result = [
             'title' => '',
             'description' => '',
-            'return' => ''
+            'return' => '',
+            'returns' => [] // 支持多个返回示例
         ];
 
         if (empty($docComment)) {
@@ -310,9 +312,18 @@ class ApiDoc extends Command
                 continue;
             }
 
-            // 解析 @return
+            // 解析 @return（支持多个）
             if (preg_match('/@return\s+(\S+)\s*(.*)/', $line, $matches)) {
-                $result['return'] = trim($matches[2]);
+                $returnDesc = trim($matches[2]);
+                // 第一个 @return 作为主要返回说明
+                if (empty($result['return'])) {
+                    $result['return'] = $returnDesc;
+                }
+                // 收集所有返回示例
+                $result['returns'][] = [
+                    'type' => trim($matches[1]),
+                    'description' => $returnDesc
+                ];
                 continue;
             }
 
@@ -1558,9 +1569,66 @@ HTML;
         $html .= "<div class=\"section\">";
         $html .= "<div class=\"section-title\">返回说明</div>";
         $html .= "<p>返回类型: <code>{$method['return']['type']}</code></p>";
-        if (!empty($method['return']['description'])) {
+        
+        // 如果有多个返回示例，显示所有示例
+        if (!empty($method['returns']) && count($method['returns']) > 0) {
+            foreach ($method['returns'] as $returnExample) {
+                if (!empty($returnExample['description'])) {
+                    $html .= "<div style=\"margin-top: 15px; padding: 10px; background: #f9f9f9; border-radius: 4px;\">";
+                    // 解析描述，提取标题和 JSON
+                    $desc = $returnExample['description'];
+                    // 匹配格式：成功返回: {...} 字段说明: field1-说明1,field2-说明2
+                    if (preg_match('/^(.+?)[：:]\s*(\{.*\})(?:\s+字段说明[：:]\s*(.+))?/s', $desc, $matches)) {
+                        $title = trim($matches[1]);
+                        $jsonStr = trim($matches[2]);
+                        $fieldDesc = isset($matches[3]) ? trim($matches[3]) : '';
+                        $html .= "<p style=\"margin-bottom: 8px; font-weight: 600; color: #333;\">{$title}</p>";
+                        // 格式化 JSON
+                        $jsonData = json_decode($jsonStr, true);
+                        if ($jsonData !== null) {
+                            $formattedJson = json_encode($jsonData, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+                            $html .= "<pre style=\"background: #fff; padding: 10px; border-radius: 4px; overflow-x: auto; margin: 0 0 10px 0; border: 1px solid #e0e0e0;\"><code>" . htmlspecialchars($formattedJson) . "</code></pre>";
+                        } else {
+                            $html .= "<pre style=\"background: #fff; padding: 10px; border-radius: 4px; overflow-x: auto; margin: 0 0 10px 0; border: 1px solid #e0e0e0;\"><code>" . htmlspecialchars($jsonStr) . "</code></pre>";
+                        }
+                        
+                        // 如果有字段说明，显示字段说明表格
+                        if (!empty($fieldDesc)) {
+                            $html .= "<div style=\"margin-top: 10px;\">";
+                            $html .= "<p style=\"margin-bottom: 8px; font-weight: 600; color: #666; font-size: 13px;\">字段说明:</p>";
+                            $html .= "<table style=\"width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #e0e0e0;\">";
+                            $html .= "<thead><tr style=\"background: #f5f5f5;\"><th style=\"padding: 8px; text-align: left; border-bottom: 1px solid #e0e0e0; font-weight: 600;\">字段名</th><th style=\"padding: 8px; text-align: left; border-bottom: 1px solid #e0e0e0; font-weight: 600;\">说明</th></tr></thead>";
+                            $html .= "<tbody>";
+                            
+                            // 解析字段说明，格式：field1-说明1,field2-说明2 或 field1:说明1,field2:说明2
+                            $fields = preg_split('/[,，]/', $fieldDesc);
+                            foreach ($fields as $field) {
+                                $field = trim($field);
+                                if (empty($field)) continue;
+                                
+                                // 支持 - 或 : 作为分隔符
+                                if (preg_match('/^(.+?)[-:：]\s*(.+)$/', $field, $fieldMatches)) {
+                                    $fieldName = trim($fieldMatches[1]);
+                                    $fieldDescText = trim($fieldMatches[2]);
+                                    $html .= "<tr><td style=\"padding: 8px; border-bottom: 1px solid #f0f0f0;\"><code>{$fieldName}</code></td><td style=\"padding: 8px; border-bottom: 1px solid #f0f0f0;\">{$fieldDescText}</td></tr>";
+                                }
+                            }
+                            
+                            $html .= "</tbody></table>";
+                            $html .= "</div>";
+                        }
+                    } else {
+                        // 如果没有匹配到格式，直接显示描述
+                        $html .= "<p>{$desc}</p>";
+                    }
+                    $html .= "</div>";
+                }
+            }
+        } elseif (!empty($method['return']['description'])) {
+            // 如果没有多个返回示例，显示单个返回说明
             $html .= "<p>{$method['return']['description']}</p>";
         }
+        
         $html .= "</div>";
 
         // API 地址

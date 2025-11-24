@@ -37,6 +37,8 @@ class Ajax extends ApiController
      * @param string $mobile 手机号码
      * @param string $event 事件类型，默认：register（注册）
      * @return Response
+     * @return array{"code":int,"msg":string,"data":mixed,"count":int,"url":string,"wait":int} 成功返回:{"code":200,"msg":"验证码发送成功！","data":"","count":0,"url":"","wait":3}
+     * @return array{"code":int,"msg":string,"data":mixed,"url":string,"wait":int} 失败返回:{"code":101,"msg":"手机号码不正确","data":"","url":"","wait":3}
      * @throws InvalidArgumentException
      * @throws DataNotFoundException
      * @throws DbException
@@ -58,6 +60,8 @@ class Ajax extends ApiController
      * @param string $email 邮箱地址
      * @param string $event 事件类型，默认：register（注册）
      * @return Response
+     * @return array{"code":int,"msg":string,"data":mixed,"count":int,"url":string,"wait":int} 成功返回:{"code":200,"msg":"验证码发送成功！","data":"","count":0,"url":"","wait":3}
+     * @return array{"code":int,"msg":string,"data":mixed,"url":string,"wait":int} 失败返回:{"code":101,"msg":"邮件格式不正确","data":"","url":"","wait":3}
      * @throws InvalidArgumentException
      * @throws OperateException
      */
