@@ -4,63 +4,185 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SwiftAdmin API 文档</title>
+    <link href="/static/system/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="/static/system/css/style.css" rel="stylesheet" type="text/css"/>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: #f5f5f5;
+            background: #f2f2f2;
         }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+        .layui-layout-admin {
+            display: block !important;
         }
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 40px 20px;
+        .layui-side {
+            width: 238px;
+            transition: width 0.3s;
+            overflow: hidden;
+            display: block !important;
+        }
+        /* 确保在所有屏幕尺寸下侧边栏默认显示（除了移动端） */
+        @media screen and (min-width: 769px) {
+            .layui-side {
+                display: block !important;
+                transform: none !important;
+            }
+        }
+        .layui-side-scroll {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        .layui-side .layui-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 50px;
+            padding: 0 15px;
+            box-sizing: border-box;
+            background-color: #191a23;
+            border-bottom: 1px solid #2d2f3a;
+            white-space: nowrap;
+            overflow: hidden;
+            flex-shrink: 0;
+            position: relative;
+        }
+        .layui-side .layui-logo span {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
             text-align: center;
-            border-radius: 8px;
-            margin-bottom: 30px;
         }
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
+        .method-badge-small {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 2px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-right: 6px;
+            vertical-align: middle;
         }
-        .header p {
-            opacity: 0.9;
-            font-size: 1.1em;
+        .method-badge-small.method-badge-get {
+            background: #10b981;
+            color: white;
+        }
+        .method-badge-small.method-badge-post {
+            background: #3b82f6;
+            color: white;
+        }
+        .method-badge-small.method-badge-put {
+            background: #f59e0b;
+            color: white;
+        }
+        .method-badge-small.method-badge-delete {
+            background: #ef4444;
+            color: white;
+        }
+        .layui-nav-tree .layui-nav-child dd a {
+            padding-left: 45px;
+            font-size: 13px;
+        }
+        .layui-side-menu .layui-nav {
+            margin-top: 0 !important;
+        }
+        .layui-header .layui-logo {
+            display: none;
+        }
+        .layui-header .header-logo {
+            display: none;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 0 15px;
+            line-height: 50px;
+        }
+        .layui-layout-left {
+            left: 238px;
+            transition: left 0.3s;
+        }
+        .layui-body, .layui-footer {
+            left: 238px;
+            transition: left 0.3s;
+        }
+        .api-header-config-btn {
+            padding: 0 15px;
+        }
+        .api-header-config-btn i {
+            font-size: 18px;
+        }
+        /* 收缩状态下的样式 - 优先级最高 */
+        .layui-side.collapsed ~ .layui-header .layui-layout-left,
+        .layui-side.collapsed ~ .layui-body,
+        .layui-side.collapsed ~ .layui-footer {
+            left: 0 !important;
+        }
+        /* 平板端样式 */
+        @media screen and (min-width: 769px) and (max-width: 1024px) {
+            .layui-side:not(.collapsed) {
+                width: 238px;
+            }
+            .layui-side.collapsed {
+                width: 0 !important;
+            }
+            .layui-layout-left {
+                left: 238px;
+            }
+            .layui-body, .layui-footer {
+                left: 238px;
+            }
+            /* 收缩状态下覆盖 */
+            .layui-side.collapsed ~ .layui-header .layui-layout-left,
+            .layui-side.collapsed ~ .layui-body,
+            .layui-side.collapsed ~ .layui-footer {
+                left: 0 !important;
+            }
+        }
+        /* 手机端样式 */
+        @media screen and (max-width: 768px) {
+            .layui-side .layui-logo {
+                display: none !important;
+            }
+            .layui-header .header-logo {
+                display: block !important;
+            }
+            .layui-layout-left {
+                left: 0 !important;
+            }
+            .layui-body, .layui-footer {
+                left: 0 !important;
+            }
+        }
+        .api-content {
+            padding: 15px;
         }
         .controller {
             background: white;
-            border-radius: 8px;
-            padding: 25px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
         .controller-title {
-            font-size: 1.8em;
-            color: #667eea;
-            margin-bottom: 10px;
+            font-size: 18px;
+            color: #1890ff;
+            margin-bottom: 15px;
             padding-bottom: 10px;
-            border-bottom: 2px solid #667eea;
+            border-bottom: 1px solid #e8e8e8;
+            font-weight: 600;
         }
         .controller-desc {
             color: #666;
             margin-bottom: 20px;
         }
         .method {
-            margin-bottom: 30px;
-            padding: 20px;
-            background: #f9f9f9;
-            border-radius: 6px;
-            border-left: 4px solid #667eea;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 2px;
+            border-left: 3px solid #1890ff;
         }
         .method-header {
             display: flex;
@@ -72,9 +194,9 @@
         .method-badge {
             display: inline-block;
             padding: 4px 12px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 0.85em;
+            border-radius: 2px;
+            font-weight: 600;
+            font-size: 12px;
         }
         .method-badge.get {
             background: #10b981;
@@ -101,17 +223,18 @@
             color: white;
         }
         .method-title {
-            font-size: 1.3em;
+            font-size: 16px;
             color: #333;
             margin-right: 10px;
+            font-weight: 600;
         }
         .method-path {
             font-family: 'Courier New', monospace;
             background: #e5e7eb;
             padding: 4px 8px;
-            border-radius: 4px;
+            border-radius: 2px;
             color: #1f2937;
-            font-size: 0.9em;
+            font-size: 12px;
         }
         .method-desc {
             color: #666;
@@ -121,10 +244,10 @@
             margin-top: 15px;
         }
         .section-title {
-            font-size: 1.1em;
-            color: #667eea;
+            font-size: 14px;
+            color: #1890ff;
             margin-bottom: 10px;
-            font-weight: bold;
+            font-weight: 600;
         }
         table {
             width: 100%;
@@ -134,107 +257,35 @@
         table th, table td {
             padding: 12px;
             text-align: left;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e8e8e8;
         }
         table th {
-            background: #f9fafb;
+            background: #fafafa;
             font-weight: 600;
-            color: #374151;
+            color: #333;
         }
         table tr:hover {
-            background: #f9fafb;
+            background: #fafafa;
         }
         .required {
             color: #ef4444;
-            font-weight: bold;
+            font-weight: 600;
         }
         .optional {
             color: #6b7280;
         }
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: #6b7280;
-            margin-top: 40px;
-        }
-        .toc {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .toc h2 {
-            color: #667eea;
-            margin-bottom: 15px;
-        }
-        .toc ul {
-            list-style: none;
-        }
-        .toc li {
-            margin: 8px 0;
-        }
-        .toc a {
-            color: #667eea;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        .toc a:hover {
-            color: #764ba2;
-            text-decoration: underline;
-        }
-        .config-panel {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .config-panel h2 {
-            color: #667eea;
-            margin-bottom: 15px;
-            font-size: 1.3em;
-        }
-        .config-form {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            align-items: flex-end;
-        }
-        .config-group {
-            flex: 1;
-            min-width: 200px;
-        }
-        .config-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #374151;
-            font-weight: 500;
-            font-size: 0.9em;
-        }
-        .config-group input {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 4px;
-            font-size: 0.9em;
-            transition: border-color 0.3s;
-        }
-        .config-group input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
         .test-panel {
-            margin-top: 20px;
-            padding: 20px;
-            background: #f9fafb;
-            border-radius: 6px;
-            border: 1px solid #e5e7eb;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 2px;
+            border: 1px solid #e8e8e8;
         }
         .test-panel h3 {
-            color: #667eea;
+            color: #1890ff;
             margin-bottom: 15px;
-            font-size: 1.1em;
+            font-size: 14px;
+            font-weight: 600;
         }
         .param-inputs {
             margin-bottom: 15px;
@@ -247,53 +298,52 @@
         }
         .param-input-group label {
             min-width: 100px;
-            color: #374151;
+            color: #333;
             font-weight: 500;
-            font-size: 0.9em;
+            font-size: 14px;
         }
         .param-input-group input,
         .param-input-group textarea {
             flex: 1;
             padding: 8px 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 4px;
-            font-size: 0.9em;
+            border: 1px solid #d9d9d9;
+            border-radius: 2px;
+            font-size: 14px;
             font-family: 'Courier New', monospace;
         }
         .param-input-group input:focus,
         .param-input-group textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #1890ff;
         }
         .param-input-group textarea {
             min-height: 60px;
             resize: vertical;
         }
         .btn {
-            padding: 10px 20px;
+            padding: 8px 15px;
             border: none;
-            border-radius: 4px;
-            font-size: 0.9em;
-            font-weight: 500;
+            border-radius: 2px;
+            font-size: 14px;
             cursor: pointer;
             transition: all 0.3s;
         }
         .btn-primary {
-            background: #667eea;
+            background: #1890ff;
             color: white;
         }
         .btn-primary:hover {
-            background: #5568d3;
+            background: #40a9ff;
         }
         .btn-primary:disabled {
-            background: #9ca3af;
+            background: #d9d9d9;
             cursor: not-allowed;
         }
         .response-panel {
             margin-top: 15px;
             padding: 15px;
             background: #1f2937;
-            border-radius: 4px;
+            border-radius: 2px;
             display: none;
         }
         .response-panel.show {
@@ -305,12 +355,13 @@
             align-items: center;
             margin-bottom: 10px;
             color: #9ca3af;
-            font-size: 0.85em;
+            font-size: 12px;
         }
         .response-status {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 2px;
+            font-weight: 600;
+            font-size: 12px;
         }
         .response-status.success {
             background: #10b981;
@@ -323,7 +374,7 @@
         .response-content {
             color: #e5e7eb;
             font-family: 'Courier New', monospace;
-            font-size: 0.85em;
+            font-size: 12px;
             white-space: pre-wrap;
             word-wrap: break-word;
             max-height: 400px;
@@ -331,9 +382,9 @@
         }
         .loading {
             display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid #667eea;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #1890ff;
             border-top-color: transparent;
             border-radius: 50%;
             animation: spin 0.6s linear infinite;
@@ -343,71 +394,146 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        @media screen and (max-width: 768px) {
+            .layui-side .layui-logo {
+                display: flex !important;
+            }
+            .layui-layout-admin .layui-body {
+                left: 0 !important;
+            }
+            .layui-side {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+                width: 238px !important;
+                position: fixed;
+                z-index: 999;
+                height: 100%;
+                top: 50px;
+            }
+            .layui-side.show {
+                transform: translateX(0);
+            }
+            /* 移动端遮罩层 */
+            .layui-side-mask {
+                display: none;
+                position: fixed;
+                top: 50px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 998;
+            }
+            .layui-side.show ~ .layui-side-mask,
+            .layui-side.show + * + .layui-side-mask {
+                display: block;
+            }
+        }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>SwiftAdmin API 文档</h1>
-            <p>作者: SwiftAdmin | 生成时间: 2025-11-24 19:55:32</p>
-        </div>
-
-        <div class="config-panel">
-            <h2>全局设置</h2>
-            <div class="config-form">
-                <div class="config-group">
-                    <label for="global-domain">API 域名</label>
-                    <input type="text" id="global-domain" placeholder="留空则使用当前网页域名" value="">
-                </div>
-                <div class="config-group">
-                    <label for="global-token">Token (可选)</label>
-                    <input type="text" id="global-token" placeholder="输入您的认证 Token">
-                </div>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <!-- 头部区域 -->
+    <div class="layui-header">
+        <div class="header-logo">SwiftAdmin API 文档</div>
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item layadmin-flexible" lay-unselect>
+                <a href="javascript:;" id="flexible" title="侧边伸缩">
+                    <i class="layui-icon layui-icon-shrink-right"></i>
+                </a>
+            </li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item api-header-config-btn" lay-unselect>
+                <a href="javascript:;" id="api-config-btn" title="API配置">
+                    <i class="layui-icon layui-icon-set"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- 侧边菜单 -->
+    <div class="layui-side layui-side-menu">
+        <div class="layui-side-scroll">
+            <div class="layui-logo">
+                <span>SwiftAdmin API 文档</span>
             </div>
-        </div>
-
-        <div class="toc">
-            <h2>目录</h2>
-            <ul><li><a href="#controller-0">异步调用</a></li><li><a href="#controller-1">API接口前端示例文件</a></li><li><a href="#controller-2">API用户登录</a></li>            </ul>
-        </div>
-<div class="controller" id="controller-0"><h2 class="controller-title">异步调用</h2><div class="method" id="method-5a41b1b0a993bf44716c7d5d2030ceb6"><div class="method-header"><span class="method-badge get">GET</span><span class="method-badge no-auth">无需登录</span><span class="method-title">首页</span><span class="method-path">/api/ajax/index</span></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/ajax/index</code></p></div><div class="test-panel"><h3>接口测试</h3><p style="color: #6b7280; margin-bottom: 15px;">此接口无需参数</p><button class="btn btn-primary" id="btn-5a41b1b0a993bf44716c7d5d2030ceb6" onclick="sendRequest('5a41b1b0a993bf44716c7d5d2030ceb6', 'GET', '/api/ajax/index')">发送请求</button><div class="response-panel" id="response-5a41b1b0a993bf44716c7d5d2030ceb6"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-5a41b1b0a993bf44716c7d5d2030ceb6"></span></div><div class="response-content" id="content-5a41b1b0a993bf44716c7d5d2030ceb6"></div></div></div></div><div class="method" id="method-83e637f88c27058f81b7df745a3b006a"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge no-auth">无需登录</span><span class="method-title">发送短信验证码</span><span class="method-path">/api/ajax/smsSend</span></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/ajax/smsSend</code></p></div><div class="test-panel"><h3>接口测试</h3><p style="color: #6b7280; margin-bottom: 15px;">此接口无需参数</p><button class="btn btn-primary" id="btn-83e637f88c27058f81b7df745a3b006a" onclick="sendRequest('83e637f88c27058f81b7df745a3b006a', 'POST', '/api/ajax/smsSend')">发送请求</button><div class="response-panel" id="response-83e637f88c27058f81b7df745a3b006a"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-83e637f88c27058f81b7df745a3b006a"></span></div><div class="response-content" id="content-83e637f88c27058f81b7df745a3b006a"></div></div></div></div><div class="method" id="method-c78a35d007bc2cee56a2de5e8128a93d"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge no-auth">无需登录</span><span class="method-title">发送邮件验证码</span><span class="method-path">/api/ajax/emailSend</span></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/ajax/emailSend</code></p></div><div class="test-panel"><h3>接口测试</h3><p style="color: #6b7280; margin-bottom: 15px;">此接口无需参数</p><button class="btn btn-primary" id="btn-c78a35d007bc2cee56a2de5e8128a93d" onclick="sendRequest('c78a35d007bc2cee56a2de5e8128a93d', 'POST', '/api/ajax/emailSend')">发送请求</button><div class="response-panel" id="response-c78a35d007bc2cee56a2de5e8128a93d"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-c78a35d007bc2cee56a2de5e8128a93d"></span></div><div class="response-content" id="content-c78a35d007bc2cee56a2de5e8128a93d"></div></div></div></div></div><div class="controller" id="controller-1"><h2 class="controller-title">API接口前端示例文件</h2><div class="method" id="method-9cb379715ec8f471c0d0b7a928ba50cc"><div class="method-header"><span class="method-badge get">GET</span><span class="method-badge auth">需要登录</span><span class="method-title"></span><span class="method-path">/api/index/index</span></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/index/index</code></p></div><div class="test-panel"><h3>接口测试</h3><p style="color: #6b7280; margin-bottom: 15px;">此接口无需参数</p><button class="btn btn-primary" id="btn-9cb379715ec8f471c0d0b7a928ba50cc" onclick="sendRequest('9cb379715ec8f471c0d0b7a928ba50cc', 'GET', '/api/index/index')">发送请求</button><div class="response-panel" id="response-9cb379715ec8f471c0d0b7a928ba50cc"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-9cb379715ec8f471c0d0b7a928ba50cc"></span></div><div class="response-content" id="content-9cb379715ec8f471c0d0b7a928ba50cc"></div></div></div></div></div><div class="controller" id="controller-2"><h2 class="controller-title">API用户登录</h2><div class="method" id="method-3dba1a9d86b01f96dc2a5f71e8659e39"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge auth">需要登录</span><span class="method-title">用户中心</span><span class="method-path">/api/user/center</span></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/center</code></p></div><div class="test-panel"><h3>接口测试</h3><p style="color: #6b7280; margin-bottom: 15px;">此接口无需参数</p><button class="btn btn-primary" id="btn-3dba1a9d86b01f96dc2a5f71e8659e39" onclick="sendRequest('3dba1a9d86b01f96dc2a5f71e8659e39', 'POST', '/api/user/center')">发送请求</button><div class="response-panel" id="response-3dba1a9d86b01f96dc2a5f71e8659e39"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-3dba1a9d86b01f96dc2a5f71e8659e39"></span></div><div class="response-content" id="content-3dba1a9d86b01f96dc2a5f71e8659e39"></div></div></div></div><div class="method" id="method-72dd7a3d58fc8109cfebcd82577062b2"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge auth">需要登录</span><span class="method-title">修改用户资料</span><span class="method-path">/api/user/profile</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>nickname</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>昵称</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/profile</code></p></div><div class="test-panel"><h3>接口测试</h3><div class="param-inputs"><div class="param-input-group"><label for="param-72dd7a3d58fc8109cfebcd82577062b2-nickname">nickname <span class="required">*</span></label><input type="text" id="param-72dd7a3d58fc8109cfebcd82577062b2-nickname" data-param="nickname" placeholder="昵称" value="" required></div></div><button class="btn btn-primary" id="btn-72dd7a3d58fc8109cfebcd82577062b2" onclick="sendRequest('72dd7a3d58fc8109cfebcd82577062b2', 'POST', '/api/user/profile')">发送请求</button><div class="response-panel" id="response-72dd7a3d58fc8109cfebcd82577062b2"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-72dd7a3d58fc8109cfebcd82577062b2"></span></div><div class="response-content" id="content-72dd7a3d58fc8109cfebcd82577062b2"></div></div></div></div><div class="method" id="method-f487140b15cecbd80e3a2bac713fe437"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge no-auth">无需登录</span><span class="method-title">用户注册</span><span class="method-path">/api/user/register</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>nickname</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>用户名</td></tr><tr><td><code>mobile</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>手机号</td></tr><tr><td><code>email</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>邮箱</td></tr><tr><td><code>pwd</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>密码</td></tr><tr><td><code>captcha</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>验证码</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/register</code></p></div><div class="test-panel"><h3>接口测试</h3><div class="param-inputs"><div class="param-input-group"><label for="param-f487140b15cecbd80e3a2bac713fe437-nickname">nickname <span class="required">*</span></label><input type="text" id="param-f487140b15cecbd80e3a2bac713fe437-nickname" data-param="nickname" placeholder="用户名" value="" required></div><div class="param-input-group"><label for="param-f487140b15cecbd80e3a2bac713fe437-mobile">mobile <span class="required">*</span></label><input type="text" id="param-f487140b15cecbd80e3a2bac713fe437-mobile" data-param="mobile" placeholder="手机号" value="" required></div><div class="param-input-group"><label for="param-f487140b15cecbd80e3a2bac713fe437-email">email <span class="required">*</span></label><input type="text" id="param-f487140b15cecbd80e3a2bac713fe437-email" data-param="email" placeholder="邮箱" value="" required></div><div class="param-input-group"><label for="param-f487140b15cecbd80e3a2bac713fe437-pwd">pwd <span class="required">*</span></label><input type="text" id="param-f487140b15cecbd80e3a2bac713fe437-pwd" data-param="pwd" placeholder="密码" value="" required></div><div class="param-input-group"><label for="param-f487140b15cecbd80e3a2bac713fe437-captcha">captcha <span class="required">*</span></label><input type="text" id="param-f487140b15cecbd80e3a2bac713fe437-captcha" data-param="captcha" placeholder="验证码" value="" required></div></div><button class="btn btn-primary" id="btn-f487140b15cecbd80e3a2bac713fe437" onclick="sendRequest('f487140b15cecbd80e3a2bac713fe437', 'POST', '/api/user/register')">发送请求</button><div class="response-panel" id="response-f487140b15cecbd80e3a2bac713fe437"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-f487140b15cecbd80e3a2bac713fe437"></span></div><div class="response-content" id="content-f487140b15cecbd80e3a2bac713fe437"></div></div></div></div><div class="method" id="method-b7e3aee7c74b9309d911f1ce32a3eeba"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge no-auth">无需登录</span><span class="method-title">用户登录</span><span class="method-path">/api/user/login</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>nickname</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>用户名</td></tr><tr><td><code>pwd</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>密码</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/login</code></p></div><div class="test-panel"><h3>接口测试</h3><div class="param-inputs"><div class="param-input-group"><label for="param-b7e3aee7c74b9309d911f1ce32a3eeba-nickname">nickname <span class="required">*</span></label><input type="text" id="param-b7e3aee7c74b9309d911f1ce32a3eeba-nickname" data-param="nickname" placeholder="用户名" value="" required></div><div class="param-input-group"><label for="param-b7e3aee7c74b9309d911f1ce32a3eeba-pwd">pwd <span class="required">*</span></label><input type="text" id="param-b7e3aee7c74b9309d911f1ce32a3eeba-pwd" data-param="pwd" placeholder="密码" value="" required></div></div><button class="btn btn-primary" id="btn-b7e3aee7c74b9309d911f1ce32a3eeba" onclick="sendRequest('b7e3aee7c74b9309d911f1ce32a3eeba', 'POST', '/api/user/login')">发送请求</button><div class="response-panel" id="response-b7e3aee7c74b9309d911f1ce32a3eeba"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-b7e3aee7c74b9309d911f1ce32a3eeba"></span></div><div class="response-content" id="content-b7e3aee7c74b9309d911f1ce32a3eeba"></div></div></div></div><div class="method" id="method-2254cbd6ee8b9c5765ec810839c124fc"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge no-auth">无需登录</span><span class="method-title">手机号登录</span><span class="method-path">/api/user/mobileLogin</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>mobile</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>手机号</td></tr><tr><td><code>captcha</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>验证码</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/mobileLogin</code></p></div><div class="test-panel"><h3>接口测试</h3><div class="param-inputs"><div class="param-input-group"><label for="param-2254cbd6ee8b9c5765ec810839c124fc-mobile">mobile <span class="required">*</span></label><input type="text" id="param-2254cbd6ee8b9c5765ec810839c124fc-mobile" data-param="mobile" placeholder="手机号" value="" required></div><div class="param-input-group"><label for="param-2254cbd6ee8b9c5765ec810839c124fc-captcha">captcha <span class="required">*</span></label><input type="text" id="param-2254cbd6ee8b9c5765ec810839c124fc-captcha" data-param="captcha" placeholder="验证码" value="" required></div></div><button class="btn btn-primary" id="btn-2254cbd6ee8b9c5765ec810839c124fc" onclick="sendRequest('2254cbd6ee8b9c5765ec810839c124fc', 'POST', '/api/user/mobileLogin')">发送请求</button><div class="response-panel" id="response-2254cbd6ee8b9c5765ec810839c124fc"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-2254cbd6ee8b9c5765ec810839c124fc"></span></div><div class="response-content" id="content-2254cbd6ee8b9c5765ec810839c124fc"></div></div></div></div><div class="method" id="method-d0bfeeea026476ded40dd8158f03b5f1"><div class="method-header"><span class="method-badge put">PUT</span><span class="method-badge auth">需要登录</span><span class="method-title">修改密码</span><span class="method-path">/api/user/changePwd</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>oldpwd</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>旧密码</td></tr><tr><td><code>newpwd</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>新密码</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/changePwd</code></p></div><div class="test-panel"><h3>接口测试</h3><div class="param-inputs"><div class="param-input-group"><label for="param-d0bfeeea026476ded40dd8158f03b5f1-oldpwd">oldpwd <span class="required">*</span></label><input type="text" id="param-d0bfeeea026476ded40dd8158f03b5f1-oldpwd" data-param="oldpwd" placeholder="旧密码" value="" required></div><div class="param-input-group"><label for="param-d0bfeeea026476ded40dd8158f03b5f1-newpwd">newpwd <span class="required">*</span></label><input type="text" id="param-d0bfeeea026476ded40dd8158f03b5f1-newpwd" data-param="newpwd" placeholder="新密码" value="" required></div></div><button class="btn btn-primary" id="btn-d0bfeeea026476ded40dd8158f03b5f1" onclick="sendRequest('d0bfeeea026476ded40dd8158f03b5f1', 'PUT', '/api/user/changePwd')">发送请求</button><div class="response-panel" id="response-d0bfeeea026476ded40dd8158f03b5f1"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-d0bfeeea026476ded40dd8158f03b5f1"></span></div><div class="response-content" id="content-d0bfeeea026476ded40dd8158f03b5f1"></div></div></div></div><div class="method" id="method-46b26173d0e268d4a549edde7b6d8a35"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge no-auth">无需登录</span><span class="method-title">找回密码</span><span class="method-path">/api/user/forgot</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>mobile</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>手机号</td></tr><tr><td><code>captcha</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>验证码</td></tr><tr><td><code>password</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>新密码</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/forgot</code></p></div><div class="test-panel"><h3>接口测试</h3><div class="param-inputs"><div class="param-input-group"><label for="param-46b26173d0e268d4a549edde7b6d8a35-mobile">mobile <span class="required">*</span></label><input type="text" id="param-46b26173d0e268d4a549edde7b6d8a35-mobile" data-param="mobile" placeholder="手机号" value="" required></div><div class="param-input-group"><label for="param-46b26173d0e268d4a549edde7b6d8a35-captcha">captcha <span class="required">*</span></label><input type="text" id="param-46b26173d0e268d4a549edde7b6d8a35-captcha" data-param="captcha" placeholder="验证码" value="" required></div><div class="param-input-group"><label for="param-46b26173d0e268d4a549edde7b6d8a35-password">password <span class="required">*</span></label><input type="text" id="param-46b26173d0e268d4a549edde7b6d8a35-password" data-param="password" placeholder="新密码" value="" required></div></div><button class="btn btn-primary" id="btn-46b26173d0e268d4a549edde7b6d8a35" onclick="sendRequest('46b26173d0e268d4a549edde7b6d8a35', 'POST', '/api/user/forgot')">发送请求</button><div class="response-panel" id="response-46b26173d0e268d4a549edde7b6d8a35"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-46b26173d0e268d4a549edde7b6d8a35"></span></div><div class="response-content" id="content-46b26173d0e268d4a549edde7b6d8a35"></div></div></div></div><div class="method" id="method-f483107c4147bddf35e3d8f986ed160c"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge auth">需要登录</span><span class="method-title">获取消息列表</span><span class="method-path">/api/user/message</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>page</code></td><td>int</td><td><span class="required">是</span></td><td>-</td><td>页码，默认1</td></tr><tr><td><code>limit</code></td><td>int</td><td><span class="required">是</span></td><td>-</td><td>每页数量，默认1</td></tr><tr><td><code>status</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>状态，默认all</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/message</code></p></div><div class="test-panel"><h3>接口测试</h3><div class="param-inputs"><div class="param-input-group"><label for="param-f483107c4147bddf35e3d8f986ed160c-page">page <span class="required">*</span></label><input type="text" id="param-f483107c4147bddf35e3d8f986ed160c-page" data-param="page" placeholder="页码，默认1" value="" required></div><div class="param-input-group"><label for="param-f483107c4147bddf35e3d8f986ed160c-limit">limit <span class="required">*</span></label><input type="text" id="param-f483107c4147bddf35e3d8f986ed160c-limit" data-param="limit" placeholder="每页数量，默认1" value="" required></div><div class="param-input-group"><label for="param-f483107c4147bddf35e3d8f986ed160c-status">status <span class="required">*</span></label><input type="text" id="param-f483107c4147bddf35e3d8f986ed160c-status" data-param="status" placeholder="状态，默认all" value="" required></div></div><button class="btn btn-primary" id="btn-f483107c4147bddf35e3d8f986ed160c" onclick="sendRequest('f483107c4147bddf35e3d8f986ed160c', 'POST', '/api/user/message')">发送请求</button><div class="response-panel" id="response-f483107c4147bddf35e3d8f986ed160c"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-f483107c4147bddf35e3d8f986ed160c"></span></div><div class="response-content" id="content-f483107c4147bddf35e3d8f986ed160c"></div></div></div></div><div class="method" id="method-4e2e57665931cdb524ae8ece689c2c6d"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge auth">需要登录</span><span class="method-title">查看消息</span><span class="method-path">/api/user/viewMessage</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>id</code></td><td>int</td><td><span class="required">是</span></td><td>-</td><td>消息ID</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/viewMessage</code></p></div><div class="test-panel"><h3>接口测试</h3><div class="param-inputs"><div class="param-input-group"><label for="param-4e2e57665931cdb524ae8ece689c2c6d-id">id <span class="required">*</span></label><input type="text" id="param-4e2e57665931cdb524ae8ece689c2c6d-id" data-param="id" placeholder="消息ID" value="" required></div></div><button class="btn btn-primary" id="btn-4e2e57665931cdb524ae8ece689c2c6d" onclick="sendRequest('4e2e57665931cdb524ae8ece689c2c6d', 'POST', '/api/user/viewMessage')">发送请求</button><div class="response-panel" id="response-4e2e57665931cdb524ae8ece689c2c6d"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-4e2e57665931cdb524ae8ece689c2c6d"></span></div><div class="response-content" id="content-4e2e57665931cdb524ae8ece689c2c6d"></div></div></div></div><div class="method" id="method-6367c92efdd2b637b8c3987c79d58970"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge auth">需要登录</span><span class="method-title">批量操作消息</span><span class="method-path">/api/user/batchMessage</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>id</code></td><td>string|array</td><td><span class="required">是</span></td><td>-</td><td>消息ID，多个用逗号分隔或数组</td></tr><tr><td><code>type</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>操作类型，默认del</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/batchMessage</code></p></div><div class="test-panel"><h3>接口测试</h3><div class="param-inputs"><div class="param-input-group"><label for="param-6367c92efdd2b637b8c3987c79d58970-id">id <span class="required">*</span></label><input type="text" id="param-6367c92efdd2b637b8c3987c79d58970-id" data-param="id" placeholder="消息ID，多个用逗号分隔或数组" value="" required></div><div class="param-input-group"><label for="param-6367c92efdd2b637b8c3987c79d58970-type">type <span class="required">*</span></label><input type="text" id="param-6367c92efdd2b637b8c3987c79d58970-type" data-param="type" placeholder="操作类型，默认del" value="" required></div></div><button class="btn btn-primary" id="btn-6367c92efdd2b637b8c3987c79d58970" onclick="sendRequest('6367c92efdd2b637b8c3987c79d58970', 'POST', '/api/user/batchMessage')">发送请求</button><div class="response-panel" id="response-6367c92efdd2b637b8c3987c79d58970"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-6367c92efdd2b637b8c3987c79d58970"></span></div><div class="response-content" id="content-6367c92efdd2b637b8c3987c79d58970"></div></div></div></div><div class="method" id="method-d256c48c12210b71d031891227e89f86"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge auth">需要登录</span><span class="method-title">申请APP_KEY</span><span class="method-path">/api/user/appid</span></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/appid</code></p></div><div class="test-panel"><h3>接口测试</h3><p style="color: #6b7280; margin-bottom: 15px;">此接口无需参数</p><button class="btn btn-primary" id="btn-d256c48c12210b71d031891227e89f86" onclick="sendRequest('d256c48c12210b71d031891227e89f86', 'POST', '/api/user/appid')">发送请求</button><div class="response-panel" id="response-d256c48c12210b71d031891227e89f86"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-d256c48c12210b71d031891227e89f86"></span></div><div class="response-content" id="content-d256c48c12210b71d031891227e89f86"></div></div></div></div><div class="method" id="method-06bb40dd58ff40c236b1811377bd5df4"><div class="method-header"><span class="method-badge put">PUT</span><span class="method-badge auth">需要登录</span><span class="method-title">修改邮箱地址</span><span class="method-path">/api/user/changeEmail</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>email</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>新邮箱地址</td></tr><tr><td><code>captcha</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>验证码</td></tr><tr><td><code>event</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>事件类型，默认change</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/changeEmail</code></p></div><div class="test-panel"><h3>接口测试</h3><div class="param-inputs"><div class="param-input-group"><label for="param-06bb40dd58ff40c236b1811377bd5df4-email">email <span class="required">*</span></label><input type="text" id="param-06bb40dd58ff40c236b1811377bd5df4-email" data-param="email" placeholder="新邮箱地址" value="" required></div><div class="param-input-group"><label for="param-06bb40dd58ff40c236b1811377bd5df4-captcha">captcha <span class="required">*</span></label><input type="text" id="param-06bb40dd58ff40c236b1811377bd5df4-captcha" data-param="captcha" placeholder="验证码" value="" required></div><div class="param-input-group"><label for="param-06bb40dd58ff40c236b1811377bd5df4-event">event <span class="required">*</span></label><input type="text" id="param-06bb40dd58ff40c236b1811377bd5df4-event" data-param="event" placeholder="事件类型，默认change" value="" required></div></div><button class="btn btn-primary" id="btn-06bb40dd58ff40c236b1811377bd5df4" onclick="sendRequest('06bb40dd58ff40c236b1811377bd5df4', 'PUT', '/api/user/changeEmail')">发送请求</button><div class="response-panel" id="response-06bb40dd58ff40c236b1811377bd5df4"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-06bb40dd58ff40c236b1811377bd5df4"></span></div><div class="response-content" id="content-06bb40dd58ff40c236b1811377bd5df4"></div></div></div></div><div class="method" id="method-34e30f5eaeee5f595f49a1faaa71c479"><div class="method-header"><span class="method-badge put">PUT</span><span class="method-badge auth">需要登录</span><span class="method-title">修改手机号</span><span class="method-path">/api/user/changeMobile</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>mobile</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>新手机号</td></tr><tr><td><code>captcha</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>验证码</td></tr><tr><td><code>event</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>事件类型，默认change</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/changeMobile</code></p></div><div class="test-panel"><h3>接口测试</h3><div class="param-inputs"><div class="param-input-group"><label for="param-34e30f5eaeee5f595f49a1faaa71c479-mobile">mobile <span class="required">*</span></label><input type="text" id="param-34e30f5eaeee5f595f49a1faaa71c479-mobile" data-param="mobile" placeholder="新手机号" value="" required></div><div class="param-input-group"><label for="param-34e30f5eaeee5f595f49a1faaa71c479-captcha">captcha <span class="required">*</span></label><input type="text" id="param-34e30f5eaeee5f595f49a1faaa71c479-captcha" data-param="captcha" placeholder="验证码" value="" required></div><div class="param-input-group"><label for="param-34e30f5eaeee5f595f49a1faaa71c479-event">event <span class="required">*</span></label><input type="text" id="param-34e30f5eaeee5f595f49a1faaa71c479-event" data-param="event" placeholder="事件类型，默认change" value="" required></div></div><button class="btn btn-primary" id="btn-34e30f5eaeee5f595f49a1faaa71c479" onclick="sendRequest('34e30f5eaeee5f595f49a1faaa71c479', 'PUT', '/api/user/changeMobile')">发送请求</button><div class="response-panel" id="response-34e30f5eaeee5f595f49a1faaa71c479"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-34e30f5eaeee5f595f49a1faaa71c479"></span></div><div class="response-content" id="content-34e30f5eaeee5f595f49a1faaa71c479"></div></div></div></div><div class="method" id="method-fd63685dbd75ca67162a402e2f8a0a90"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge auth">需要登录</span><span class="method-title">意见反馈</span><span class="method-path">/api/user/feedback</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>type</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>反馈类型</td></tr><tr><td><code>content</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>反馈内容</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/feedback</code></p></div><div class="test-panel"><h3>接口测试</h3><div class="param-inputs"><div class="param-input-group"><label for="param-fd63685dbd75ca67162a402e2f8a0a90-type">type <span class="required">*</span></label><input type="text" id="param-fd63685dbd75ca67162a402e2f8a0a90-type" data-param="type" placeholder="反馈类型" value="" required></div><div class="param-input-group"><label for="param-fd63685dbd75ca67162a402e2f8a0a90-content">content <span class="required">*</span></label><input type="text" id="param-fd63685dbd75ca67162a402e2f8a0a90-content" data-param="content" placeholder="反馈内容" value="" required></div></div><button class="btn btn-primary" id="btn-fd63685dbd75ca67162a402e2f8a0a90" onclick="sendRequest('fd63685dbd75ca67162a402e2f8a0a90', 'POST', '/api/user/feedback')">发送请求</button><div class="response-panel" id="response-fd63685dbd75ca67162a402e2f8a0a90"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-fd63685dbd75ca67162a402e2f8a0a90"></span></div><div class="response-content" id="content-fd63685dbd75ca67162a402e2f8a0a90"></div></div></div></div><div class="method" id="method-0e7064e2348536d0fd7b20dbc344b051"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge auth">需要登录</span><span class="method-title">文件上传函数</span><span class="method-path">/api/user/upload</span></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/upload</code></p></div><div class="test-panel"><h3>接口测试</h3><p style="color: #6b7280; margin-bottom: 15px;">此接口无需参数</p><button class="btn btn-primary" id="btn-0e7064e2348536d0fd7b20dbc344b051" onclick="sendRequest('0e7064e2348536d0fd7b20dbc344b051', 'POST', '/api/user/upload')">发送请求</button><div class="response-panel" id="response-0e7064e2348536d0fd7b20dbc344b051"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-0e7064e2348536d0fd7b20dbc344b051"></span></div><div class="response-content" id="content-0e7064e2348536d0fd7b20dbc344b051"></div></div></div></div></div>        <div class="footer">
-            <p>© 2025 SwiftAdmin. All rights reserved.</p>
+            <ul class="layui-nav layui-nav-tree" lay-shrink="all" lay-filter="api-menu">
+                <li class="layui-nav-item"><a href="javascript:;"><cite>异步调用</cite><i class="layui-icon layui-icon-down layui-nav-more"></i></a><dl class="layui-nav-child"><dd><a href="javascript:;" onclick="scrollToController('controller-0')">异步调用</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-5a41b1b0a993bf44716c7d5d2030ceb6')"><span class="method-badge-small method-badge-GET">GET</span> 首页</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-83e637f88c27058f81b7df745a3b006a')"><span class="method-badge-small method-badge-POST">POST</span> 发送短信验证码</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-c78a35d007bc2cee56a2de5e8128a93d')"><span class="method-badge-small method-badge-POST">POST</span> 发送邮件验证码</a></dd></dl></li><li class="layui-nav-item"><a href="javascript:;"><cite>API接口前端示例文件</cite><i class="layui-icon layui-icon-down layui-nav-more"></i></a><dl class="layui-nav-child"><dd><a href="javascript:;" onclick="scrollToController('controller-1')">API接口前端示例文件</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-9cb379715ec8f471c0d0b7a928ba50cc')"><span class="method-badge-small method-badge-GET">GET</span> index</a></dd></dl></li><li class="layui-nav-item"><a href="javascript:;"><cite>API用户登录</cite><i class="layui-icon layui-icon-down layui-nav-more"></i></a><dl class="layui-nav-child"><dd><a href="javascript:;" onclick="scrollToController('controller-2')">API用户登录</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-3dba1a9d86b01f96dc2a5f71e8659e39')"><span class="method-badge-small method-badge-POST">POST</span> 用户中心</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-72dd7a3d58fc8109cfebcd82577062b2')"><span class="method-badge-small method-badge-POST">POST</span> 修改用户资料</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-f487140b15cecbd80e3a2bac713fe437')"><span class="method-badge-small method-badge-POST">POST</span> 用户注册</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-b7e3aee7c74b9309d911f1ce32a3eeba')"><span class="method-badge-small method-badge-POST">POST</span> 用户登录</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-2254cbd6ee8b9c5765ec810839c124fc')"><span class="method-badge-small method-badge-POST">POST</span> 手机号登录</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-d0bfeeea026476ded40dd8158f03b5f1')"><span class="method-badge-small method-badge-PUT">PUT</span> 修改密码</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-46b26173d0e268d4a549edde7b6d8a35')"><span class="method-badge-small method-badge-POST">POST</span> 找回密码</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-f483107c4147bddf35e3d8f986ed160c')"><span class="method-badge-small method-badge-POST">POST</span> 获取消息列表</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-4e2e57665931cdb524ae8ece689c2c6d')"><span class="method-badge-small method-badge-POST">POST</span> 查看消息</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-6367c92efdd2b637b8c3987c79d58970')"><span class="method-badge-small method-badge-POST">POST</span> 批量操作消息</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-d256c48c12210b71d031891227e89f86')"><span class="method-badge-small method-badge-POST">POST</span> 申请APP_KEY</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-06bb40dd58ff40c236b1811377bd5df4')"><span class="method-badge-small method-badge-PUT">PUT</span> 修改邮箱地址</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-34e30f5eaeee5f595f49a1faaa71c479')"><span class="method-badge-small method-badge-PUT">PUT</span> 修改手机号</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-fd63685dbd75ca67162a402e2f8a0a90')"><span class="method-badge-small method-badge-POST">POST</span> 意见反馈</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-0e7064e2348536d0fd7b20dbc344b051')"><span class="method-badge-small method-badge-POST">POST</span> 文件上传函数</a></dd></dl></li>
+            </ul>
         </div>
     </div>
-    <script>
+    <!-- 移动端遮罩层 -->
+    <div class="layui-side-mask"></div>
+    <!-- 内容主体区域 -->
+    <div class="layui-body">
+        <div class="api-content"><div class="controller" id="controller-0"><h2 class="controller-title">异步调用</h2><div class="method" id="method-5a41b1b0a993bf44716c7d5d2030ceb6"><div class="method-header"><span class="method-badge get">GET</span><span class="method-badge no-auth">无需登录</span><span class="method-title">首页</span><span class="method-path">/api/ajax/index</span></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/ajax/index</code></p></div><div class="test-panel"><h3>接口测试</h3><p style="color: #6b7280; margin-bottom: 15px;">此接口无需参数</p><button class="btn btn-primary" id="btn-5a41b1b0a993bf44716c7d5d2030ceb6" onclick="sendRequest('5a41b1b0a993bf44716c7d5d2030ceb6', 'GET', '/api/ajax/index')">发送请求</button><div class="response-panel" id="response-5a41b1b0a993bf44716c7d5d2030ceb6"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-5a41b1b0a993bf44716c7d5d2030ceb6"></span></div><div class="response-content" id="content-5a41b1b0a993bf44716c7d5d2030ceb6"></div></div></div></div><div class="method" id="method-83e637f88c27058f81b7df745a3b006a"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge no-auth">无需登录</span><span class="method-title">发送短信验证码</span><span class="method-path">/api/ajax/smsSend</span></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/ajax/smsSend</code></p></div><div class="test-panel"><h3>接口测试</h3><p style="color: #6b7280; margin-bottom: 15px;">此接口无需参数</p><button class="btn btn-primary" id="btn-83e637f88c27058f81b7df745a3b006a" onclick="sendRequest('83e637f88c27058f81b7df745a3b006a', 'POST', '/api/ajax/smsSend')">发送请求</button><div class="response-panel" id="response-83e637f88c27058f81b7df745a3b006a"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-83e637f88c27058f81b7df745a3b006a"></span></div><div class="response-content" id="content-83e637f88c27058f81b7df745a3b006a"></div></div></div></div><div class="method" id="method-c78a35d007bc2cee56a2de5e8128a93d"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge no-auth">无需登录</span><span class="method-title">发送邮件验证码</span><span class="method-path">/api/ajax/emailSend</span></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/ajax/emailSend</code></p></div><div class="test-panel"><h3>接口测试</h3><p style="color: #6b7280; margin-bottom: 15px;">此接口无需参数</p><button class="btn btn-primary" id="btn-c78a35d007bc2cee56a2de5e8128a93d" onclick="sendRequest('c78a35d007bc2cee56a2de5e8128a93d', 'POST', '/api/ajax/emailSend')">发送请求</button><div class="response-panel" id="response-c78a35d007bc2cee56a2de5e8128a93d"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-c78a35d007bc2cee56a2de5e8128a93d"></span></div><div class="response-content" id="content-c78a35d007bc2cee56a2de5e8128a93d"></div></div></div></div></div><div class="controller" id="controller-1"><h2 class="controller-title">API接口前端示例文件</h2><div class="method" id="method-9cb379715ec8f471c0d0b7a928ba50cc"><div class="method-header"><span class="method-badge get">GET</span><span class="method-badge auth">需要登录</span><span class="method-title"></span><span class="method-path">/api/index/index</span></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/index/index</code></p></div><div class="test-panel"><h3>接口测试</h3><p style="color: #6b7280; margin-bottom: 15px;">此接口无需参数</p><button class="btn btn-primary" id="btn-9cb379715ec8f471c0d0b7a928ba50cc" onclick="sendRequest('9cb379715ec8f471c0d0b7a928ba50cc', 'GET', '/api/index/index')">发送请求</button><div class="response-panel" id="response-9cb379715ec8f471c0d0b7a928ba50cc"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-9cb379715ec8f471c0d0b7a928ba50cc"></span></div><div class="response-content" id="content-9cb379715ec8f471c0d0b7a928ba50cc"></div></div></div></div></div><div class="controller" id="controller-2"><h2 class="controller-title">API用户登录</h2><div class="method" id="method-3dba1a9d86b01f96dc2a5f71e8659e39"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge auth">需要登录</span><span class="method-title">用户中心</span><span class="method-path">/api/user/center</span></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/center</code></p></div><div class="test-panel"><h3>接口测试</h3><p style="color: #6b7280; margin-bottom: 15px;">此接口无需参数</p><button class="btn btn-primary" id="btn-3dba1a9d86b01f96dc2a5f71e8659e39" onclick="sendRequest('3dba1a9d86b01f96dc2a5f71e8659e39', 'POST', '/api/user/center')">发送请求</button><div class="response-panel" id="response-3dba1a9d86b01f96dc2a5f71e8659e39"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-3dba1a9d86b01f96dc2a5f71e8659e39"></span></div><div class="response-content" id="content-3dba1a9d86b01f96dc2a5f71e8659e39"></div></div></div></div><div class="method" id="method-72dd7a3d58fc8109cfebcd82577062b2"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge auth">需要登录</span><span class="method-title">修改用户资料</span><span class="method-path">/api/user/profile</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>nickname</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>昵称</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/profile</code></p></div><div class="test-panel"><h3>接口测试</h3><div class="param-inputs"><div class="param-input-group"><label for="param-72dd7a3d58fc8109cfebcd82577062b2-nickname">nickname <span class="required">*</span></label><input type="text" id="param-72dd7a3d58fc8109cfebcd82577062b2-nickname" data-param="nickname" placeholder="昵称" value="" required></div></div><button class="btn btn-primary" id="btn-72dd7a3d58fc8109cfebcd82577062b2" onclick="sendRequest('72dd7a3d58fc8109cfebcd82577062b2', 'POST', '/api/user/profile')">发送请求</button><div class="response-panel" id="response-72dd7a3d58fc8109cfebcd82577062b2"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-72dd7a3d58fc8109cfebcd82577062b2"></span></div><div class="response-content" id="content-72dd7a3d58fc8109cfebcd82577062b2"></div></div></div></div><div class="method" id="method-f487140b15cecbd80e3a2bac713fe437"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge no-auth">无需登录</span><span class="method-title">用户注册</span><span class="method-path">/api/user/register</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>nickname</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>用户名</td></tr><tr><td><code>mobile</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>手机号</td></tr><tr><td><code>email</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>邮箱</td></tr><tr><td><code>pwd</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>密码</td></tr><tr><td><code>captcha</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>验证码</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/register</code></p></div><div class="test-panel"><h3>接口测试</h3><div class="param-inputs"><div class="param-input-group"><label for="param-f487140b15cecbd80e3a2bac713fe437-nickname">nickname <span class="required">*</span></label><input type="text" id="param-f487140b15cecbd80e3a2bac713fe437-nickname" data-param="nickname" placeholder="用户名" value="" required></div><div class="param-input-group"><label for="param-f487140b15cecbd80e3a2bac713fe437-mobile">mobile <span class="required">*</span></label><input type="text" id="param-f487140b15cecbd80e3a2bac713fe437-mobile" data-param="mobile" placeholder="手机号" value="" required></div><div class="param-input-group"><label for="param-f487140b15cecbd80e3a2bac713fe437-email">email <span class="required">*</span></label><input type="text" id="param-f487140b15cecbd80e3a2bac713fe437-email" data-param="email" placeholder="邮箱" value="" required></div><div class="param-input-group"><label for="param-f487140b15cecbd80e3a2bac713fe437-pwd">pwd <span class="required">*</span></label><input type="text" id="param-f487140b15cecbd80e3a2bac713fe437-pwd" data-param="pwd" placeholder="密码" value="" required></div><div class="param-input-group"><label for="param-f487140b15cecbd80e3a2bac713fe437-captcha">captcha <span class="required">*</span></label><input type="text" id="param-f487140b15cecbd80e3a2bac713fe437-captcha" data-param="captcha" placeholder="验证码" value="" required></div></div><button class="btn btn-primary" id="btn-f487140b15cecbd80e3a2bac713fe437" onclick="sendRequest('f487140b15cecbd80e3a2bac713fe437', 'POST', '/api/user/register')">发送请求</button><div class="response-panel" id="response-f487140b15cecbd80e3a2bac713fe437"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-f487140b15cecbd80e3a2bac713fe437"></span></div><div class="response-content" id="content-f487140b15cecbd80e3a2bac713fe437"></div></div></div></div><div class="method" id="method-b7e3aee7c74b9309d911f1ce32a3eeba"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge no-auth">无需登录</span><span class="method-title">用户登录</span><span class="method-path">/api/user/login</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>nickname</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>用户名</td></tr><tr><td><code>pwd</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>密码</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/login</code></p></div><div class="test-panel"><h3>接口测试</h3><div class="param-inputs"><div class="param-input-group"><label for="param-b7e3aee7c74b9309d911f1ce32a3eeba-nickname">nickname <span class="required">*</span></label><input type="text" id="param-b7e3aee7c74b9309d911f1ce32a3eeba-nickname" data-param="nickname" placeholder="用户名" value="" required></div><div class="param-input-group"><label for="param-b7e3aee7c74b9309d911f1ce32a3eeba-pwd">pwd <span class="required">*</span></label><input type="text" id="param-b7e3aee7c74b9309d911f1ce32a3eeba-pwd" data-param="pwd" placeholder="密码" value="" required></div></div><button class="btn btn-primary" id="btn-b7e3aee7c74b9309d911f1ce32a3eeba" onclick="sendRequest('b7e3aee7c74b9309d911f1ce32a3eeba', 'POST', '/api/user/login')">发送请求</button><div class="response-panel" id="response-b7e3aee7c74b9309d911f1ce32a3eeba"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-b7e3aee7c74b9309d911f1ce32a3eeba"></span></div><div class="response-content" id="content-b7e3aee7c74b9309d911f1ce32a3eeba"></div></div></div></div><div class="method" id="method-2254cbd6ee8b9c5765ec810839c124fc"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge no-auth">无需登录</span><span class="method-title">手机号登录</span><span class="method-path">/api/user/mobileLogin</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>mobile</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>手机号</td></tr><tr><td><code>captcha</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>验证码</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/mobileLogin</code></p></div><div class="test-panel"><h3>接口测试</h3><div class="param-inputs"><div class="param-input-group"><label for="param-2254cbd6ee8b9c5765ec810839c124fc-mobile">mobile <span class="required">*</span></label><input type="text" id="param-2254cbd6ee8b9c5765ec810839c124fc-mobile" data-param="mobile" placeholder="手机号" value="" required></div><div class="param-input-group"><label for="param-2254cbd6ee8b9c5765ec810839c124fc-captcha">captcha <span class="required">*</span></label><input type="text" id="param-2254cbd6ee8b9c5765ec810839c124fc-captcha" data-param="captcha" placeholder="验证码" value="" required></div></div><button class="btn btn-primary" id="btn-2254cbd6ee8b9c5765ec810839c124fc" onclick="sendRequest('2254cbd6ee8b9c5765ec810839c124fc', 'POST', '/api/user/mobileLogin')">发送请求</button><div class="response-panel" id="response-2254cbd6ee8b9c5765ec810839c124fc"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-2254cbd6ee8b9c5765ec810839c124fc"></span></div><div class="response-content" id="content-2254cbd6ee8b9c5765ec810839c124fc"></div></div></div></div><div class="method" id="method-d0bfeeea026476ded40dd8158f03b5f1"><div class="method-header"><span class="method-badge put">PUT</span><span class="method-badge auth">需要登录</span><span class="method-title">修改密码</span><span class="method-path">/api/user/changePwd</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>oldpwd</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>旧密码</td></tr><tr><td><code>newpwd</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>新密码</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/changePwd</code></p></div><div class="test-panel"><h3>接口测试</h3><div class="param-inputs"><div class="param-input-group"><label for="param-d0bfeeea026476ded40dd8158f03b5f1-oldpwd">oldpwd <span class="required">*</span></label><input type="text" id="param-d0bfeeea026476ded40dd8158f03b5f1-oldpwd" data-param="oldpwd" placeholder="旧密码" value="" required></div><div class="param-input-group"><label for="param-d0bfeeea026476ded40dd8158f03b5f1-newpwd">newpwd <span class="required">*</span></label><input type="text" id="param-d0bfeeea026476ded40dd8158f03b5f1-newpwd" data-param="newpwd" placeholder="新密码" value="" required></div></div><button class="btn btn-primary" id="btn-d0bfeeea026476ded40dd8158f03b5f1" onclick="sendRequest('d0bfeeea026476ded40dd8158f03b5f1', 'PUT', '/api/user/changePwd')">发送请求</button><div class="response-panel" id="response-d0bfeeea026476ded40dd8158f03b5f1"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-d0bfeeea026476ded40dd8158f03b5f1"></span></div><div class="response-content" id="content-d0bfeeea026476ded40dd8158f03b5f1"></div></div></div></div><div class="method" id="method-46b26173d0e268d4a549edde7b6d8a35"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge no-auth">无需登录</span><span class="method-title">找回密码</span><span class="method-path">/api/user/forgot</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>mobile</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>手机号</td></tr><tr><td><code>captcha</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>验证码</td></tr><tr><td><code>password</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>新密码</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/forgot</code></p></div><div class="test-panel"><h3>接口测试</h3><div class="param-inputs"><div class="param-input-group"><label for="param-46b26173d0e268d4a549edde7b6d8a35-mobile">mobile <span class="required">*</span></label><input type="text" id="param-46b26173d0e268d4a549edde7b6d8a35-mobile" data-param="mobile" placeholder="手机号" value="" required></div><div class="param-input-group"><label for="param-46b26173d0e268d4a549edde7b6d8a35-captcha">captcha <span class="required">*</span></label><input type="text" id="param-46b26173d0e268d4a549edde7b6d8a35-captcha" data-param="captcha" placeholder="验证码" value="" required></div><div class="param-input-group"><label for="param-46b26173d0e268d4a549edde7b6d8a35-password">password <span class="required">*</span></label><input type="text" id="param-46b26173d0e268d4a549edde7b6d8a35-password" data-param="password" placeholder="新密码" value="" required></div></div><button class="btn btn-primary" id="btn-46b26173d0e268d4a549edde7b6d8a35" onclick="sendRequest('46b26173d0e268d4a549edde7b6d8a35', 'POST', '/api/user/forgot')">发送请求</button><div class="response-panel" id="response-46b26173d0e268d4a549edde7b6d8a35"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-46b26173d0e268d4a549edde7b6d8a35"></span></div><div class="response-content" id="content-46b26173d0e268d4a549edde7b6d8a35"></div></div></div></div><div class="method" id="method-f483107c4147bddf35e3d8f986ed160c"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge auth">需要登录</span><span class="method-title">获取消息列表</span><span class="method-path">/api/user/message</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>page</code></td><td>int</td><td><span class="required">是</span></td><td>-</td><td>页码，默认1</td></tr><tr><td><code>limit</code></td><td>int</td><td><span class="required">是</span></td><td>-</td><td>每页数量，默认1</td></tr><tr><td><code>status</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>状态，默认all</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/message</code></p></div><div class="test-panel"><h3>接口测试</h3><div class="param-inputs"><div class="param-input-group"><label for="param-f483107c4147bddf35e3d8f986ed160c-page">page <span class="required">*</span></label><input type="text" id="param-f483107c4147bddf35e3d8f986ed160c-page" data-param="page" placeholder="页码，默认1" value="" required></div><div class="param-input-group"><label for="param-f483107c4147bddf35e3d8f986ed160c-limit">limit <span class="required">*</span></label><input type="text" id="param-f483107c4147bddf35e3d8f986ed160c-limit" data-param="limit" placeholder="每页数量，默认1" value="" required></div><div class="param-input-group"><label for="param-f483107c4147bddf35e3d8f986ed160c-status">status <span class="required">*</span></label><input type="text" id="param-f483107c4147bddf35e3d8f986ed160c-status" data-param="status" placeholder="状态，默认all" value="" required></div></div><button class="btn btn-primary" id="btn-f483107c4147bddf35e3d8f986ed160c" onclick="sendRequest('f483107c4147bddf35e3d8f986ed160c', 'POST', '/api/user/message')">发送请求</button><div class="response-panel" id="response-f483107c4147bddf35e3d8f986ed160c"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-f483107c4147bddf35e3d8f986ed160c"></span></div><div class="response-content" id="content-f483107c4147bddf35e3d8f986ed160c"></div></div></div></div><div class="method" id="method-4e2e57665931cdb524ae8ece689c2c6d"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge auth">需要登录</span><span class="method-title">查看消息</span><span class="method-path">/api/user/viewMessage</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>id</code></td><td>int</td><td><span class="required">是</span></td><td>-</td><td>消息ID</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/viewMessage</code></p></div><div class="test-panel"><h3>接口测试</h3><div class="param-inputs"><div class="param-input-group"><label for="param-4e2e57665931cdb524ae8ece689c2c6d-id">id <span class="required">*</span></label><input type="text" id="param-4e2e57665931cdb524ae8ece689c2c6d-id" data-param="id" placeholder="消息ID" value="" required></div></div><button class="btn btn-primary" id="btn-4e2e57665931cdb524ae8ece689c2c6d" onclick="sendRequest('4e2e57665931cdb524ae8ece689c2c6d', 'POST', '/api/user/viewMessage')">发送请求</button><div class="response-panel" id="response-4e2e57665931cdb524ae8ece689c2c6d"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-4e2e57665931cdb524ae8ece689c2c6d"></span></div><div class="response-content" id="content-4e2e57665931cdb524ae8ece689c2c6d"></div></div></div></div><div class="method" id="method-6367c92efdd2b637b8c3987c79d58970"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge auth">需要登录</span><span class="method-title">批量操作消息</span><span class="method-path">/api/user/batchMessage</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>id</code></td><td>string|array</td><td><span class="required">是</span></td><td>-</td><td>消息ID，多个用逗号分隔或数组</td></tr><tr><td><code>type</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>操作类型，默认del</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/batchMessage</code></p></div><div class="test-panel"><h3>接口测试</h3><div class="param-inputs"><div class="param-input-group"><label for="param-6367c92efdd2b637b8c3987c79d58970-id">id <span class="required">*</span></label><input type="text" id="param-6367c92efdd2b637b8c3987c79d58970-id" data-param="id" placeholder="消息ID，多个用逗号分隔或数组" value="" required></div><div class="param-input-group"><label for="param-6367c92efdd2b637b8c3987c79d58970-type">type <span class="required">*</span></label><input type="text" id="param-6367c92efdd2b637b8c3987c79d58970-type" data-param="type" placeholder="操作类型，默认del" value="" required></div></div><button class="btn btn-primary" id="btn-6367c92efdd2b637b8c3987c79d58970" onclick="sendRequest('6367c92efdd2b637b8c3987c79d58970', 'POST', '/api/user/batchMessage')">发送请求</button><div class="response-panel" id="response-6367c92efdd2b637b8c3987c79d58970"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-6367c92efdd2b637b8c3987c79d58970"></span></div><div class="response-content" id="content-6367c92efdd2b637b8c3987c79d58970"></div></div></div></div><div class="method" id="method-d256c48c12210b71d031891227e89f86"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge auth">需要登录</span><span class="method-title">申请APP_KEY</span><span class="method-path">/api/user/appid</span></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/appid</code></p></div><div class="test-panel"><h3>接口测试</h3><p style="color: #6b7280; margin-bottom: 15px;">此接口无需参数</p><button class="btn btn-primary" id="btn-d256c48c12210b71d031891227e89f86" onclick="sendRequest('d256c48c12210b71d031891227e89f86', 'POST', '/api/user/appid')">发送请求</button><div class="response-panel" id="response-d256c48c12210b71d031891227e89f86"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-d256c48c12210b71d031891227e89f86"></span></div><div class="response-content" id="content-d256c48c12210b71d031891227e89f86"></div></div></div></div><div class="method" id="method-06bb40dd58ff40c236b1811377bd5df4"><div class="method-header"><span class="method-badge put">PUT</span><span class="method-badge auth">需要登录</span><span class="method-title">修改邮箱地址</span><span class="method-path">/api/user/changeEmail</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>email</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>新邮箱地址</td></tr><tr><td><code>captcha</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>验证码</td></tr><tr><td><code>event</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>事件类型，默认change</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/changeEmail</code></p></div><div class="test-panel"><h3>接口测试</h3><div class="param-inputs"><div class="param-input-group"><label for="param-06bb40dd58ff40c236b1811377bd5df4-email">email <span class="required">*</span></label><input type="text" id="param-06bb40dd58ff40c236b1811377bd5df4-email" data-param="email" placeholder="新邮箱地址" value="" required></div><div class="param-input-group"><label for="param-06bb40dd58ff40c236b1811377bd5df4-captcha">captcha <span class="required">*</span></label><input type="text" id="param-06bb40dd58ff40c236b1811377bd5df4-captcha" data-param="captcha" placeholder="验证码" value="" required></div><div class="param-input-group"><label for="param-06bb40dd58ff40c236b1811377bd5df4-event">event <span class="required">*</span></label><input type="text" id="param-06bb40dd58ff40c236b1811377bd5df4-event" data-param="event" placeholder="事件类型，默认change" value="" required></div></div><button class="btn btn-primary" id="btn-06bb40dd58ff40c236b1811377bd5df4" onclick="sendRequest('06bb40dd58ff40c236b1811377bd5df4', 'PUT', '/api/user/changeEmail')">发送请求</button><div class="response-panel" id="response-06bb40dd58ff40c236b1811377bd5df4"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-06bb40dd58ff40c236b1811377bd5df4"></span></div><div class="response-content" id="content-06bb40dd58ff40c236b1811377bd5df4"></div></div></div></div><div class="method" id="method-34e30f5eaeee5f595f49a1faaa71c479"><div class="method-header"><span class="method-badge put">PUT</span><span class="method-badge auth">需要登录</span><span class="method-title">修改手机号</span><span class="method-path">/api/user/changeMobile</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>mobile</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>新手机号</td></tr><tr><td><code>captcha</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>验证码</td></tr><tr><td><code>event</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>事件类型，默认change</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/changeMobile</code></p></div><div class="test-panel"><h3>接口测试</h3><div class="param-inputs"><div class="param-input-group"><label for="param-34e30f5eaeee5f595f49a1faaa71c479-mobile">mobile <span class="required">*</span></label><input type="text" id="param-34e30f5eaeee5f595f49a1faaa71c479-mobile" data-param="mobile" placeholder="新手机号" value="" required></div><div class="param-input-group"><label for="param-34e30f5eaeee5f595f49a1faaa71c479-captcha">captcha <span class="required">*</span></label><input type="text" id="param-34e30f5eaeee5f595f49a1faaa71c479-captcha" data-param="captcha" placeholder="验证码" value="" required></div><div class="param-input-group"><label for="param-34e30f5eaeee5f595f49a1faaa71c479-event">event <span class="required">*</span></label><input type="text" id="param-34e30f5eaeee5f595f49a1faaa71c479-event" data-param="event" placeholder="事件类型，默认change" value="" required></div></div><button class="btn btn-primary" id="btn-34e30f5eaeee5f595f49a1faaa71c479" onclick="sendRequest('34e30f5eaeee5f595f49a1faaa71c479', 'PUT', '/api/user/changeMobile')">发送请求</button><div class="response-panel" id="response-34e30f5eaeee5f595f49a1faaa71c479"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-34e30f5eaeee5f595f49a1faaa71c479"></span></div><div class="response-content" id="content-34e30f5eaeee5f595f49a1faaa71c479"></div></div></div></div><div class="method" id="method-fd63685dbd75ca67162a402e2f8a0a90"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge auth">需要登录</span><span class="method-title">意见反馈</span><span class="method-path">/api/user/feedback</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>type</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>反馈类型</td></tr><tr><td><code>content</code></td><td>string</td><td><span class="required">是</span></td><td>-</td><td>反馈内容</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/feedback</code></p></div><div class="test-panel"><h3>接口测试</h3><div class="param-inputs"><div class="param-input-group"><label for="param-fd63685dbd75ca67162a402e2f8a0a90-type">type <span class="required">*</span></label><input type="text" id="param-fd63685dbd75ca67162a402e2f8a0a90-type" data-param="type" placeholder="反馈类型" value="" required></div><div class="param-input-group"><label for="param-fd63685dbd75ca67162a402e2f8a0a90-content">content <span class="required">*</span></label><input type="text" id="param-fd63685dbd75ca67162a402e2f8a0a90-content" data-param="content" placeholder="反馈内容" value="" required></div></div><button class="btn btn-primary" id="btn-fd63685dbd75ca67162a402e2f8a0a90" onclick="sendRequest('fd63685dbd75ca67162a402e2f8a0a90', 'POST', '/api/user/feedback')">发送请求</button><div class="response-panel" id="response-fd63685dbd75ca67162a402e2f8a0a90"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-fd63685dbd75ca67162a402e2f8a0a90"></span></div><div class="response-content" id="content-fd63685dbd75ca67162a402e2f8a0a90"></div></div></div></div><div class="method" id="method-0e7064e2348536d0fd7b20dbc344b051"><div class="method-header"><span class="method-badge post">POST</span><span class="method-badge auth">需要登录</span><span class="method-title">文件上传函数</span><span class="method-path">/api/user/upload</span></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/upload</code></p></div><div class="test-panel"><h3>接口测试</h3><p style="color: #6b7280; margin-bottom: 15px;">此接口无需参数</p><button class="btn btn-primary" id="btn-0e7064e2348536d0fd7b20dbc344b051" onclick="sendRequest('0e7064e2348536d0fd7b20dbc344b051', 'POST', '/api/user/upload')">发送请求</button><div class="response-panel" id="response-0e7064e2348536d0fd7b20dbc344b051"><div class="response-header"><span>响应结果</span><span class="response-status" id="status-0e7064e2348536d0fd7b20dbc344b051"></span></div><div class="response-content" id="content-0e7064e2348536d0fd7b20dbc344b051"></div></div></div></div></div>        </div>
+    </div>
+    <!-- 底部固定区域 -->
+    <div class="layui-footer">
+        copyright © 2025 <a href="http://www.swiftadmin.net" target="_blank">SwiftAdmin</a> all rights reserved.
+    </div>
+</div>
+<!-- 隐藏的配置输入框（用于存储配置值） -->
+<input type="hidden" id="global-domain" value="">
+<input type="hidden" id="global-token" value="">
+<script src="/static/system/layui/layui.js"></script>
+<script>
+        let configLayer = null;
+        
         // 保存全局配置到 localStorage
         function saveConfig() {
-            localStorage.setItem('api_doc_domain', document.getElementById('global-domain').value);
-            localStorage.setItem('api_doc_token', document.getElementById('global-token').value);
+            // 优先从弹窗输入框获取值，如果没有则从隐藏输入框获取
+            var domainEl = document.getElementById('config-domain') || document.getElementById('global-domain');
+            var tokenEl = document.getElementById('config-token') || document.getElementById('global-token');
+            const domain = domainEl ? domainEl.value : '';
+            const token = tokenEl ? tokenEl.value : '';
+            localStorage.setItem('api_doc_domain', domain);
+            localStorage.setItem('api_doc_token', token);
+            
+            // 同步到隐藏输入框（如果存在）
+            var globalDomainEl = document.getElementById('global-domain');
+            var globalTokenEl = document.getElementById('global-token');
+            if (globalDomainEl) globalDomainEl.value = domain;
+            if (globalTokenEl) globalTokenEl.value = token;
         }
 
         // 加载保存的配置
         function loadConfig() {
             const savedDomain = localStorage.getItem('api_doc_domain');
             const savedToken = localStorage.getItem('api_doc_token');
-            if (savedDomain) {
-                document.getElementById('global-domain').value = savedDomain;
+            var globalDomainEl = document.getElementById('global-domain');
+            var globalTokenEl = document.getElementById('global-token');
+            if (globalDomainEl && savedDomain) {
+                globalDomainEl.value = savedDomain;
             }
-            if (savedToken) {
-                document.getElementById('global-token').value = savedToken;
+            if (globalTokenEl && savedToken) {
+                globalTokenEl.value = savedToken;
             }
         }
         
         // 获取当前使用的域名（用于显示）
         function getCurrentDomain() {
-            const domain = document.getElementById('global-domain').value.trim();
+            var domainEl = document.getElementById('config-domain') || document.getElementById('global-domain');
+            const domain = domainEl ? domainEl.value.trim() : '';
             return domain || window.location.origin;
+        }
+        
+        // 获取配置值
+        function getConfig() {
+            var domainEl = document.getElementById('config-domain') || document.getElementById('global-domain');
+            var tokenEl = document.getElementById('config-token') || document.getElementById('global-token');
+            return {
+                domain: (domainEl ? domainEl.value.trim() : '') || window.location.origin,
+                token: tokenEl ? tokenEl.value.trim() : ''
+            };
         }
 
         // 发送请求
         function sendRequest(methodId, method, path) {
-            let domain = document.getElementById('global-domain').value.trim();
-            // 如果域名为空，使用当前网页的域名
-            if (!domain) {
-                domain = window.location.origin;
-            }
-            const token = document.getElementById('global-token').value.trim();
-            const url = domain.replace(/\/$/, '') + path;
+            const config = getConfig();
+            const domain = config.domain.replace(/\/$/, '');
+            const token = config.token;
+            const url = domain + path;
             
             // 获取参数值
             const params = {};
@@ -529,15 +655,183 @@
             contentEl.textContent = '错误信息: ' + error.message;
         }
 
-        // 页面加载时恢复配置
+        // 滚动到指定控制器
+        function scrollToController(controllerId) {
+            const element = document.getElementById(controllerId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // 移动端点击后关闭侧边栏
+                if (window.innerWidth <= 768) {
+                    document.querySelector('.layui-side').classList.remove('show');
+                }
+            }
+        }
+        
+        // 滚动到指定方法
+        function scrollToMethod(methodId) {
+            const element = document.getElementById(methodId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // 高亮显示该方法
+                element.style.backgroundColor = '#e6f7ff';
+                setTimeout(function() {
+                    element.style.backgroundColor = '';
+                }, 2000);
+                // 移动端点击后关闭侧边栏
+                if (window.innerWidth <= 768) {
+                    document.querySelector('.layui-side').classList.remove('show');
+                }
+            }
+        }
+
+        // 页面加载时恢复配置和初始化 layui
         window.addEventListener('DOMContentLoaded', function() {
             loadConfig();
-            
-            // 监听配置变化
-            document.getElementById('global-domain').addEventListener('change', saveConfig);
-            document.getElementById('global-domain').addEventListener('blur', saveConfig);
-            document.getElementById('global-token').addEventListener('change', saveConfig);
-            document.getElementById('global-token').addEventListener('blur', saveConfig);
+
+            // 初始化 layui
+            layui.use(['element', 'layer', 'form'], function(){
+                var element = layui.element;
+                var layer = layui.layer;
+                var form = layui.form;
+                var $ = layui.$;
+                
+                // 打开配置弹窗
+                $('#api-config-btn').on('click', function() {
+                    var configHtml = '<form class="layui-form" lay-filter="api-config-form" style="padding: 20px;">' +
+                        '<div class="layui-form-item">' +
+                        '<label class="layui-form-label">ApiUrl:</label>' +
+                        '<div class="layui-input-block">' +
+                        '<input type="text" name="domain" id="config-domain" placeholder="留空则使用当前网页域名" autocomplete="off" class="layui-input">' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="layui-form-item">' +
+                        '<label class="layui-form-label">Token:</label>' +
+                        '<div class="layui-input-block">' +
+                        '<input type="text" name="token" id="config-token" placeholder="输入您的认证 Token" autocomplete="off" class="layui-input">' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="layui-form-item">' +
+                        '<div class="layui-input-block">' +
+                        '<button type="button" class="layui-btn" id="save-config-btn">保存</button>' +
+                        '<button type="button" class="layui-btn layui-btn-primary" id="cancel-config-btn">取消</button>' +
+                        '</div>' +
+                        '</div>' +
+                        '</form>';
+                    
+                    // 根据屏幕宽度设置弹窗大小
+                    var screenWidth = window.innerWidth;
+                    var isMobile = screenWidth <= 768;
+                    var areaWidth = isMobile ? ['90%', 'auto'] : ['500px', '300px'];
+                    var maxWidth = isMobile ? screenWidth - 40 + 'px' : '500px';
+                    
+                    configLayer = layer.open({
+                        type: 1,
+                        title: 'API 配置',
+                        content: configHtml,
+                        area: areaWidth,
+                        maxWidth: maxWidth,
+                        success: function(layero, index) {
+                            // 移动端优化样式
+                            if (isMobile) {
+                                $(layero).find('.layui-layer-content').css({
+                                    'padding': '15px',
+                                    'max-height': (window.innerHeight - 100) + 'px',
+                                    'overflow-y': 'auto'
+                                });
+                            }
+                            // 加载已保存的配置到弹窗中的输入框
+                            var savedDomain = localStorage.getItem('api_doc_domain');
+                            var savedToken = localStorage.getItem('api_doc_token');
+                            if (savedDomain) {
+                                $('#config-domain').val(savedDomain);
+                            }
+                            if (savedToken) {
+                                $('#config-token').val(savedToken);
+                            }
+                            
+                            // 保存配置（从弹窗输入框保存到页面输入框和localStorage）
+                            $('#save-config-btn').off('click').on('click', function() {
+                                var domain = $('#config-domain').val();
+                                var token = $('#config-token').val();
+                                // 同步到隐藏输入框（如果存在）
+                                var globalDomainEl = document.getElementById('global-domain');
+                                var globalTokenEl = document.getElementById('global-token');
+                                if (globalDomainEl) globalDomainEl.value = domain;
+                                if (globalTokenEl) globalTokenEl.value = token;
+                                localStorage.setItem('api_doc_domain', domain);
+                                localStorage.setItem('api_doc_token', token);
+                                layer.close(configLayer);
+                                layer.msg('配置已保存', {icon: 1});
+                                configLayer = null;
+                            });
+                            
+                            // 取消配置
+                            $('#cancel-config-btn').off('click').on('click', function() {
+                                layer.close(configLayer);
+                                configLayer = null;
+                            });
+                        },
+                        end: function() {
+                            configLayer = null;
+                        }
+                    });
+                });
+                
+                // 侧边菜单伸缩
+                $('#flexible').on('click', function(e) {
+                    e.stopPropagation();
+                    var side = $('.layui-side');
+                    var layoutLeft = $('.layui-layout-left');
+                    var layuiBody = $('.layui-body');
+                    var layuiFooter = $('.layui-footer');
+                    var header = $('.layui-header');
+                    var mask = $('.layui-side-mask');
+                    
+                    if (window.innerWidth <= 768) {
+                        // 移动端：切换侧边栏显示/隐藏
+                        side.toggleClass('show');
+                        if (side.hasClass('show')) {
+                            mask.show();
+                        } else {
+                            mask.hide();
+                        }
+                    } else {
+                        // 桌面端和平板端：切换布局
+                        var isCollapsed = side.hasClass('collapsed');
+                        
+                        if (!isCollapsed) {
+                            // 收缩：隐藏侧边栏（logo 会一起隐藏，因为它在侧边栏内部）
+                            side.addClass('collapsed').css('width', '0');
+                            // 使用 attr 设置 style 来确保优先级
+                            layoutLeft.attr('style', 'left: 0 !important; transition: left 0.3s;');
+                            layuiBody.attr('style', 'left: 0 !important; transition: left 0.3s;');
+                            layuiFooter.attr('style', 'left: 0 !important; transition: left 0.3s;');
+                            $('#flexible i').removeClass('layui-icon-shrink-right').addClass('layui-icon-spread-left');
+                        } else {
+                            // 展开：显示侧边栏
+                            side.removeClass('collapsed').css('width', '238px');
+                            // 移除内联样式，让 CSS 规则生效
+                            layoutLeft.removeAttr('style').css('left', '238px');
+                            layuiBody.removeAttr('style').css('left', '238px');
+                            layuiFooter.removeAttr('style').css('left', '238px');
+                            $('#flexible i').removeClass('layui-icon-spread-left').addClass('layui-icon-shrink-right');
+                        }
+                    }
+                });
+                
+                // 移动端点击内容区域或遮罩层关闭侧边栏
+                $(document).on('click', '.layui-body, .layui-side-mask', function() {
+                    if (window.innerWidth <= 768) {
+                        $('.layui-side').removeClass('show');
+                        $('.layui-side-mask').hide();
+                    }
+                });
+                
+                // 阻止侧边栏内部点击事件冒泡
+                $('.layui-side').on('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
         });
     </script>
 </body>

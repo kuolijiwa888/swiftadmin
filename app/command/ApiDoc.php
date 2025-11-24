@@ -559,6 +559,43 @@ class ApiDoc extends Command
      */
     protected function generateHtml(array $apiData, string $title, string $author, string $baseUrl = 'http://localhost'): string
     {
+        // 生成左侧菜单（树形结构，包含所有接口方法）
+        $menuItems = '';
+        foreach ($apiData as $index => $controller) {
+            $controllerAnchor = 'controller-' . $index;
+            $controllerTitle = htmlspecialchars($controller['title']);
+            
+            // 如果有方法，生成可展开的菜单项
+            if (!empty($controller['methods'])) {
+                $menuItems .= "<li class=\"layui-nav-item\">";
+                $menuItems .= "<a href=\"javascript:;\">";
+                $menuItems .= "<cite>{$controllerTitle}</cite>";
+                $menuItems .= "<i class=\"layui-icon layui-icon-down layui-nav-more\"></i>";
+                $menuItems .= "</a>";
+                $menuItems .= "<dl class=\"layui-nav-child\">";
+                
+                // 添加控制器标题（点击跳转到控制器）
+                $menuItems .= "<dd><a href=\"javascript:;\" onclick=\"scrollToController('{$controllerAnchor}')\">{$controllerTitle}</a></dd>";
+                
+                // 添加所有方法
+                foreach ($controller['methods'] as $methodIndex => $method) {
+                    $methodId = md5($method['path'] . $method['method']);
+                    $methodTitle = htmlspecialchars($method['title'] ?: $method['name']);
+                    $methodBadge = strtoupper($method['method']);
+                    $menuItems .= "<dd><a href=\"javascript:;\" onclick=\"scrollToMethod('method-{$methodId}')\">";
+                    $menuItems .= "<span class=\"method-badge-small method-badge-{$method['method']}\">{$methodBadge}</span> ";
+                    $menuItems .= "{$methodTitle}";
+                    $menuItems .= "</a></dd>";
+                }
+                
+                $menuItems .= "</dl>";
+                $menuItems .= "</li>";
+            } else {
+                // 如果没有方法，只显示控制器
+                $menuItems .= "<li class=\"layui-nav-item\"><a href=\"javascript:;\" onclick=\"scrollToController('{$controllerAnchor}')\">{$controllerTitle}</a></li>";
+            }
+        }
+
         $html = <<<HTML
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -566,63 +603,185 @@ class ApiDoc extends Command
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{$title}</title>
+    <link href="/static/system/layui/css/layui.css" rel="stylesheet" type="text/css"/>
+    <link href="/static/system/css/style.css" rel="stylesheet" type="text/css"/>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: #f5f5f5;
+            background: #f2f2f2;
         }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+        .layui-layout-admin {
+            display: block !important;
         }
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 40px 20px;
+        .layui-side {
+            width: 238px;
+            transition: width 0.3s;
+            overflow: hidden;
+            display: block !important;
+        }
+        /* 确保在所有屏幕尺寸下侧边栏默认显示（除了移动端） */
+        @media screen and (min-width: 769px) {
+            .layui-side {
+                display: block !important;
+                transform: none !important;
+            }
+        }
+        .layui-side-scroll {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        .layui-side .layui-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 50px;
+            padding: 0 15px;
+            box-sizing: border-box;
+            background-color: #191a23;
+            border-bottom: 1px solid #2d2f3a;
+            white-space: nowrap;
+            overflow: hidden;
+            flex-shrink: 0;
+            position: relative;
+        }
+        .layui-side .layui-logo span {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
             text-align: center;
-            border-radius: 8px;
-            margin-bottom: 30px;
         }
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
+        .method-badge-small {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 2px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-right: 6px;
+            vertical-align: middle;
         }
-        .header p {
-            opacity: 0.9;
-            font-size: 1.1em;
+        .method-badge-small.method-badge-get {
+            background: #10b981;
+            color: white;
+        }
+        .method-badge-small.method-badge-post {
+            background: #3b82f6;
+            color: white;
+        }
+        .method-badge-small.method-badge-put {
+            background: #f59e0b;
+            color: white;
+        }
+        .method-badge-small.method-badge-delete {
+            background: #ef4444;
+            color: white;
+        }
+        .layui-nav-tree .layui-nav-child dd a {
+            padding-left: 45px;
+            font-size: 13px;
+        }
+        .layui-side-menu .layui-nav {
+            margin-top: 0 !important;
+        }
+        .layui-header .layui-logo {
+            display: none;
+        }
+        .layui-header .header-logo {
+            display: none;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 0 15px;
+            line-height: 50px;
+        }
+        .layui-layout-left {
+            left: 238px;
+            transition: left 0.3s;
+        }
+        .layui-body, .layui-footer {
+            left: 238px;
+            transition: left 0.3s;
+        }
+        .api-header-config-btn {
+            padding: 0 15px;
+        }
+        .api-header-config-btn i {
+            font-size: 18px;
+        }
+        /* 收缩状态下的样式 - 优先级最高 */
+        .layui-side.collapsed ~ .layui-header .layui-layout-left,
+        .layui-side.collapsed ~ .layui-body,
+        .layui-side.collapsed ~ .layui-footer {
+            left: 0 !important;
+        }
+        /* 平板端样式 */
+        @media screen and (min-width: 769px) and (max-width: 1024px) {
+            .layui-side:not(.collapsed) {
+                width: 238px;
+            }
+            .layui-side.collapsed {
+                width: 0 !important;
+            }
+            .layui-layout-left {
+                left: 238px;
+            }
+            .layui-body, .layui-footer {
+                left: 238px;
+            }
+            /* 收缩状态下覆盖 */
+            .layui-side.collapsed ~ .layui-header .layui-layout-left,
+            .layui-side.collapsed ~ .layui-body,
+            .layui-side.collapsed ~ .layui-footer {
+                left: 0 !important;
+            }
+        }
+        /* 手机端样式 */
+        @media screen and (max-width: 768px) {
+            .layui-side .layui-logo {
+                display: none !important;
+            }
+            .layui-header .header-logo {
+                display: block !important;
+            }
+            .layui-layout-left {
+                left: 0 !important;
+            }
+            .layui-body, .layui-footer {
+                left: 0 !important;
+            }
+        }
+        .api-content {
+            padding: 15px;
         }
         .controller {
             background: white;
-            border-radius: 8px;
-            padding: 25px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
         .controller-title {
-            font-size: 1.8em;
-            color: #667eea;
-            margin-bottom: 10px;
+            font-size: 18px;
+            color: #1890ff;
+            margin-bottom: 15px;
             padding-bottom: 10px;
-            border-bottom: 2px solid #667eea;
+            border-bottom: 1px solid #e8e8e8;
+            font-weight: 600;
         }
         .controller-desc {
             color: #666;
             margin-bottom: 20px;
         }
         .method {
-            margin-bottom: 30px;
-            padding: 20px;
-            background: #f9f9f9;
-            border-radius: 6px;
-            border-left: 4px solid #667eea;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 2px;
+            border-left: 3px solid #1890ff;
         }
         .method-header {
             display: flex;
@@ -634,9 +793,9 @@ class ApiDoc extends Command
         .method-badge {
             display: inline-block;
             padding: 4px 12px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 0.85em;
+            border-radius: 2px;
+            font-weight: 600;
+            font-size: 12px;
         }
         .method-badge.get {
             background: #10b981;
@@ -663,17 +822,18 @@ class ApiDoc extends Command
             color: white;
         }
         .method-title {
-            font-size: 1.3em;
+            font-size: 16px;
             color: #333;
             margin-right: 10px;
+            font-weight: 600;
         }
         .method-path {
             font-family: 'Courier New', monospace;
             background: #e5e7eb;
             padding: 4px 8px;
-            border-radius: 4px;
+            border-radius: 2px;
             color: #1f2937;
-            font-size: 0.9em;
+            font-size: 12px;
         }
         .method-desc {
             color: #666;
@@ -683,10 +843,10 @@ class ApiDoc extends Command
             margin-top: 15px;
         }
         .section-title {
-            font-size: 1.1em;
-            color: #667eea;
+            font-size: 14px;
+            color: #1890ff;
             margin-bottom: 10px;
-            font-weight: bold;
+            font-weight: 600;
         }
         table {
             width: 100%;
@@ -696,107 +856,35 @@ class ApiDoc extends Command
         table th, table td {
             padding: 12px;
             text-align: left;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e8e8e8;
         }
         table th {
-            background: #f9fafb;
+            background: #fafafa;
             font-weight: 600;
-            color: #374151;
+            color: #333;
         }
         table tr:hover {
-            background: #f9fafb;
+            background: #fafafa;
         }
         .required {
             color: #ef4444;
-            font-weight: bold;
+            font-weight: 600;
         }
         .optional {
             color: #6b7280;
         }
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: #6b7280;
-            margin-top: 40px;
-        }
-        .toc {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .toc h2 {
-            color: #667eea;
-            margin-bottom: 15px;
-        }
-        .toc ul {
-            list-style: none;
-        }
-        .toc li {
-            margin: 8px 0;
-        }
-        .toc a {
-            color: #667eea;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        .toc a:hover {
-            color: #764ba2;
-            text-decoration: underline;
-        }
-        .config-panel {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .config-panel h2 {
-            color: #667eea;
-            margin-bottom: 15px;
-            font-size: 1.3em;
-        }
-        .config-form {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            align-items: flex-end;
-        }
-        .config-group {
-            flex: 1;
-            min-width: 200px;
-        }
-        .config-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #374151;
-            font-weight: 500;
-            font-size: 0.9em;
-        }
-        .config-group input {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 4px;
-            font-size: 0.9em;
-            transition: border-color 0.3s;
-        }
-        .config-group input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
         .test-panel {
-            margin-top: 20px;
-            padding: 20px;
-            background: #f9fafb;
-            border-radius: 6px;
-            border: 1px solid #e5e7eb;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 2px;
+            border: 1px solid #e8e8e8;
         }
         .test-panel h3 {
-            color: #667eea;
+            color: #1890ff;
             margin-bottom: 15px;
-            font-size: 1.1em;
+            font-size: 14px;
+            font-weight: 600;
         }
         .param-inputs {
             margin-bottom: 15px;
@@ -809,53 +897,52 @@ class ApiDoc extends Command
         }
         .param-input-group label {
             min-width: 100px;
-            color: #374151;
+            color: #333;
             font-weight: 500;
-            font-size: 0.9em;
+            font-size: 14px;
         }
         .param-input-group input,
         .param-input-group textarea {
             flex: 1;
             padding: 8px 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 4px;
-            font-size: 0.9em;
+            border: 1px solid #d9d9d9;
+            border-radius: 2px;
+            font-size: 14px;
             font-family: 'Courier New', monospace;
         }
         .param-input-group input:focus,
         .param-input-group textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #1890ff;
         }
         .param-input-group textarea {
             min-height: 60px;
             resize: vertical;
         }
         .btn {
-            padding: 10px 20px;
+            padding: 8px 15px;
             border: none;
-            border-radius: 4px;
-            font-size: 0.9em;
-            font-weight: 500;
+            border-radius: 2px;
+            font-size: 14px;
             cursor: pointer;
             transition: all 0.3s;
         }
         .btn-primary {
-            background: #667eea;
+            background: #1890ff;
             color: white;
         }
         .btn-primary:hover {
-            background: #5568d3;
+            background: #40a9ff;
         }
         .btn-primary:disabled {
-            background: #9ca3af;
+            background: #d9d9d9;
             cursor: not-allowed;
         }
         .response-panel {
             margin-top: 15px;
             padding: 15px;
             background: #1f2937;
-            border-radius: 4px;
+            border-radius: 2px;
             display: none;
         }
         .response-panel.show {
@@ -867,12 +954,13 @@ class ApiDoc extends Command
             align-items: center;
             margin-bottom: 10px;
             color: #9ca3af;
-            font-size: 0.85em;
+            font-size: 12px;
         }
         .response-status {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 2px;
+            font-weight: 600;
+            font-size: 12px;
         }
         .response-status.success {
             background: #10b981;
@@ -885,7 +973,7 @@ class ApiDoc extends Command
         .response-content {
             color: #e5e7eb;
             font-family: 'Courier New', monospace;
-            font-size: 0.85em;
+            font-size: 12px;
             white-space: pre-wrap;
             word-wrap: break-word;
             max-height: 400px;
@@ -893,9 +981,9 @@ class ApiDoc extends Command
         }
         .loading {
             display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid #667eea;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #1890ff;
             border-top-color: transparent;
             border-radius: 50%;
             animation: spin 0.6s linear infinite;
@@ -905,54 +993,89 @@ class ApiDoc extends Command
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        @media screen and (max-width: 768px) {
+            .layui-side .layui-logo {
+                display: flex !important;
+            }
+            .layui-layout-admin .layui-body {
+                left: 0 !important;
+            }
+            .layui-side {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+                width: 238px !important;
+                position: fixed;
+                z-index: 999;
+                height: 100%;
+                top: 50px;
+            }
+            .layui-side.show {
+                transform: translateX(0);
+            }
+            /* 移动端遮罩层 */
+            .layui-side-mask {
+                display: none;
+                position: fixed;
+                top: 50px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 998;
+            }
+            .layui-side.show ~ .layui-side-mask,
+            .layui-side.show + * + .layui-side-mask {
+                display: block;
+            }
+        }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>{$title}</h1>
-            <p>作者: {$author} | 生成时间: {$this->getCurrentTime()}</p>
-        </div>
-
-        <div class="config-panel">
-            <h2>全局设置</h2>
-            <div class="config-form">
-                <div class="config-group">
-                    <label for="global-domain">API 域名</label>
-                    <input type="text" id="global-domain" placeholder="留空则使用当前网页域名" value="">
-                </div>
-                <div class="config-group">
-                    <label for="global-token">Token (可选)</label>
-                    <input type="text" id="global-token" placeholder="输入您的认证 Token">
-                </div>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <!-- 头部区域 -->
+    <div class="layui-header">
+        <div class="header-logo">{$title}</div>
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item layadmin-flexible" lay-unselect>
+                <a href="javascript:;" id="flexible" title="侧边伸缩">
+                    <i class="layui-icon layui-icon-shrink-right"></i>
+                </a>
+            </li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item api-header-config-btn" lay-unselect>
+                <a href="javascript:;" id="api-config-btn" title="API配置">
+                    <i class="layui-icon layui-icon-set"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- 侧边菜单 -->
+    <div class="layui-side layui-side-menu">
+        <div class="layui-side-scroll">
+            <div class="layui-logo">
+                <span>{$title}</span>
             </div>
-        </div>
-
-        <div class="toc">
-            <h2>目录</h2>
-            <ul>
-HTML;
-
-        // 生成目录
-        foreach ($apiData as $index => $controller) {
-            $anchor = 'controller-' . $index;
-            $html .= "<li><a href=\"#{$anchor}\">{$controller['title']}</a></li>";
-        }
-
-        $html .= <<<HTML
+            <ul class="layui-nav layui-nav-tree" lay-shrink="all" lay-filter="api-menu">
+                {$menuItems}
             </ul>
         </div>
-
+    </div>
+    <!-- 移动端遮罩层 -->
+    <div class="layui-side-mask"></div>
+    <!-- 内容主体区域 -->
+    <div class="layui-body">
+        <div class="api-content">
 HTML;
 
         // 生成控制器和方法文档
         foreach ($apiData as $index => $controller) {
             $anchor = 'controller-' . $index;
             $html .= "<div class=\"controller\" id=\"{$anchor}\">";
-            $html .= "<h2 class=\"controller-title\">{$controller['title']}</h2>";
+            $html .= "<h2 class=\"controller-title\">" . htmlspecialchars($controller['title']) . "</h2>";
             
             if (!empty($controller['description'])) {
-                $html .= "<p class=\"controller-desc\">{$controller['description']}</p>";
+                $html .= "<p class=\"controller-desc\">" . htmlspecialchars($controller['description']) . "</p>";
             }
 
             foreach ($controller['methods'] as $method) {
@@ -963,44 +1086,74 @@ HTML;
         }
 
         $html .= <<<HTML
-        <div class="footer">
-            <p>© {$this->getCurrentYear()} {$author}. All rights reserved.</p>
         </div>
     </div>
-    <script>
+    <!-- 底部固定区域 -->
+    <div class="layui-footer">
+        copyright © {$this->getCurrentYear()} <a href="http://www.swiftadmin.net" target="_blank">{$author}</a> all rights reserved.
+    </div>
+</div>
+<!-- 隐藏的配置输入框（用于存储配置值） -->
+<input type="hidden" id="global-domain" value="">
+<input type="hidden" id="global-token" value="">
+<script src="/static/system/layui/layui.js"></script>
+<script>
+        let configLayer = null;
+        
         // 保存全局配置到 localStorage
         function saveConfig() {
-            localStorage.setItem('api_doc_domain', document.getElementById('global-domain').value);
-            localStorage.setItem('api_doc_token', document.getElementById('global-token').value);
+            // 优先从弹窗输入框获取值，如果没有则从隐藏输入框获取
+            var domainEl = document.getElementById('config-domain') || document.getElementById('global-domain');
+            var tokenEl = document.getElementById('config-token') || document.getElementById('global-token');
+            const domain = domainEl ? domainEl.value : '';
+            const token = tokenEl ? tokenEl.value : '';
+            localStorage.setItem('api_doc_domain', domain);
+            localStorage.setItem('api_doc_token', token);
+            
+            // 同步到隐藏输入框（如果存在）
+            var globalDomainEl = document.getElementById('global-domain');
+            var globalTokenEl = document.getElementById('global-token');
+            if (globalDomainEl) globalDomainEl.value = domain;
+            if (globalTokenEl) globalTokenEl.value = token;
         }
 
         // 加载保存的配置
         function loadConfig() {
             const savedDomain = localStorage.getItem('api_doc_domain');
             const savedToken = localStorage.getItem('api_doc_token');
-            if (savedDomain) {
-                document.getElementById('global-domain').value = savedDomain;
+            var globalDomainEl = document.getElementById('global-domain');
+            var globalTokenEl = document.getElementById('global-token');
+            if (globalDomainEl && savedDomain) {
+                globalDomainEl.value = savedDomain;
             }
-            if (savedToken) {
-                document.getElementById('global-token').value = savedToken;
+            if (globalTokenEl && savedToken) {
+                globalTokenEl.value = savedToken;
             }
         }
         
         // 获取当前使用的域名（用于显示）
         function getCurrentDomain() {
-            const domain = document.getElementById('global-domain').value.trim();
+            var domainEl = document.getElementById('config-domain') || document.getElementById('global-domain');
+            const domain = domainEl ? domainEl.value.trim() : '';
             return domain || window.location.origin;
+        }
+        
+        // 获取配置值
+        function getConfig() {
+            var domainEl = document.getElementById('config-domain') || document.getElementById('global-domain');
+            var tokenEl = document.getElementById('config-token') || document.getElementById('global-token');
+            return {
+                domain: (domainEl ? domainEl.value.trim() : '') || window.location.origin,
+                token: tokenEl ? tokenEl.value.trim() : ''
+            };
         }
 
         // 发送请求
         function sendRequest(methodId, method, path) {
-            let domain = document.getElementById('global-domain').value.trim();
-            // 如果域名为空，使用当前网页的域名
-            if (!domain) {
-                domain = window.location.origin;
-            }
-            const token = document.getElementById('global-token').value.trim();
-            const url = domain.replace(/\/$/, '') + path;
+            const config = getConfig();
+            const domain = config.domain.replace(/\/$/, '');
+            const token = config.token;
+            const url = domain + path;
             
             // 获取参数值
             const params = {};
@@ -1122,15 +1275,183 @@ HTML;
             contentEl.textContent = '错误信息: ' + error.message;
         }
 
-        // 页面加载时恢复配置
+        // 滚动到指定控制器
+        function scrollToController(controllerId) {
+            const element = document.getElementById(controllerId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // 移动端点击后关闭侧边栏
+                if (window.innerWidth <= 768) {
+                    document.querySelector('.layui-side').classList.remove('show');
+                }
+            }
+        }
+        
+        // 滚动到指定方法
+        function scrollToMethod(methodId) {
+            const element = document.getElementById(methodId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // 高亮显示该方法
+                element.style.backgroundColor = '#e6f7ff';
+                setTimeout(function() {
+                    element.style.backgroundColor = '';
+                }, 2000);
+                // 移动端点击后关闭侧边栏
+                if (window.innerWidth <= 768) {
+                    document.querySelector('.layui-side').classList.remove('show');
+                }
+            }
+        }
+
+        // 页面加载时恢复配置和初始化 layui
         window.addEventListener('DOMContentLoaded', function() {
             loadConfig();
-            
-            // 监听配置变化
-            document.getElementById('global-domain').addEventListener('change', saveConfig);
-            document.getElementById('global-domain').addEventListener('blur', saveConfig);
-            document.getElementById('global-token').addEventListener('change', saveConfig);
-            document.getElementById('global-token').addEventListener('blur', saveConfig);
+
+            // 初始化 layui
+            layui.use(['element', 'layer', 'form'], function(){
+                var element = layui.element;
+                var layer = layui.layer;
+                var form = layui.form;
+                var $ = layui.$;
+                
+                // 打开配置弹窗
+                $('#api-config-btn').on('click', function() {
+                    var configHtml = '<form class="layui-form" lay-filter="api-config-form" style="padding: 20px;">' +
+                        '<div class="layui-form-item">' +
+                        '<label class="layui-form-label">ApiUrl:</label>' +
+                        '<div class="layui-input-block">' +
+                        '<input type="text" name="domain" id="config-domain" placeholder="留空则使用当前网页域名" autocomplete="off" class="layui-input">' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="layui-form-item">' +
+                        '<label class="layui-form-label">Token:</label>' +
+                        '<div class="layui-input-block">' +
+                        '<input type="text" name="token" id="config-token" placeholder="输入您的认证 Token" autocomplete="off" class="layui-input">' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="layui-form-item">' +
+                        '<div class="layui-input-block">' +
+                        '<button type="button" class="layui-btn" id="save-config-btn">保存</button>' +
+                        '<button type="button" class="layui-btn layui-btn-primary" id="cancel-config-btn">取消</button>' +
+                        '</div>' +
+                        '</div>' +
+                        '</form>';
+                    
+                    // 根据屏幕宽度设置弹窗大小
+                    var screenWidth = window.innerWidth;
+                    var isMobile = screenWidth <= 768;
+                    var areaWidth = isMobile ? ['90%', 'auto'] : ['500px', '300px'];
+                    var maxWidth = isMobile ? screenWidth - 40 + 'px' : '500px';
+                    
+                    configLayer = layer.open({
+                        type: 1,
+                        title: 'API 配置',
+                        content: configHtml,
+                        area: areaWidth,
+                        maxWidth: maxWidth,
+                        success: function(layero, index) {
+                            // 移动端优化样式
+                            if (isMobile) {
+                                $(layero).find('.layui-layer-content').css({
+                                    'padding': '15px',
+                                    'max-height': (window.innerHeight - 100) + 'px',
+                                    'overflow-y': 'auto'
+                                });
+                            }
+                            // 加载已保存的配置到弹窗中的输入框
+                            var savedDomain = localStorage.getItem('api_doc_domain');
+                            var savedToken = localStorage.getItem('api_doc_token');
+                            if (savedDomain) {
+                                $('#config-domain').val(savedDomain);
+                            }
+                            if (savedToken) {
+                                $('#config-token').val(savedToken);
+                            }
+                            
+                            // 保存配置（从弹窗输入框保存到页面输入框和localStorage）
+                            $('#save-config-btn').off('click').on('click', function() {
+                                var domain = $('#config-domain').val();
+                                var token = $('#config-token').val();
+                                // 同步到隐藏输入框（如果存在）
+                                var globalDomainEl = document.getElementById('global-domain');
+                                var globalTokenEl = document.getElementById('global-token');
+                                if (globalDomainEl) globalDomainEl.value = domain;
+                                if (globalTokenEl) globalTokenEl.value = token;
+                                localStorage.setItem('api_doc_domain', domain);
+                                localStorage.setItem('api_doc_token', token);
+                                layer.close(configLayer);
+                                layer.msg('配置已保存', {icon: 1});
+                                configLayer = null;
+                            });
+                            
+                            // 取消配置
+                            $('#cancel-config-btn').off('click').on('click', function() {
+                                layer.close(configLayer);
+                                configLayer = null;
+                            });
+                        },
+                        end: function() {
+                            configLayer = null;
+                        }
+                    });
+                });
+                
+                // 侧边菜单伸缩
+                $('#flexible').on('click', function(e) {
+                    e.stopPropagation();
+                    var side = $('.layui-side');
+                    var layoutLeft = $('.layui-layout-left');
+                    var layuiBody = $('.layui-body');
+                    var layuiFooter = $('.layui-footer');
+                    var header = $('.layui-header');
+                    var mask = $('.layui-side-mask');
+                    
+                    if (window.innerWidth <= 768) {
+                        // 移动端：切换侧边栏显示/隐藏
+                        side.toggleClass('show');
+                        if (side.hasClass('show')) {
+                            mask.show();
+                        } else {
+                            mask.hide();
+                        }
+                    } else {
+                        // 桌面端和平板端：切换布局
+                        var isCollapsed = side.hasClass('collapsed');
+                        
+                        if (!isCollapsed) {
+                            // 收缩：隐藏侧边栏（logo 会一起隐藏，因为它在侧边栏内部）
+                            side.addClass('collapsed').css('width', '0');
+                            // 使用 attr 设置 style 来确保优先级
+                            layoutLeft.attr('style', 'left: 0 !important; transition: left 0.3s;');
+                            layuiBody.attr('style', 'left: 0 !important; transition: left 0.3s;');
+                            layuiFooter.attr('style', 'left: 0 !important; transition: left 0.3s;');
+                            $('#flexible i').removeClass('layui-icon-shrink-right').addClass('layui-icon-spread-left');
+                        } else {
+                            // 展开：显示侧边栏
+                            side.removeClass('collapsed').css('width', '238px');
+                            // 移除内联样式，让 CSS 规则生效
+                            layoutLeft.removeAttr('style').css('left', '238px');
+                            layuiBody.removeAttr('style').css('left', '238px');
+                            layuiFooter.removeAttr('style').css('left', '238px');
+                            $('#flexible i').removeClass('layui-icon-spread-left').addClass('layui-icon-shrink-right');
+                        }
+                    }
+                });
+                
+                // 移动端点击内容区域或遮罩层关闭侧边栏
+                $(document).on('click', '.layui-body, .layui-side-mask', function() {
+                    if (window.innerWidth <= 768) {
+                        $('.layui-side').removeClass('show');
+                        $('.layui-side-mask').hide();
+                    }
+                });
+                
+                // 阻止侧边栏内部点击事件冒泡
+                $('.layui-side').on('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
         });
     </script>
 </body>
