@@ -574,9 +574,6 @@ class ApiDoc extends Command
                 $menuItems .= "</a>";
                 $menuItems .= "<dl class=\"layui-nav-child\">";
                 
-                // 添加控制器标题（点击跳转到控制器）
-                $menuItems .= "<dd><a href=\"javascript:;\" onclick=\"scrollToController('{$controllerAnchor}')\">{$controllerTitle}</a></dd>";
-                
                 // 添加所有方法
                 foreach ($controller['methods'] as $methodIndex => $method) {
                     $methodId = md5($method['path'] . $method['method']);
@@ -771,7 +768,7 @@ class ApiDoc extends Command
         /* 平板端样式 */
         @media screen and (min-width: 769px) and (max-width: 1024px) {
             .layui-side:not(.collapsed) {
-                width: 238px;
+                width: 238px !important;
             }
             .layui-side.collapsed {
                 width: 0 !important;
@@ -1471,7 +1468,7 @@ HTML;
                         
                         if (!isCollapsed) {
                             // 收缩：隐藏侧边栏（logo 会一起隐藏，因为它在侧边栏内部）
-                            side.addClass('collapsed').css('width', '0');
+                            side.addClass('collapsed').attr('style', 'width: 0 !important; transition: width 0.3s;');
                             // 使用 attr 设置 style 来确保优先级
                             layoutLeft.attr('style', 'left: 0 !important; transition: left 0.3s;');
                             layuiBody.attr('style', 'left: 0 !important; transition: left 0.3s;');
@@ -1479,7 +1476,7 @@ HTML;
                             $('#flexible i').removeClass('layui-icon-shrink-right').addClass('layui-icon-spread-left');
                         } else {
                             // 展开：显示侧边栏
-                            side.removeClass('collapsed').css('width', '238px');
+                            side.removeClass('collapsed').attr('style', 'width: 238px !important; transition: width 0.3s;');
                             // 移除内联样式，让 CSS 规则生效
                             layoutLeft.removeAttr('style').css('left', '238px');
                             layuiBody.removeAttr('style').css('left', '238px');
