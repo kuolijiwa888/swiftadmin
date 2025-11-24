@@ -56,7 +56,7 @@ class ApiDoc extends Command
         $apiData = $this->parseControllers($controllers, $url);
 
         // 生成 HTML 文档
-        $html = $this->generateHtml($apiData, $title, $author);
+        $html = $this->generateHtml($apiData, $title, $author, $url);
 
         // 输出文件
         $outputPath = base_path() . '/public/' . $outputFile;
@@ -333,7 +333,7 @@ class ApiDoc extends Command
     /**
      * 生成 HTML 文档
      */
-    protected function generateHtml(array $apiData, string $title, string $author): string
+    protected function generateHtml(array $apiData, string $title, string $author, string $baseUrl = 'http://localhost'): string
     {
         $html = <<<HTML
 <!DOCTYPE html>
@@ -513,6 +513,166 @@ class ApiDoc extends Command
             color: #764ba2;
             text-decoration: underline;
         }
+        .config-panel {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .config-panel h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        .config-form {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+        .config-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        .config-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #374151;
+            font-weight: 500;
+            font-size: 0.9em;
+        }
+        .config-group input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 0.9em;
+            transition: border-color 0.3s;
+        }
+        .config-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .test-panel {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+        }
+        .test-panel h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        .param-inputs {
+            margin-bottom: 15px;
+        }
+        .param-input-group {
+            margin-bottom: 12px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .param-input-group label {
+            min-width: 100px;
+            color: #374151;
+            font-weight: 500;
+            font-size: 0.9em;
+        }
+        .param-input-group input,
+        .param-input-group textarea {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: 'Courier New', monospace;
+        }
+        .param-input-group input:focus,
+        .param-input-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .param-input-group textarea {
+            min-height: 60px;
+            resize: vertical;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+        .btn-primary:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+        .response-panel {
+            margin-top: 15px;
+            padding: 15px;
+            background: #1f2937;
+            border-radius: 4px;
+            display: none;
+        }
+        .response-panel.show {
+            display: block;
+        }
+        .response-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            color: #9ca3af;
+            font-size: 0.85em;
+        }
+        .response-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .response-status.success {
+            background: #10b981;
+            color: white;
+        }
+        .response-status.error {
+            background: #ef4444;
+            color: white;
+        }
+        .response-content {
+            color: #e5e7eb;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #667eea;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -520,6 +680,20 @@ class ApiDoc extends Command
         <div class="header">
             <h1>{$title}</h1>
             <p>作者: {$author} | 生成时间: {$this->getCurrentTime()}</p>
+        </div>
+
+        <div class="config-panel">
+            <h2>全局设置</h2>
+            <div class="config-form">
+                <div class="config-group">
+                    <label for="global-domain">API 域名</label>
+                    <input type="text" id="global-domain" placeholder="留空则使用当前网页域名" value="">
+                </div>
+                <div class="config-group">
+                    <label for="global-token">Token (可选)</label>
+                    <input type="text" id="global-token" placeholder="输入您的认证 Token">
+                </div>
+            </div>
         </div>
 
         <div class="toc">
@@ -561,6 +735,172 @@ HTML;
             <p>© {$this->getCurrentYear()} {$author}. All rights reserved.</p>
         </div>
     </div>
+    <script>
+        // 保存全局配置到 localStorage
+        function saveConfig() {
+            localStorage.setItem('api_doc_domain', document.getElementById('global-domain').value);
+            localStorage.setItem('api_doc_token', document.getElementById('global-token').value);
+        }
+
+        // 加载保存的配置
+        function loadConfig() {
+            const savedDomain = localStorage.getItem('api_doc_domain');
+            const savedToken = localStorage.getItem('api_doc_token');
+            if (savedDomain) {
+                document.getElementById('global-domain').value = savedDomain;
+            }
+            if (savedToken) {
+                document.getElementById('global-token').value = savedToken;
+            }
+        }
+        
+        // 获取当前使用的域名（用于显示）
+        function getCurrentDomain() {
+            const domain = document.getElementById('global-domain').value.trim();
+            return domain || window.location.origin;
+        }
+
+        // 发送请求
+        function sendRequest(methodId, method, path) {
+            let domain = document.getElementById('global-domain').value.trim();
+            // 如果域名为空，使用当前网页的域名
+            if (!domain) {
+                domain = window.location.origin;
+            }
+            const token = document.getElementById('global-token').value.trim();
+            const url = domain.replace(/\/$/, '') + path;
+            
+            // 获取参数值
+            const params = {};
+            const paramInputs = document.querySelectorAll('#method-' + methodId + ' .param-input-group input, #method-' + methodId + ' .param-input-group textarea');
+            paramInputs.forEach(input => {
+                const paramName = input.getAttribute('data-param');
+                if (paramName && input.value.trim()) {
+                    const value = input.value.trim();
+                    try {
+                        // 尝试解析 JSON（如果以 { 或 [ 开头）
+                        if (value.startsWith('{') || value.startsWith('[')) {
+                            params[paramName] = JSON.parse(value);
+                        } else {
+                            // 如果不是 JSON，直接使用字符串值
+                            params[paramName] = value;
+                        }
+                    } catch (e) {
+                        // 解析失败，使用原始字符串值
+                        params[paramName] = value;
+                    }
+                }
+            });
+
+            // 显示加载状态
+            const btn = document.getElementById('btn-' + methodId);
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span>发送中...';
+
+            // 准备请求选项
+            const options = {
+                method: method,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            };
+
+            // 添加 Token
+            if (token) {
+                options.headers['Authorization'] = 'Bearer ' + token;
+                options.headers['Token'] = token;
+            }
+
+            // 根据请求方法处理参数
+            if (method === 'GET' || method === 'DELETE') {
+                // GET/DELETE 请求将参数添加到 URL，不设置 Content-Type
+                const queryParams = new URLSearchParams();
+                Object.keys(params).forEach(key => {
+                    if (typeof params[key] === 'object') {
+                        queryParams.append(key, JSON.stringify(params[key]));
+                    } else {
+                        queryParams.append(key, params[key]);
+                    }
+                });
+                const queryString = queryParams.toString();
+                const finalUrl = queryString ? url + '?' + queryString : url;
+                fetch(finalUrl, options)
+                    .then(response => handleResponse(response, methodId))
+                    .catch(error => handleError(error, methodId))
+                    .finally(() => {
+                        btn.disabled = false;
+                        btn.innerHTML = originalText;
+                    });
+            } else {
+                // POST/PUT 请求将参数放在请求体中
+                options.headers['Content-Type'] = 'application/json';
+                if (Object.keys(params).length > 0) {
+                    options.body = JSON.stringify(params);
+                }
+                fetch(url, options)
+                    .then(response => handleResponse(response, methodId))
+                    .catch(error => handleError(error, methodId))
+                    .finally(() => {
+                        btn.disabled = false;
+                        btn.innerHTML = originalText;
+                    });
+            }
+        }
+
+        // 处理响应
+        async function handleResponse(response, methodId) {
+            const responsePanel = document.getElementById('response-' + methodId);
+            const statusEl = document.getElementById('status-' + methodId);
+            const contentEl = document.getElementById('content-' + methodId);
+            
+            responsePanel.classList.add('show');
+            
+            const status = response.status;
+            const statusText = response.statusText;
+            
+            statusEl.textContent = status + ' ' + statusText;
+            statusEl.className = 'response-status ' + (status >= 200 && status < 300 ? 'success' : 'error');
+            
+            try {
+                const contentType = response.headers.get('content-type');
+                let data;
+                
+                if (contentType && contentType.includes('application/json')) {
+                    data = await response.json();
+                    contentEl.textContent = JSON.stringify(data, null, 2);
+                } else {
+                    data = await response.text();
+                    contentEl.textContent = data;
+                }
+            } catch (e) {
+                contentEl.textContent = '无法解析响应: ' + e.message;
+            }
+        }
+
+        // 处理错误
+        function handleError(error, methodId) {
+            const responsePanel = document.getElementById('response-' + methodId);
+            const statusEl = document.getElementById('status-' + methodId);
+            const contentEl = document.getElementById('content-' + methodId);
+            
+            responsePanel.classList.add('show');
+            statusEl.textContent = '请求失败';
+            statusEl.className = 'response-status error';
+            contentEl.textContent = '错误信息: ' + error.message;
+        }
+
+        // 页面加载时恢复配置
+        window.addEventListener('DOMContentLoaded', function() {
+            loadConfig();
+            
+            // 监听配置变化
+            document.getElementById('global-domain').addEventListener('change', saveConfig);
+            document.getElementById('global-domain').addEventListener('blur', saveConfig);
+            document.getElementById('global-token').addEventListener('change', saveConfig);
+            document.getElementById('global-token').addEventListener('blur', saveConfig);
+        });
+    </script>
 </body>
 </html>
 HTML;
@@ -574,7 +914,8 @@ HTML;
     protected function generateMethodHtml(array $method): string
     {
         $methodClass = strtolower($method['method']);
-        $html = "<div class=\"method\">";
+        $methodId = md5($method['path'] . $method['method']);
+        $html = "<div class=\"method\" id=\"method-{$methodId}\">";
         $html .= "<div class=\"method-header\">";
         $html .= "<span class=\"method-badge {$methodClass}\">{$method['method']}</span>";
         $html .= "<span class=\"method-title\">{$method['title']}</span>";
@@ -624,7 +965,54 @@ HTML;
         $html .= "<p><code>{$method['url']}</code></p>";
         $html .= "</div>";
 
+        // 测试面板
+        $html .= "<div class=\"test-panel\">";
+        $html .= "<h3>接口测试</h3>";
+        
+        // 参数输入框
+        if (!empty($method['params'])) {
+            $html .= "<div class=\"param-inputs\">";
+            foreach ($method['params'] as $param) {
+                $requiredAttr = $param['required'] ? 'required' : '';
+                $defaultValue = $param['default'] !== null ? htmlspecialchars(json_encode($param['default'])) : '';
+                $placeholder = $param['description'] ? htmlspecialchars($param['description']) : '请输入' . $param['name'];
+                
+                // 判断是否为复杂类型（对象或数组），使用 textarea
+                $isComplexType = in_array(strtolower($param['type']), ['array', 'object', 'mixed']) || 
+                                 strpos(strtolower($param['type']), '[]') !== false;
+                
+                if ($isComplexType) {
+                    $html .= "<div class=\"param-input-group\">";
+                    $html .= "<label for=\"param-{$methodId}-{$param['name']}\">{$param['name']} <span class=\"required\">*</span></label>";
+                    $html .= "<textarea id=\"param-{$methodId}-{$param['name']}\" data-param=\"{$param['name']}\" placeholder=\"{$placeholder}\" {$requiredAttr}></textarea>";
+                    $html .= "</div>";
+                } else {
+                    $html .= "<div class=\"param-input-group\">";
+                    $html .= "<label for=\"param-{$methodId}-{$param['name']}\">{$param['name']}" . ($param['required'] ? ' <span class="required">*</span>' : '') . "</label>";
+                    $html .= "<input type=\"text\" id=\"param-{$methodId}-{$param['name']}\" data-param=\"{$param['name']}\" placeholder=\"{$placeholder}\" value=\"{$defaultValue}\" {$requiredAttr}>";
+                    $html .= "</div>";
+                }
+            }
+            $html .= "</div>";
+        } else {
+            $html .= "<p style=\"color: #6b7280; margin-bottom: 15px;\">此接口无需参数</p>";
+        }
+        
+        // 发送按钮
+        $html .= "<button class=\"btn btn-primary\" id=\"btn-{$methodId}\" onclick=\"sendRequest('{$methodId}', '{$method['method']}', '{$method['path']}')\">发送请求</button>";
+        
+        // 响应面板
+        $html .= "<div class=\"response-panel\" id=\"response-{$methodId}\">";
+        $html .= "<div class=\"response-header\">";
+        $html .= "<span>响应结果</span>";
+        $html .= "<span class=\"response-status\" id=\"status-{$methodId}\"></span>";
         $html .= "</div>";
+        $html .= "<div class=\"response-content\" id=\"content-{$methodId}\"></div>";
+        $html .= "</div>";
+        
+        $html .= "</div>"; // test-panel
+
+        $html .= "</div>"; // method
         return $html;
     }
 
