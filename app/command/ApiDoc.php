@@ -582,9 +582,15 @@ class ApiDoc extends Command
                     $methodId = md5($method['path'] . $method['method']);
                     $methodTitle = htmlspecialchars($method['title'] ?: $method['name']);
                     $methodBadge = strtoupper($method['method']);
+                    $methodClass = strtolower($method['method']); // 转换为小写用于CSS类名
+                    $needLogin = $method['needLogin'] ?? true;
+                    $authBadge = $needLogin 
+                        ? '<span class="auth-badge-small auth">需登录</span>' 
+                        : '<span class="auth-badge-small no-auth">免登录</span>';
                     $menuItems .= "<dd><a href=\"javascript:;\" onclick=\"scrollToMethod('method-{$methodId}')\">";
-                    $menuItems .= "<span class=\"method-badge-small method-badge-{$method['method']}\">{$methodBadge}</span> ";
-                    $menuItems .= "{$methodTitle}";
+                    $menuItems .= "<span class=\"method-badge-small method-badge-{$methodClass}\">{$methodBadge}</span>";
+                    $menuItems .= "<span class=\"method-title-text\">{$methodTitle}</span>";
+                    $menuItems .= $authBadge;
                     $menuItems .= "</a></dd>";
                 }
                 
@@ -656,13 +662,20 @@ class ApiDoc extends Command
             text-align: center;
         }
         .method-badge-small {
-            display: inline-block;
-            padding: 2px 6px;
-            border-radius: 2px;
-            font-size: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            border-radius: 12px;
             font-weight: 600;
-            margin-right: 6px;
+            font-size: 12px;
+            margin-right: 8px;
             vertical-align: middle;
+            width: 50px;
+            height: 80%;
+            line-height: 80%;
+            text-align: center;
+            box-sizing: border-box;
         }
         .method-badge-small.method-badge-get {
             background: #10b981;
@@ -680,9 +693,46 @@ class ApiDoc extends Command
             background: #ef4444;
             color: white;
         }
+        .auth-badge-small {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 10px;
+            margin-left: auto;
+            margin-right: 8px;
+            vertical-align: middle;
+            width: 50px;
+            height: 80%;
+            line-height: 80%;
+            box-sizing: border-box;
+        }
+        .auth-badge-small.auth {
+            background: #8b5cf6;
+            color: white;
+        }
+        .auth-badge-small.no-auth {
+            background: #6b7280;
+            color: white;
+        }
         .layui-nav-tree .layui-nav-child dd a {
-            padding-left: 45px;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
             font-size: 13px;
+            line-height: 1.6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .layui-nav-tree .layui-nav-child dd a .method-title-text {
+            margin-left: 8px;
+            width: 150px;
+            margin-right: 8px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         .layui-side-menu .layui-nav {
             margin-top: 0 !important;

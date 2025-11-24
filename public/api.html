@@ -57,13 +57,20 @@
             text-align: center;
         }
         .method-badge-small {
-            display: inline-block;
-            padding: 2px 6px;
-            border-radius: 2px;
-            font-size: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            border-radius: 12px;
             font-weight: 600;
-            margin-right: 6px;
+            font-size: 12px;
+            margin-right: 8px;
             vertical-align: middle;
+            width: 50px;
+            height: 80%;
+            line-height: 80%;
+            text-align: center;
+            box-sizing: border-box;
         }
         .method-badge-small.method-badge-get {
             background: #10b981;
@@ -81,9 +88,46 @@
             background: #ef4444;
             color: white;
         }
+        .auth-badge-small {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 10px;
+            margin-left: auto;
+            margin-right: 8px;
+            vertical-align: middle;
+            width: 50px;
+            height: 80%;
+            line-height: 80%;
+            box-sizing: border-box;
+        }
+        .auth-badge-small.auth {
+            background: #8b5cf6;
+            color: white;
+        }
+        .auth-badge-small.no-auth {
+            background: #6b7280;
+            color: white;
+        }
         .layui-nav-tree .layui-nav-child dd a {
-            padding-left: 45px;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
             font-size: 13px;
+            line-height: 1.6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .layui-nav-tree .layui-nav-child dd a .method-title-text {
+            margin-left: 8px;
+            width: 150px;
+            margin-right: 8px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         .layui-side-menu .layui-nav {
             margin-top: 0 !important;
@@ -458,7 +502,7 @@
                 <span>SwiftAdmin API 文档</span>
             </div>
             <ul class="layui-nav layui-nav-tree" lay-shrink="all" lay-filter="api-menu">
-                <li class="layui-nav-item"><a href="javascript:;"><cite>异步调用</cite><i class="layui-icon layui-icon-down layui-nav-more"></i></a><dl class="layui-nav-child"><dd><a href="javascript:;" onclick="scrollToController('controller-0')">异步调用</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-5a41b1b0a993bf44716c7d5d2030ceb6')"><span class="method-badge-small method-badge-GET">GET</span> 首页</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-83e637f88c27058f81b7df745a3b006a')"><span class="method-badge-small method-badge-POST">POST</span> 发送短信验证码</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-c78a35d007bc2cee56a2de5e8128a93d')"><span class="method-badge-small method-badge-POST">POST</span> 发送邮件验证码</a></dd></dl></li><li class="layui-nav-item"><a href="javascript:;"><cite>API接口前端示例文件</cite><i class="layui-icon layui-icon-down layui-nav-more"></i></a><dl class="layui-nav-child"><dd><a href="javascript:;" onclick="scrollToController('controller-1')">API接口前端示例文件</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-9cb379715ec8f471c0d0b7a928ba50cc')"><span class="method-badge-small method-badge-GET">GET</span> index</a></dd></dl></li><li class="layui-nav-item"><a href="javascript:;"><cite>API用户登录</cite><i class="layui-icon layui-icon-down layui-nav-more"></i></a><dl class="layui-nav-child"><dd><a href="javascript:;" onclick="scrollToController('controller-2')">API用户登录</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-3dba1a9d86b01f96dc2a5f71e8659e39')"><span class="method-badge-small method-badge-POST">POST</span> 用户中心</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-72dd7a3d58fc8109cfebcd82577062b2')"><span class="method-badge-small method-badge-POST">POST</span> 修改用户资料</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-f487140b15cecbd80e3a2bac713fe437')"><span class="method-badge-small method-badge-POST">POST</span> 用户注册</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-b7e3aee7c74b9309d911f1ce32a3eeba')"><span class="method-badge-small method-badge-POST">POST</span> 用户登录</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-2254cbd6ee8b9c5765ec810839c124fc')"><span class="method-badge-small method-badge-POST">POST</span> 手机号登录</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-d0bfeeea026476ded40dd8158f03b5f1')"><span class="method-badge-small method-badge-PUT">PUT</span> 修改密码</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-46b26173d0e268d4a549edde7b6d8a35')"><span class="method-badge-small method-badge-POST">POST</span> 找回密码</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-f483107c4147bddf35e3d8f986ed160c')"><span class="method-badge-small method-badge-POST">POST</span> 获取消息列表</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-4e2e57665931cdb524ae8ece689c2c6d')"><span class="method-badge-small method-badge-POST">POST</span> 查看消息</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-6367c92efdd2b637b8c3987c79d58970')"><span class="method-badge-small method-badge-POST">POST</span> 批量操作消息</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-d256c48c12210b71d031891227e89f86')"><span class="method-badge-small method-badge-POST">POST</span> 申请APP_KEY</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-06bb40dd58ff40c236b1811377bd5df4')"><span class="method-badge-small method-badge-PUT">PUT</span> 修改邮箱地址</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-34e30f5eaeee5f595f49a1faaa71c479')"><span class="method-badge-small method-badge-PUT">PUT</span> 修改手机号</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-fd63685dbd75ca67162a402e2f8a0a90')"><span class="method-badge-small method-badge-POST">POST</span> 意见反馈</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-0e7064e2348536d0fd7b20dbc344b051')"><span class="method-badge-small method-badge-POST">POST</span> 文件上传函数</a></dd></dl></li>
+                <li class="layui-nav-item"><a href="javascript:;"><cite>异步调用</cite><i class="layui-icon layui-icon-down layui-nav-more"></i></a><dl class="layui-nav-child"><dd><a href="javascript:;" onclick="scrollToController('controller-0')">异步调用</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-5a41b1b0a993bf44716c7d5d2030ceb6')"><span class="method-badge-small method-badge-get">GET</span><span class="method-title-text">首页</span><span class="auth-badge-small no-auth">免登录</span></a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-83e637f88c27058f81b7df745a3b006a')"><span class="method-badge-small method-badge-post">POST</span><span class="method-title-text">发送短信验证码</span><span class="auth-badge-small no-auth">免登录</span></a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-c78a35d007bc2cee56a2de5e8128a93d')"><span class="method-badge-small method-badge-post">POST</span><span class="method-title-text">发送邮件验证码</span><span class="auth-badge-small no-auth">免登录</span></a></dd></dl></li><li class="layui-nav-item"><a href="javascript:;"><cite>API接口前端示例文件</cite><i class="layui-icon layui-icon-down layui-nav-more"></i></a><dl class="layui-nav-child"><dd><a href="javascript:;" onclick="scrollToController('controller-1')">API接口前端示例文件</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-9cb379715ec8f471c0d0b7a928ba50cc')"><span class="method-badge-small method-badge-get">GET</span><span class="method-title-text">index</span><span class="auth-badge-small auth">需登录</span></a></dd></dl></li><li class="layui-nav-item"><a href="javascript:;"><cite>API用户登录</cite><i class="layui-icon layui-icon-down layui-nav-more"></i></a><dl class="layui-nav-child"><dd><a href="javascript:;" onclick="scrollToController('controller-2')">API用户登录</a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-3dba1a9d86b01f96dc2a5f71e8659e39')"><span class="method-badge-small method-badge-post">POST</span><span class="method-title-text">用户中心</span><span class="auth-badge-small auth">需登录</span></a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-72dd7a3d58fc8109cfebcd82577062b2')"><span class="method-badge-small method-badge-post">POST</span><span class="method-title-text">修改用户资料</span><span class="auth-badge-small auth">需登录</span></a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-f487140b15cecbd80e3a2bac713fe437')"><span class="method-badge-small method-badge-post">POST</span><span class="method-title-text">用户注册</span><span class="auth-badge-small no-auth">免登录</span></a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-b7e3aee7c74b9309d911f1ce32a3eeba')"><span class="method-badge-small method-badge-post">POST</span><span class="method-title-text">用户登录</span><span class="auth-badge-small no-auth">免登录</span></a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-2254cbd6ee8b9c5765ec810839c124fc')"><span class="method-badge-small method-badge-post">POST</span><span class="method-title-text">手机号登录</span><span class="auth-badge-small no-auth">免登录</span></a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-d0bfeeea026476ded40dd8158f03b5f1')"><span class="method-badge-small method-badge-put">PUT</span><span class="method-title-text">修改密码</span><span class="auth-badge-small auth">需登录</span></a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-46b26173d0e268d4a549edde7b6d8a35')"><span class="method-badge-small method-badge-post">POST</span><span class="method-title-text">找回密码</span><span class="auth-badge-small no-auth">免登录</span></a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-f483107c4147bddf35e3d8f986ed160c')"><span class="method-badge-small method-badge-post">POST</span><span class="method-title-text">获取消息列表</span><span class="auth-badge-small auth">需登录</span></a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-4e2e57665931cdb524ae8ece689c2c6d')"><span class="method-badge-small method-badge-post">POST</span><span class="method-title-text">查看消息</span><span class="auth-badge-small auth">需登录</span></a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-6367c92efdd2b637b8c3987c79d58970')"><span class="method-badge-small method-badge-post">POST</span><span class="method-title-text">批量操作消息</span><span class="auth-badge-small auth">需登录</span></a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-d256c48c12210b71d031891227e89f86')"><span class="method-badge-small method-badge-post">POST</span><span class="method-title-text">申请APP_KEY</span><span class="auth-badge-small auth">需登录</span></a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-06bb40dd58ff40c236b1811377bd5df4')"><span class="method-badge-small method-badge-put">PUT</span><span class="method-title-text">修改邮箱地址</span><span class="auth-badge-small auth">需登录</span></a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-34e30f5eaeee5f595f49a1faaa71c479')"><span class="method-badge-small method-badge-put">PUT</span><span class="method-title-text">修改手机号</span><span class="auth-badge-small auth">需登录</span></a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-fd63685dbd75ca67162a402e2f8a0a90')"><span class="method-badge-small method-badge-post">POST</span><span class="method-title-text">意见反馈</span><span class="auth-badge-small auth">需登录</span></a></dd><dd><a href="javascript:;" onclick="scrollToMethod('method-0e7064e2348536d0fd7b20dbc344b051')"><span class="method-badge-small method-badge-post">POST</span><span class="method-title-text">文件上传函数</span><span class="auth-badge-small auth">需登录</span></a></dd></dl></li>
             </ul>
         </div>
     </div>
