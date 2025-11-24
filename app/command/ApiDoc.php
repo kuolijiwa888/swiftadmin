@@ -120,6 +120,26 @@ class ApiDoc extends Command
             // 获取控制器路径
             $controllerPath = strtolower($controllerName);
 
+            // 获取控制器的登录配置
+            $needLogin = true; // 默认需要登录
+            $noNeedLogin = [];
+            
+            try {
+                if ($reflection->hasProperty('needLogin')) {
+                    $needLoginProp = $reflection->getProperty('needLogin');
+                    $needLoginProp->setAccessible(true);
+                    $needLogin = $needLoginProp->getValue($reflection->newInstanceWithoutConstructor()) ?? true;
+                }
+                
+                if ($reflection->hasProperty('noNeedLogin')) {
+                    $noNeedLoginProp = $reflection->getProperty('noNeedLogin');
+                    $noNeedLoginProp->setAccessible(true);
+                    $noNeedLogin = $noNeedLoginProp->getValue($reflection->newInstanceWithoutConstructor()) ?? [];
+                }
+            } catch (\Exception $e) {
+                // 如果获取失败，使用默认值
+            }
+
             $methods = [];
             $publicMethods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
 
@@ -142,7 +162,10 @@ class ApiDoc extends Command
                 }
 
                 $methodName = $method->getName();
-                $methodDoc = $this->parseMethodDoc($method, $controllerPath, $baseUrl);
+                // 判断该方法是否需要登录
+                $methodNeedLogin = $needLogin && !in_array($methodName, $noNeedLogin);
+                
+                $methodDoc = $this->parseMethodDoc($method, $controllerPath, $baseUrl, $methodNeedLogin);
                 
                 if ($methodDoc) {
                     $methods[] = $methodDoc;
@@ -165,7 +188,7 @@ class ApiDoc extends Command
     /**
      * 解析方法文档
      */
-    protected function parseMethodDoc(ReflectionMethod $method, string $controllerPath, string $baseUrl): ?array
+    protected function parseMethodDoc(ReflectionMethod $method, string $controllerPath, string $baseUrl, bool $needLogin = true): ?array
     {
         $methodName = $method->getName();
         $docComment = $method->getDocComment();
@@ -174,25 +197,52 @@ class ApiDoc extends Command
 
         // 获取参数信息
         $params = [];
-        $parameters = $method->getParameters();
-        foreach ($parameters as $param) {
-            $paramDoc = $this->getParamDoc($docComment, $param->getName());
-            $paramType = 'mixed';
-            if ($param->getType()) {
-                $type = $param->getType();
-                if ($type instanceof \ReflectionNamedType) {
-                    $paramType = $type->getName();
-                } elseif (method_exists($type, 'getName')) {
-                    $paramType = $type->getName();
+        
+        // 优先从注释中提取所有 @param 参数（不包括 Request 类型）
+        $commentParams = $this->parseCommentParams($docComment);
+        if (!empty($commentParams)) {
+            // 如果注释中有参数说明，使用注释中的参数
+            $params = $commentParams;
+        } else {
+            // 如果注释中没有参数，解析方法参数和代码
+            $parameters = $method->getParameters();
+            
+            // 检查是否有 Request 类型的参数
+            $hasRequestParam = false;
+            foreach ($parameters as $param) {
+                $paramType = 'mixed';
+                if ($param->getType()) {
+                    $type = $param->getType();
+                    if ($type instanceof \ReflectionNamedType) {
+                        $paramType = $type->getName();
+                    } elseif (method_exists($type, 'getName')) {
+                        $paramType = $type->getName();
+                    }
                 }
+                
+                // 如果是 Request 类型，跳过，改为解析方法体中的实际参数
+                if ($paramType === 'support\Request' || $paramType === 'Request' || strpos($paramType, 'Request') !== false) {
+                    $hasRequestParam = true;
+                    continue;
+                }
+                
+                // 非 Request 类型的参数正常处理
+                $paramDoc = $this->getParamDoc($docComment, $param->getName());
+                $params[] = [
+                    'name' => $param->getName(),
+                    'type' => $paramDoc['type'] ?? $paramType,
+                    'required' => !$param->isOptional(),
+                    'default' => $param->isOptional() ? ($param->getDefaultValue() ?? null) : null,
+                    'description' => $paramDoc['description'] ?? ''
+                ];
             }
-            $params[] = [
-                'name' => $param->getName(),
-                'type' => $paramType,
-                'required' => !$param->isOptional(),
-                'default' => $param->isOptional() ? ($param->getDefaultValue() ?? null) : null,
-                'description' => $paramDoc['description'] ?? ''
-            ];
+            
+            // 如果有 Request 参数，解析方法体中实际使用的参数
+            if ($hasRequestParam) {
+                $actualParams = $this->parseMethodBodyParams($method);
+                // 合并实际参数（实际参数优先）
+                $params = array_merge($params, $actualParams);
+            }
         }
 
         // 获取返回值类型
@@ -223,7 +273,8 @@ class ApiDoc extends Command
                 'type' => $returnTypeName,
                 'description' => $doc['return'] ?? ''
             ],
-            'url' => rtrim($baseUrl, '/') . $apiPath
+            'url' => rtrim($baseUrl, '/') . $apiPath,
+            'needLogin' => $needLogin
         ];
     }
 
@@ -300,6 +351,179 @@ class ApiDoc extends Command
         }
 
         return [];
+    }
+
+    /**
+     * 从注释中解析所有参数（不包括 Request 类型）
+     */
+    protected function parseCommentParams(?string $docComment): array
+    {
+        $params = [];
+        
+        if (empty($docComment) || $docComment === false) {
+            return $params;
+        }
+        
+        // 匹配所有 @param 行
+        // 格式：@param type $name description
+        // 或：@param type $name description (可选)
+        if (preg_match_all('/@param\s+(\S+)\s+\$(\w+)\s*(.*)/', $docComment, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                $type = $match[1] ?? 'mixed';
+                $name = $match[2] ?? '';
+                $description = trim($match[3] ?? '');
+                
+                // 跳过 Request 类型的参数
+                if (strpos($type, 'Request') !== false) {
+                    continue;
+                }
+                
+                // 判断是否必填（根据描述或类型）
+                $required = true;
+                if (stripos($description, '可选') !== false || 
+                    stripos($description, 'optional') !== false ||
+                    stripos($description, '非必填') !== false) {
+                    $required = false;
+                }
+                
+                // 提取默认值（如果描述中有）
+                $default = null;
+                if (preg_match('/默认[值：:]\s*([^\s，,。]+)/', $description, $defaultMatch)) {
+                    $default = trim($defaultMatch[1], '\'"');
+                }
+                
+                $params[] = [
+                    'name' => $name,
+                    'type' => $type,
+                    'required' => $required,
+                    'default' => $default,
+                    'description' => $description
+                ];
+            }
+        }
+        
+        return $params;
+    }
+
+    /**
+     * 解析方法体中实际使用的参数
+     */
+    protected function parseMethodBodyParams(\ReflectionMethod $method): array
+    {
+        $params = [];
+        $docComment = $method->getDocComment();
+        $docComment = $docComment === false ? null : $docComment;
+        
+        try {
+            // 获取方法体代码
+            $filename = $method->getFileName();
+            $startLine = $method->getStartLine();
+            $endLine = $method->getEndLine();
+            
+            if (!$filename || !file_exists($filename)) {
+                return $params;
+            }
+            
+            $lines = file($filename);
+            if ($startLine >= count($lines) || $endLine > count($lines)) {
+                return $params;
+            }
+            
+            // 提取方法体代码
+            $methodBody = implode('', array_slice($lines, $startLine - 1, $endLine - $startLine + 1));
+            
+            // 解析 input() 调用
+            // 匹配 input('param') 或 input("param") 或 input('param', 'default')
+            if (preg_match_all("/input\s*\(\s*['\"]([^'\"]+)['\"]/", $methodBody, $matches)) {
+                foreach ($matches[1] as $paramName) {
+                    if (!isset($params[$paramName])) {
+                        $paramDoc = $this->getParamDoc($docComment, $paramName);
+                        $params[$paramName] = [
+                            'name' => $paramName,
+                            'type' => $paramDoc['type'] ?? 'string',
+                            'required' => true,
+                            'default' => null,
+                            'description' => $paramDoc['description'] ?? ''
+                        ];
+                    }
+                }
+            }
+            
+            // 解析 request()->post('param') 或 request()->get('param')
+            if (preg_match_all("/request\s*\(\)\s*->\s*(post|get)\s*\(\s*['\"]([^'\"]+)['\"]/", $methodBody, $matches)) {
+                foreach ($matches[2] as $index => $paramName) {
+                    if (!isset($params[$paramName])) {
+                        $paramDoc = $this->getParamDoc($docComment, $paramName);
+                        $params[$paramName] = [
+                            'name' => $paramName,
+                            'type' => $paramDoc['type'] ?? 'string',
+                            'required' => $matches[1][$index] === 'post', // POST 通常必填
+                            'default' => null,
+                            'description' => $paramDoc['description'] ?? ''
+                        ];
+                    }
+                }
+            }
+            
+            // 解析 request()->post() 获取所有POST参数（通过变量赋值）
+            // 例如：$post = request()->post();
+            if (preg_match("/\$(\w+)\s*=\s*request\s*\(\)\s*->\s*post\s*\(\)/", $methodBody, $varMatch)) {
+                $varName = $varMatch[1];
+                // 查找这个变量被使用的地方，提取键名
+                // 例如：$post['nickname'], $post['email'] 等
+                $pattern = '/\$' . preg_quote($varName, '/') . '\s*\[\s*[\'"]([^\'"]+)[\'"]\s*\]/';
+                if (preg_match_all($pattern, $methodBody, $postMatches)) {
+                    foreach ($postMatches[1] as $paramName) {
+                        if (!isset($params[$paramName])) {
+                            $paramDoc = $this->getParamDoc($docComment, $paramName);
+                            $params[$paramName] = [
+                                'name' => $paramName,
+                                'type' => $paramDoc['type'] ?? 'string',
+                                'required' => true,
+                                'default' => null,
+                                'description' => $paramDoc['description'] ?? ''
+                            ];
+                        }
+                    }
+                }
+            }
+            
+            // 解析 $request->post('param') 或 $request->get('param')
+            if (preg_match_all("/\$request\s*->\s*(post|get)\s*\(\s*['\"]([^'\"]+)['\"]/", $methodBody, $matches)) {
+                foreach ($matches[2] as $index => $paramName) {
+                    if (!isset($params[$paramName])) {
+                        $paramDoc = $this->getParamDoc($docComment, $paramName);
+                        $params[$paramName] = [
+                            'name' => $paramName,
+                            'type' => $paramDoc['type'] ?? 'string',
+                            'required' => $matches[1][$index] === 'post',
+                            'default' => null,
+                            'description' => $paramDoc['description'] ?? ''
+                        ];
+                    }
+                }
+            }
+            
+            // 解析 input('param', defaultValue) 带默认值的情况
+            if (preg_match_all("/input\s*\(\s*['\"]([^'\"]+)['\"]\s*,\s*([^,\)]+)/", $methodBody, $matches)) {
+                foreach ($matches[1] as $index => $paramName) {
+                    if (isset($params[$paramName])) {
+                        // 如果已存在，更新默认值
+                        $defaultValue = trim($matches[2][$index]);
+                        // 移除引号
+                        $defaultValue = trim($defaultValue, '\'"');
+                        $params[$paramName]['default'] = $defaultValue;
+                        $params[$paramName]['required'] = false;
+                    }
+                }
+            }
+            
+        } catch (\Exception $e) {
+            // 解析失败时返回空数组
+            return $params;
+        }
+        
+        return array_values($params);
     }
 
     /**
@@ -428,6 +652,14 @@ class ApiDoc extends Command
         }
         .method-badge.delete {
             background: #ef4444;
+            color: white;
+        }
+        .method-badge.auth {
+            background: #8b5cf6;
+            color: white;
+        }
+        .method-badge.no-auth {
+            background: #6b7280;
             color: white;
         }
         .method-title {
@@ -915,9 +1147,13 @@ HTML;
     {
         $methodClass = strtolower($method['method']);
         $methodId = md5($method['path'] . $method['method']);
+        $needLogin = $method['needLogin'] ?? true;
+        $authBadge = $needLogin ? '<span class="method-badge auth">需要登录</span>' : '<span class="method-badge no-auth">无需登录</span>';
+        
         $html = "<div class=\"method\" id=\"method-{$methodId}\">";
         $html .= "<div class=\"method-header\">";
         $html .= "<span class=\"method-badge {$methodClass}\">{$method['method']}</span>";
+        $html .= $authBadge;
         $html .= "<span class=\"method-title\">{$method['title']}</span>";
         $html .= "<span class=\"method-path\">{$method['path']}</span>";
         $html .= "</div>";

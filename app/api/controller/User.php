@@ -60,7 +60,7 @@ class User extends ApiController
 
     /**
      * 修改用户资料
-     * @param Request $request
+     * @param string $nickname 昵称
      * @return Response
      * @throws DataNotFoundException
      * @throws DbException
@@ -77,6 +77,11 @@ class User extends ApiController
 
     /**
      * 用户注册
+     * @param string $nickname 用户名
+     * @param string $mobile 手机号
+     * @param string $email 邮箱
+     * @param string $pwd 密码
+     * @param string $captcha 验证码
      * @return Response
      * @throws DbException
      * @throws InvalidArgumentException
@@ -92,6 +97,8 @@ class User extends ApiController
 
     /**
      * 用户登录
+     * @param string $nickname 用户名
+     * @param string $pwd 密码
      * @return Response
      * @throws InvalidArgumentException
      * @throws OperateException
@@ -109,6 +116,8 @@ class User extends ApiController
 
     /**
      * 手机号登录
+     * @param string $mobile 手机号
+     * @param string $captcha 验证码
      * @return Response
      * @throws DataNotFoundException
      * @throws DbException
@@ -126,7 +135,8 @@ class User extends ApiController
 
     /**
      * 修改密码
-     * @param Request $request
+     * @param string $oldpwd 旧密码
+     * @param string $newpwd 新密码
      * @return Response
      * @throws OperateException
      */
@@ -139,6 +149,9 @@ class User extends ApiController
 
     /**
      * 找回密码
+     * @param string $mobile 手机号
+     * @param string $captcha 验证码
+     * @param string $password 新密码
      * @return Response
      * @throws DataNotFoundException
      * @throws DbException
@@ -155,7 +168,9 @@ class User extends ApiController
 
     /**
      * 获取消息列表
-     * @param Request $request
+     * @param int $page 页码，默认1
+     * @param int $limit 每页数量，默认1
+     * @param string $status 状态，默认all
      * @return Response
      * @throws DataNotFoundException
      * @throws DbException
@@ -176,7 +191,7 @@ class User extends ApiController
 
     /**
      * 查看消息
-     * @param Request $request
+     * @param int $id 消息ID
      * @return Response
      * @throws DataNotFoundException
      * @throws DbException
@@ -192,7 +207,8 @@ class User extends ApiController
 
     /**
      * 批量操作消息
-     * @param Request $request
+     * @param string|array $id 消息ID，多个用逗号分隔或数组
+     * @param string $type 操作类型，默认del
      * @return Response
      */
     public function batchMessage(Request $request): Response
@@ -226,7 +242,9 @@ class User extends ApiController
 
     /**
      * 修改邮箱地址
-     * @param Request $request
+     * @param string $email 新邮箱地址
+     * @param string $captcha 验证码
+     * @param string $event 事件类型，默认change
      * @return Response
      * @throws Exception|UserException|OperateException
      */
@@ -241,7 +259,9 @@ class User extends ApiController
 
     /**
      * 修改手机号
-     * @param Request $request
+     * @param string $mobile 新手机号
+     * @param string $captcha 验证码
+     * @param string $event 事件类型，默认change
      * @return Response
      * @throws DataNotFoundException
      * @throws DbException
@@ -260,6 +280,8 @@ class User extends ApiController
 
     /**
      * 意见反馈
+     * @param string $type 反馈类型
+     * @param string $content 反馈内容
      * @return Response
      */
     public function feedback(): Response
