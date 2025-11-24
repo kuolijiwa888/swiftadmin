@@ -51,6 +51,7 @@
 - [x] `插件管理` 可开发定制属于自己的插件，可安装升级社区插件！！！
 - [x] `数据字典` 对系统中经常使用的一些较为固定的数据进行维护。
 - [x] `操作日志` 用户后台操作日志，全局异常、SQL注入等记录
+- [x] `API文档生成` 一键生成美观的API接口文档，支持自动扫描控制器和解析注释
 
 ### 软件优势
 
@@ -96,6 +97,95 @@ http://localhost:8787/index              # 访问项目执行安装
 5、安装完毕后，访问后台URL登录系统
 ```
 http://localhost:8787/manage        # 登录后台/生产环境下可自行修改后台地址
+```
+
+### API 文档生成
+
+框架提供了命令行工具，可以自动扫描 `app/api/controller` 目录下的所有 API 控制器，并生成美观的 HTML 接口文档。
+
+#### 基本用法
+
+```bash
+# 生成默认 API 文档（输出到 public/api.html）
+php webman api:doc
+
+# 强制覆盖已存在的文档文件
+php webman api:doc --force
+
+# 查看命令帮助
+php webman api:doc --help
+```
+
+#### 命令参数
+
+| 参数 | 简写 | 说明 | 默认值 |
+|------|------|------|--------|
+| `--url` | `-u` | API 基础 URL | `http://localhost` |
+| `--output` | `-o` | 输出文件名 | `api.html` |
+| `--title` | `-t` | 文档标题 | `SwiftAdmin API 文档` |
+| `--author` | `-a` | 文档作者 | `SwiftAdmin` |
+| `--force` | `-f` | 强制覆盖已存在的文件 | 无 |
+
+#### 使用示例
+
+```bash
+# 使用默认参数生成文档
+php webman api:doc --force
+
+# 自定义 API 基础地址和文档标题
+php webman api:doc --url="https://api.example.com" --title="我的API接口文档" --force
+
+# 自定义输出文件名和作者
+php webman api:doc --output="myapi.html" --author="开发团队" --force
+
+# 完整参数示例
+php webman api:doc --url="https://api.mysite.com" --output="api_doc.html" --title="项目API文档" --author="SwiftAdmin Team" --force
+```
+
+#### 文档特性
+
+- ✅ **自动扫描**：自动扫描 `app/api/controller` 目录下的所有控制器
+- ✅ **注释解析**：自动解析 PHPDoc 注释，提取接口说明、参数、返回值等信息
+- ✅ **智能识别**：根据方法名自动识别请求方法（GET/POST/PUT/DELETE）
+- ✅ **参数提取**：自动提取方法参数的类型、必填性、默认值等信息
+- ✅ **美观界面**：生成响应式 HTML 文档，包含目录导航和详细接口说明
+- ✅ **目录导航**：自动生成文档目录，方便快速定位接口
+
+#### 生成的文档位置
+
+文档默认生成在 `public/api.html`，可以通过浏览器直接访问查看：
+
+```
+http://localhost:8787/api.html
+```
+
+#### 控制器注释示例
+
+为了生成更完整的文档，建议在控制器和方法上添加详细的注释：
+
+```php
+<?php
+namespace app\api\controller;
+
+use app\ApiController;
+
+/**
+ * 用户相关接口
+ * 提供用户注册、登录、资料管理等功能
+ */
+class User extends ApiController
+{
+    /**
+     * 用户登录
+     * @param string $nickname 用户名
+     * @param string $pwd 密码
+     * @return Response 返回登录结果和token
+     */
+    public function login(): Response
+    {
+        // ...
+    }
+}
 ```
 
 ### 常见问题

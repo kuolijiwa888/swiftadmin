@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwiftAdmin API 文档</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        .controller {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .controller-title {
+            font-size: 1.8em;
+            color: #667eea;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        .controller-desc {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .method {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+        }
+        .method-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .method-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+        .method-badge.get {
+            background: #10b981;
+            color: white;
+        }
+        .method-badge.post {
+            background: #3b82f6;
+            color: white;
+        }
+        .method-badge.put {
+            background: #f59e0b;
+            color: white;
+        }
+        .method-badge.delete {
+            background: #ef4444;
+            color: white;
+        }
+        .method-title {
+            font-size: 1.3em;
+            color: #333;
+            margin-right: 10px;
+        }
+        .method-path {
+            font-family: 'Courier New', monospace;
+            background: #e5e7eb;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: #1f2937;
+            font-size: 0.9em;
+        }
+        .method-desc {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .section {
+            margin-top: 15px;
+        }
+        .section-title {
+            font-size: 1.1em;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        table th, table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        table th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+        table tr:hover {
+            background: #f9fafb;
+        }
+        .required {
+            color: #ef4444;
+            font-weight: bold;
+        }
+        .optional {
+            color: #6b7280;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #6b7280;
+            margin-top: 40px;
+        }
+        .toc {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .toc h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        .toc ul {
+            list-style: none;
+        }
+        .toc li {
+            margin: 8px 0;
+        }
+        .toc a {
+            color: #667eea;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .toc a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>SwiftAdmin API 文档</h1>
+            <p>作者: SwiftAdmin | 生成时间: 2025-11-24 19:39:08</p>
+        </div>
+
+        <div class="toc">
+            <h2>目录</h2>
+            <ul><li><a href="#controller-0">异步调用</a></li><li><a href="#controller-1">API接口前端示例文件</a></li><li><a href="#controller-2">API用户登录</a></li>            </ul>
+        </div>
+<div class="controller" id="controller-0"><h2 class="controller-title">异步调用</h2><div class="method"><div class="method-header"><span class="method-badge get">GET</span><span class="method-title">首页</span><span class="method-path">/api/ajax/index</span></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/ajax/index</code></p></div></div><div class="method"><div class="method-header"><span class="method-badge post">POST</span><span class="method-title">发送短信验证码</span><span class="method-path">/api/ajax/smsSend</span></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/ajax/smsSend</code></p></div></div><div class="method"><div class="method-header"><span class="method-badge post">POST</span><span class="method-title">发送邮件验证码</span><span class="method-path">/api/ajax/emailSend</span></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/ajax/emailSend</code></p></div></div></div><div class="controller" id="controller-1"><h2 class="controller-title">API接口前端示例文件</h2><div class="method"><div class="method-header"><span class="method-badge get">GET</span><span class="method-title"></span><span class="method-path">/api/index/index</span></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/index/index</code></p></div></div></div><div class="controller" id="controller-2"><h2 class="controller-title">API用户登录</h2><div class="method"><div class="method-header"><span class="method-badge post">POST</span><span class="method-title">用户中心</span><span class="method-path">/api/user/center</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>request</code></td><td>support\Request</td><td><span class="required">是</span></td><td>-</td><td>* @return Response</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/center</code></p></div></div><div class="method"><div class="method-header"><span class="method-badge post">POST</span><span class="method-title">修改用户资料</span><span class="method-path">/api/user/profile</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>request</code></td><td>support\Request</td><td><span class="required">是</span></td><td>-</td><td>* @return Response</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/profile</code></p></div></div><div class="method"><div class="method-header"><span class="method-badge post">POST</span><span class="method-title">用户注册</span><span class="method-path">/api/user/register</span></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/register</code></p></div></div><div class="method"><div class="method-header"><span class="method-badge post">POST</span><span class="method-title">用户登录</span><span class="method-path">/api/user/login</span></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/login</code></p></div></div><div class="method"><div class="method-header"><span class="method-badge post">POST</span><span class="method-title">手机号登录</span><span class="method-path">/api/user/mobileLogin</span></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/mobileLogin</code></p></div></div><div class="method"><div class="method-header"><span class="method-badge put">PUT</span><span class="method-title">修改密码</span><span class="method-path">/api/user/changePwd</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>request</code></td><td>support\Request</td><td><span class="required">是</span></td><td>-</td><td>* @return Response</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/changePwd</code></p></div></div><div class="method"><div class="method-header"><span class="method-badge post">POST</span><span class="method-title">找回密码</span><span class="method-path">/api/user/forgot</span></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/forgot</code></p></div></div><div class="method"><div class="method-header"><span class="method-badge post">POST</span><span class="method-title">获取消息列表</span><span class="method-path">/api/user/message</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>request</code></td><td>support\Request</td><td><span class="required">是</span></td><td>-</td><td>* @return Response</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/message</code></p></div></div><div class="method"><div class="method-header"><span class="method-badge post">POST</span><span class="method-title">查看消息</span><span class="method-path">/api/user/viewMessage</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>request</code></td><td>support\Request</td><td><span class="required">是</span></td><td>-</td><td>* @return Response</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/viewMessage</code></p></div></div><div class="method"><div class="method-header"><span class="method-badge post">POST</span><span class="method-title">批量操作消息</span><span class="method-path">/api/user/batchMessage</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>request</code></td><td>support\Request</td><td><span class="required">是</span></td><td>-</td><td>* @return Response</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/batchMessage</code></p></div></div><div class="method"><div class="method-header"><span class="method-badge post">POST</span><span class="method-title">申请APP_KEY</span><span class="method-path">/api/user/appid</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>request</code></td><td>support\Request</td><td><span class="required">是</span></td><td>-</td><td>* @return Response</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/appid</code></p></div></div><div class="method"><div class="method-header"><span class="method-badge put">PUT</span><span class="method-title">修改邮箱地址</span><span class="method-path">/api/user/changeEmail</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>request</code></td><td>support\Request</td><td><span class="required">是</span></td><td>-</td><td>* @return Response</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/changeEmail</code></p></div></div><div class="method"><div class="method-header"><span class="method-badge put">PUT</span><span class="method-title">修改手机号</span><span class="method-path">/api/user/changeMobile</span></div><div class="section"><div class="section-title">请求参数</div><table><thead><tr><th>参数名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead><tbody><tr><td><code>request</code></td><td>support\Request</td><td><span class="required">是</span></td><td>-</td><td>* @return Response</td></tr></tbody></table></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/changeMobile</code></p></div></div><div class="method"><div class="method-header"><span class="method-badge post">POST</span><span class="method-title">意见反馈</span><span class="method-path">/api/user/feedback</span></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/feedback</code></p></div></div><div class="method"><div class="method-header"><span class="method-badge post">POST</span><span class="method-title">文件上传函数</span><span class="method-path">/api/user/upload</span></div><div class="section"><div class="section-title">返回说明</div><p>返回类型: <code>support\Response</code></p></div><div class="section"><div class="section-title">请求地址</div><p><code>http://localhost/api/user/upload</code></p></div></div></div>        <div class="footer">
+            <p>© 2025 SwiftAdmin. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>
