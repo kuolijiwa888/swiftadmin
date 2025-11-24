@@ -1,0 +1,164 @@
+<?php
+declare (strict_types=1);
+// +----------------------------------------------------------------------
+// | swiftAdmin 极速开发框架 [基于WebMan开发]
+// +----------------------------------------------------------------------
+// | Copyright (c) 2020-2030 http://www.swiftadmin.net
+// +----------------------------------------------------------------------
+// | swiftAdmin.net High Speed Development Framework
+// +----------------------------------------------------------------------
+// | Author: meystack <coolsec@foxmail.com> Apache 2.0 License
+// +----------------------------------------------------------------------
+namespace app\common\library;
+
+/**
+ * RESULT代码文件
+ */
+class ResultCode
+{
+    const SUCCESS = [
+        'code'   => 200,
+        'status' => 'SUCCESS',
+        'msg'    => '请求成功',
+    ];
+
+    const REGISTER_SUCCESS = [
+        'code'   => 200,
+        'status' => 'REGISTER_SUCCESS',
+        'msg'    => '注册成功',
+    ];
+
+    const LOGIN_SUCCESS = [
+        'code'   => 200,
+        'status' => 'LOGIN_SUCCESS',
+        'msg'    => '登录成功',
+    ];
+
+    const LOGOUT_SUCCESS = [
+        'code'   => 200,
+        'status' => 'LOGOUT_SUCCESS',
+        'msg'    => '退出成功',
+    ];
+
+    const AUTH_ERROR = [
+        'code'   => -100,
+        'status' => 'AUTH_ERROR',
+        'msg'    => '没有权限',
+    ];
+
+    const INVALID = [
+        'code'   => -101,
+        'status' => 'INVALID',
+        'msg'    => '操作失败',
+    ];
+
+    const PARAM_ERROR = [
+        'code'   => -102,
+        'status' => 'PARAM_ERROR',
+        'msg'    => '请求参数错误',
+    ];
+
+
+    const TOKEN_INVALID = [
+        'code'   => -103,
+        'status' => 'TOKEN_INVALID',
+        'msg'    => 'token校验失败',
+    ];
+
+    const API_DISABLE = [
+        'code'   => -104,
+        'status' => 'API_DISABLE',
+        'msg'    => '当前接口已禁用',
+    ];
+
+    const METHOD_INVALID = [
+        'code'   => -105,
+        'status' => 'METHOD_INVALID',
+        'msg'    => '访问方式错误',
+    ];
+
+    const DAY_INVALID = [
+        'code'   => -106,
+        'status' => 'DAY_INVALID',
+        'msg'    => '接口已达每日上限',
+    ];
+
+    const API_SPEED_INVALID = [
+        'code'   => -107,
+        'status' => 'API_SPEED_INVALID',
+        'msg'    => '调用API接口速度过快',
+    ];
+
+    const CEILING_INVALID = [
+        'code'   => -108,
+        'status' => 'CEILING_INVALID',
+        'msg'    => '调用总额已消费完',
+    ];
+
+    const USER_PASS_ERROR = [
+        'code'   => -109,
+        'status' => 'USER_PASS_ERROR',
+        'msg'    => '用户名或密码错误',
+    ];
+
+    const STATUS_EXCEPTION = [
+        'code'   => -110,
+        'status' => 'STATUS_EXCEPTION',
+        'msg'    => '当前用户已被禁用',
+    ];
+
+    const PLEASE_LOGIN = [
+        'code'   => -111,
+        'status' => 'PLEASE_LOGIN',
+        'msg'    => '请登录后操作',
+    ];
+
+    const ACCESS_TOKEN_TIMEOUT = [
+        'code'   => -300,
+        'status' => 'ACCESS_TOKEN_TIMEOUT',
+        'msg'    => '身份令牌过期',
+    ];
+
+    const ACCESS_TOKEN_INVALID = [
+        'code'   => -301,
+        'status' => 'ACCESS_TOKEN_INVALID',
+        'msg'    => '获取token失败',
+    ];
+
+    const SESSION_TIMEOUT = [
+        'code'   => -302,
+        'status' => 'SESSION_TIMEOUT',
+        'msg'    => 'SESSION过期',
+    ];
+
+    const UNKNOWN = [
+        'code'   => -990,
+        'status' => 'UNKNOWN',
+        'msg'    => '未知错误',
+    ];
+
+    const EXCEPTION = [
+        'code'   => -991,
+        'status' => 'EXCEPTION',
+        'msg'    => '系统异常',
+    ];
+
+    const VERSION_ERROR = [
+        'code'   => -992,
+        'status' => 'VERSION_ERROR',
+        'msg'    => '版本错误',
+    ];
+
+    const SYSTEM_DISABLE = [
+        'code'   => -993,
+        'status' => 'VERSION_ERROR',
+        'msg'    => '禁止修改系统属性',
+    ];
+
+    const LACK_PARAM = [
+        'code'   => -994,
+        'status' => 'LACK_PARAM',
+        'msg'    => '缺少请求参数',
+    ];
+
+}

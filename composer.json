@@ -1,0 +1,81 @@
+{
+  "name": "meystack/swiftadmin",
+  "type": "project",
+  "version": "2.0.0",
+  "keywords": [
+    "swiftadmin",
+    "webman"
+  ],
+  "homepage": "https://www.swiftadmin.net",
+  "license": "Apache-2.0",
+  "description": "High performance HTTP Service Framework.",
+  "authors": [
+    {
+      "name": "meystack",
+      "email": "coolsec@foxmail.com",
+      "homepage": "https://www.swiftadmin.net",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "email": "coolsec@foxmail.com",
+    "issues": "https://github.com/meystack/swiftadmin/issues",
+    "forum": "https://ask.swiftadmin.net/",
+    "wiki": "https://doc.swiftadmin.net/help/",
+    "source": "https://github.com/meystack/swiftadmin"
+  },
+  "require": {
+    "php": ">=8.1",
+    "workerman/webman-framework": "^2.1",
+    "monolog/monolog": "^2.0",
+    "webman/cache": "^2.1",
+    "webman/redis": "^2.1",
+    "illuminate/events": "^10.48",
+    "webman/think-orm": "^2.1",
+    "webman/redis-queue": "^2.1",
+    "webman/console": "^2.1",
+    "webman/event": "^1.0",
+    "webman/captcha": "^1.0",
+    "webman/gateway-worker": "^1.0",
+    "topthink/think-validate": "^3.0",
+    "topthink/think-template": "^3.0",
+    "topthink/think-image": "^1.0",
+    "phpmailer/phpmailer": "^6.9",
+    "phpoffice/phpspreadsheet": "^4.1",
+    "symfony/var-dumper": "^6.4",
+    "guzzlehttp/guzzle": "^7.9",
+    "yansongda/pay": "^3.7",
+    "endroid/qr-code": "^5.1",
+    "overtrue/pinyin": "^5.3"
+  },
+  "suggest": {
+    "ext-event": "For better performance. "
+  },
+  "autoload": {
+    "psr-4": {
+      "": "./",
+      "app\\": "./app",
+      "App\\": "./app",
+      "app\\View\\Components\\": "./app/view/components"
+    },
+    "psr-0": {
+      "": "extend/"
+    },
+    "files": [
+      "support/helpers.php"
+    ]
+  },
+  "scripts": {
+    "post-package-install": [
+      "support\\Plugin::install"
+    ],
+    "post-package-update": [
+      "support\\Plugin::install"
+    ],
+    "pre-package-uninstall": [
+      "support\\Plugin::uninstall"
+    ]
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}

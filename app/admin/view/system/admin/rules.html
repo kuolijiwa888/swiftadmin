@@ -1,0 +1,140 @@
+<include file="/public/header" />
+<!-- // 重定位style -->
+<style>
+    .layui-form-item .layui-input-inline .layui-form-radio {
+        margin-right: 1px;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <!-- // 默认操作按钮 -->
+        <div class="layui-card-header layadmin-card-header-auto ">
+            <div class="layui-form">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-form-label">{:__('菜单名称')}</div>
+                        <div class="layui-input-inline "><input name="title" class="layui-input" type="text" placeholder="{:__('菜单名称')}"/></div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-form-label">{:__('菜单地址')}</div>
+                        <div class="layui-input-inline "><input name="router" class="layui-input" type="text" placeholder="{:__('菜单地址')}"/></div>
+                    </div>
+                    <div class="layui-inline" >
+                        <!-- // 默认搜索 -->
+                        <button class="layui-btn icon-btn" type="submit"
+                                lay-filter="treeSearch" lay-submit><i class="layui-icon layui-icon-search"></i>{:__('搜索')}
+                        </button>
+                        <!-- // 打开添加页面 -->
+                        <button class="layui-btn icon-btn" lay-open="" data-title="{:__('添加菜单')}" data-area="700px,410px" data-url="{:url('/system/AdminRules/add')}" >
+                            <i class="layui-icon layui-icon-add-1"></i>{:__('添加')}
+                        </button>
+                        <button class="layui-btn layui-btn-primary icon-btn" id="expandAll" ><i class="layui-icon layui-icon-templeate-1"></i>{:__('展开全部')}</button>
+                        <button class="layui-btn layui-btn-danger icon-btn"  id="foldAll" ><i class="layui-icon layui-icon-add-1"></i>{:__('折叠全部')}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- // 创建数据表实例 -->
+        <table class="layui-hide" id="lay-tableList" lay-filter="lay-tableList"></table>
+    </div>
+</div>
+
+<!-- // 列表工具栏 -->
+<script type="text/html" id="tableBar">
+    <a class="layui-table-text" lay-open data-title="{:__('添加菜单')}" data-url="{:url('/system/AdminRules/add')}?pid={{d.id}}"
+       data-area="700px,410px" >{:__('添加')}</a>
+    <div class="layui-divider layui-divider-vertical"></div>
+    <a class="layui-table-text" lay-open data-title="{:__('编辑菜单')}" data-url="{:url('/system/AdminRules/edit')}?id={{d.id}}"
+       data-area="700px,410px" >{:__('编辑')}</a>
+    <div class="layui-divider layui-divider-vertical"></div>
+    <a class="layui-table-text" data-url="{:url('/system/AdminRules/del')}?id={{d.id}}" lay-event="del" >{:__('删除')}</a>
+</script>
+
+<include file="/public/footer" />
+
+<script>
+    layui.use(['form','treeTable'], function () {
+
+        let $ = layui.jquery;
+        let form = layui.form;
+        let treeTable = layui.treeTable;
+        let tableURL = "{:url('/system/AdminRules/index')}";
+
+        // 渲染初始化表格
+        let renderTable = function (tableURL) {
+            treeTable.render({
+                id: 'lay-tableList',
+                elem: '#lay-tableList',
+                url: tableURL,
+                tree: {
+                    customName: {
+                        pid: 'pid',
+                        icon: 'icon1',
+                    },
+                    view: {
+                        iconClose: '', // 关闭时候的图标
+                        iconOpen: '', // 打开时候的图标
+                        iconLeaf: '', // 叶子节点的图标
+                    }
+                },
+                cols: [[
+                    {type: 'numbers'},
+                    {field: 'name', title: '{:__("菜单名称")}',templet: function(d) {
+                            return '<i class="layui-icon '+d.icon+'"></i> '+d.title;
+                        },},
+                    {field: 'router', title: '{:__("路由地址")}'},
+                    {field: 'alias', title: '{:__("权限标识")}'},
+                    {field: 'auth',  width: 80,title: '{:__("鉴权")}',templet: function(d) {
+                            let strs = ['<font color="red">{:__("否")}</font>', '<span>{:__("是")}</span>'];
+                            return strs[d.auth];
+                        }, align: 'center'
+                    },
+                    {
+                        field: 'type',title: '{:__("类型")}', width: 80, templet: function (d) {
+                            let strs = ['<span class="layui-badge layui-bg-blue">{:__("菜单")}</span>',
+                                '<span class="layui-badge layui-bg-gray">{:__("按钮")}</span>',
+                                '<span class="layui-badge layui-bg-cyan">{:__("接口")}</span>',
+                                '<span class="layui-badge">{:__("系统")}</span>'
+                            ];
+                            return strs[d.type];
+                        }, align: 'center'
+                    },
+                    {field: 'sort',  width: 80, align: 'center',title: '{:__("排序")}'},
+                    {field: 'create_time', align: 'center',title: '{:__("创建时间")}'},
+                    {align: 'center', toolbar: '#tableBar', width: 220,title: '{:__("操作")}'},
+                ]]
+            });
+        }
+
+        // 监听搜索 serialize
+        form.on('submit(treeSearch)',function(data) {
+
+            let whereURL = '',
+                field = data.field;
+            for (let key in field ) {
+                whereURL += key + '=' + field[key];
+                whereURL += '&';
+            }
+
+            // 拼接字符串
+            whereURL = whereURL.replace(/(.*)&/,'$1 ');
+            whereURL = tableURL + '?' + whereURL;
+            renderTable(whereURL);
+        })
+
+        // 展开所有
+        $('#expandAll').click(function(){
+            treeTable.expandAll('lay-tableList', true);
+        })
+
+        // 折叠所有
+        $('#foldAll').click(function () {
+            treeTable.expandAll('lay-tableList',false);
+        });
+
+        // 执行初始化
+        renderTable(tableURL);
+
+    });
+
+</script>

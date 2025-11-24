@@ -1,0 +1,48 @@
+<layout name="layout:layout" />
+<style>
+    h1 {
+        font-family: "helvetica neue", PingFangSC-Light, arial, "hiragino sans gb", "microsoft yahei ui", "microsoft yahei", simsun, sans-serif;
+        font-size: 20px;
+    }
+
+    .layui-card-header {
+        height: auto;
+    }
+
+    .layui-text {
+        padding: 10px!important;
+        text-indent: 2em;
+        line-height: 24px;
+    }
+
+    .layui-text p {
+        line-height: 24px;
+    }
+
+</style>
+<div class="layui-fluid" style="margin-top: 15px">
+    <div id="unread" data-count="{$unread|default='0'}"></div>
+    <div class="layui-card">
+        <div class="layui-card-header">
+            <h1>{$msgInfo.title}</h1>
+            <p style="color: #3464ff">{$msgInfo.nickname|default='系统'} 于 {$msgInfo.create_time}</p>
+        </div>
+        <div class="layui-card-body layui-text">
+            {$msgInfo.content|raw}
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use('jquery', function () {
+        let $ = layui.jquery;
+        let unread = $('#unread').data('count');
+        if (!unread) {
+            top.layui.$('#notice').find('.layui-badge-dot').hide();
+        }
+
+        // 更新消息数量
+        bellMessage(unread);
+
+    })
+</script>
