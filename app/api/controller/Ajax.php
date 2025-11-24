@@ -34,6 +34,8 @@ class Ajax extends ApiController
 
     /**
      * 发送短信验证码
+     * @param string $mobile 手机号码
+     * @param string $event 事件类型，默认：register（注册）
      * @return Response
      * @throws InvalidArgumentException
      * @throws DataNotFoundException
@@ -53,6 +55,8 @@ class Ajax extends ApiController
 
     /**
      * 发送邮件验证码
+     * @param string $email 邮箱地址
+     * @param string $event 事件类型，默认：register（注册）
      * @return Response
      * @throws InvalidArgumentException
      * @throws OperateException
