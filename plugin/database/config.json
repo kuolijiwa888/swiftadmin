@@ -1,0 +1,22 @@
+{
+    "name": "database",
+    "title": "数据库管理",
+    "intro": "数据库管理与备份",
+    "icon": "fa-database",
+    "author": "七彩枫叶",
+    "home": "",
+    "version": "1.0.1",
+    "config": 1,
+    "menu": 1,
+    "import": 0,
+    "rewrite": [],
+    "extends": {
+        "title": "数据库管理"
+    },
+    "area": [
+        "600px",
+        "650px"
+    ],
+    "status": 1,
+    "path": "E:\/swiftadmin\/plugin\\database\/"
+}

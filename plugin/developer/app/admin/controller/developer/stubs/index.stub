@@ -1,0 +1,77 @@
+<include file="/public/header" />
+<!--{pluginClass}-->
+<div class="layui-fluid">
+    <div class="layui-card">
+        <!-- // 默认操作按钮 -->
+        <div class="layui-card-header layadmin-card-header-auto ">
+            <div class="layui-form">
+                <!-- // 自定义搜索参数 -->
+                <div id="laytable-search" class="layui-form-item" >
+                    {%everySearchHtml%}
+                </div>
+                <div class="layui-form-item">
+                    {%adviceSearchHtml%}
+                    <div class="layui-inline" >
+                        <!-- // 默认搜索 -->
+                        <button class="layui-btn icon-btn" lay-filter="formSearch" lay-submit><i class="layui-icon layui-icon-search"></i>{:__('搜索')}</button>
+                        <!--formBegin-->
+                        <button class="layui-btn icon-btn" lay-open="" data-title="{:__('添加')}" data-area="{%FormArea%}" data-maxmin="true" data-url="{:url('{%controller%}add')}" >
+                            <i class="layui-icon layui-icon-add-1"></i>{:__('添加')}
+                        </button>
+                        <!--formEnd-->
+                    </div>
+                </div>
+            </div>   
+        </div>
+        <!-- // 创建数据实例 -->
+        <table id="lay-tableList" lay-filter="lay-tableList"></table>        
+    </div>
+</div>
+
+<!-- // 列表状态栏 -->
+<script type="text/html" id="columnStatus">
+    <input type="checkbox" lay-filter="switchStatus" data-url="{:url('{%controller%}status')}" value="{{d.id}}" lay-skin="switch" {{d.status==1?'checked':''}}  />
+</script>
+ 
+<!-- // 列表工具栏 -->
+<script type="text/html" id="tableBar">
+    <!--formBegin-->
+    <a class="layui-table-text" data-title="{:__('编辑')}" data-area="{%FormArea%}" data-maxmin="true"
+        data-url="{:url('{%controller%}edit')}?id={{d.id}}" lay-event="edit" >{:__('编辑')}</a>
+    <div class="layui-divider layui-divider-vertical"></div>
+    <!--formEnd-->
+    <a class="layui-table-text"  data-url="{:url('{%controller%}del')}?id={{d.id}}" lay-event="del" >{:__('删除')}</a>
+</script>
+
+{%editforms%}
+
+<script type="text/html" id="tableButton"></script>
+
+<include file="/public/footer" />
+<script>
+    layui.use(['admin','table'], function () {
+
+        var admin = layui.admin;
+        var table = layui.table;
+
+        /*
+         * 初始化表格
+        */
+        var isTable = table.render({
+            elem: "#lay-tableList"
+            ,url: "{:url('{%controller%}index')}"
+            ,toolbar: '#tableButton'
+            ,defaultToolbar: ['filter', 'exports', 'print','search']
+            ,cellMinWidth: 160
+            ,page: true
+            ,limit: 18
+            ,cols: [[
+                {type: 'checkbox', width: 50},
+                {field: 'id', align: 'center',sort: true,width: 80, title: 'ID'},
+                {%colsListArr%}
+                {align: 'center', toolbar: '#tableBar', width:160, fixed: 'right', title: '{:__("操作")}'},
+            ]]
+        })
+
+    })
+</script>

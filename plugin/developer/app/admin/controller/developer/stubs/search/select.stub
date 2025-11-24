@@ -1,0 +1,13 @@
+
+                <div class="layui-inline">
+                    <div class="layui-form-label">{:__('{%title%}')}</div>
+                    <div class="layui-input-inline ">
+                        <php> ${%varlist%} = {%vardata%}; </php>
+                        <select name="{%field%}" lay-search >
+                            <option value="">{:__('请选择')}</option>
+                            <volist name="{%varlist%}" id="vo">
+                            <option value="{$vo.value}">{$vo.title}</option>
+                            </volist>
+                        </select>
+                    </div>
+                </div>

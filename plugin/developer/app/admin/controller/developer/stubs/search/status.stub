@@ -1,0 +1,7 @@
+                <div class="layui-inline">
+                    <select name="status">
+                        <option value="">{:__('按状态查询')}</option>
+                        <option value="2" >{:__('正常')}</option>                                 
+                        <option value="1" >{:__('关闭')}</option>      
+                    </select>
+                </div>

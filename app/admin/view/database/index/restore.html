@@ -1,0 +1,107 @@
+<include file="/public/header" />
+<!--database-->
+<style>
+    .layui-layer-msg .layui-layer-content .layui-icon-loading:before{ color: #1e9fff}
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <!-- // 默认操作按钮 -->
+
+        <!-- // 创建数据实例 -->
+        <table id="lay-tableList" lay-filter="lay-tableList"></table>
+    </div>
+</div>
+<!-- // 列表工具栏 -->
+<script type="text/html" id="tableBar">
+    <!--formBegin-->
+    <div class="layui-divider layui-divider-vertical"></div>
+    <a class="layui-table-text" lay-event="down" >{:__('下载')}</a>
+    <div class="layui-divider layui-divider-vertical"></div>
+    <a class="layui-table-text" lay-event="backup" >{:__('还原')}</a>
+    <div class="layui-divider layui-divider-vertical"></div>
+    <!--formEnd-->
+    <a class="layui-table-text" lay-event="del" >{:__('删除')}</a>
+</script>
+<script type="text/html" id="table-size">
+    {{ (d.size/1024).toFixed(2) }} KB
+</script>
+<script type="text/html" id="tableButton">
+</script>
+
+<include file="/public/footer" />
+<script>
+    layui.use(['admin','table'], function () {
+        var admin = layui.admin,$=layui.jquery,form=layui.form;
+        var table = layui.table;
+        /*
+         * 初始化表格
+        */
+        var isTable = table.render({
+            elem: "#lay-tableList"
+            ,url: "{:url('/database/Index/restore')}"
+            ,method:"post"
+            ,toolbar: '#tableButton'
+            ,cellMinWidth: 80
+            ,defaultToolbar: [
+                { title: '刷新', layEvent: 'refresh',icon: 'layui-icon-refresh',},
+            ]
+            ,cols: [[
+                {field:'back_name',title:'{:__("备份文件")}', width: 150},
+                {field:'extension',title:'{:__("文件格式")}', width: 100,align: "center"},
+                {field:'part',title:'{:__("文件数量")}',width: 100,align: "center"},
+                {field:'size',title:'{:__("存储大小")}',align: 'center',templet: '#table-size',width: 100},
+                {field:'cTime',title:'{:__("创建时间")}',width: 160,align: 'center'},
+                {align: 'center', toolbar: '#tableBar', width:200, fixed: 'right', title: '{:__("操作")}'},
+            ]]
+        })
+
+        // 工具栏事件
+        table.on('tool(lay-tableList)', function(obj){
+            var data = obj.data; // 获得当前行数据
+            switch(obj.event){
+                case 'del':
+                    $.post("{:url('/database/Index/del_backup_file')}",{file_arr:data.filename},function(res){
+                        if(res.code==200){
+                            layer.msg(res.msg,{icon:1},function () {
+                                isTable.reloadData()
+                            })
+                        }else {
+                            layer.msg(res.msg,{icon:3},function () {
+                                isTable.reloadData()
+                            })
+                        }
+                    })
+                    break;
+                case 'backup':
+                    $.post("{:url('/database/Index/restoreDatabase')}",data,function(res){
+                        if(res.code==200){
+                            layer.msg(res.msg,{icon:1},function () {
+                                isTable.reloadData();
+                                parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭窗口
+                            })
+                        }else {
+                            layer.msg(res.msg,{icon:3})
+                        }
+                    })
+                    break;
+                case 'down':
+                    $.post("{:url('/database/Index/down_backup_file')}",data,function(res){
+                        if(res.code==200){
+                            layer.msg(res.msg,{icon:1},function () {
+                                window.open(res.url)
+                            })
+                        }else {
+                            layer.msg(res.msg,{icon:3},function () {
+                                isTable.reloadData()
+                            })
+                        }
+                    })
+                    break;
+            };
+        });
+        table.on('toolbar(test)', function(obj){
+            isTable.reloadData()
+        })
+
+    })
+</script>

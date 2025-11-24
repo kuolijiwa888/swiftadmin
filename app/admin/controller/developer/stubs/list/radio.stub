@@ -1,0 +1,4 @@
+templet:function(d) {
+    var colsArr = {colsArr};
+    return colsArr[d.{field}].title;
+}

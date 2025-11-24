@@ -1,0 +1,13 @@
+<!-- // 内置表单项 -->
+<script type="text/html" id="editforms" >
+    <div class="layui-fluid layui-bg-white" >
+        <form class="layui-form layui-form-fixed" lay-filter="editforms" >
+        <input type="text" name="id"  hidden="">
+        {formItems}
+        <div class="layui-footer layui-form-item layui-center"  >
+            <button class="layui-btn layui-btn-primary" type="button" sa-event="closePageDialog" >{:__('取消')}</button>
+            <button class="layui-btn" type="button" lay-filter="submitPage"  lay-submit>{:__('提交')}</button>
+        </div>
+        </form>
+    </div>
+</script>

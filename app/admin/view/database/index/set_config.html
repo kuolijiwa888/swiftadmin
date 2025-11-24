@@ -1,0 +1,107 @@
+<include file="/public/header"/>
+<!-- // 重定位style -->
+<style>
+    #level .layui-inline{margin-bottom:unset;margin-left: 10px;}
+    #compress { height: 32px;line-height: 32px;}
+    #compress .layui-form-radio{margin-top: unset}
+    #level-rate{top: 15px;left: 15px;}
+</style>
+<!--database-->
+<link href="__STATICADMIN__css/content.css" rel="stylesheet" type="text/css"/>
+<div class="layui-fluid">
+    <form class="layui-form layui-card">
+
+        <div class="layui-card-body">
+            <div class="layui-form-item">
+                <label class="layui-form-label">存储位置</label>
+                <div class="layui-input-inline layui-input-wrap">
+                    <input class="layui-input" type="text" name="path" readonly value="{$path}">
+                </div>
+                <div class="layui-form-mid layui-text-em">备份文件存在的路径</div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">文件大小</label>
+                <div class="layui-input-inline layui-input-wrap">
+                    <input class="layui-input" type="number" name="part" value="{$part}" required>
+                </div>
+                <div class="layui-form-mid layui-text-em">限制备份文件大小</div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">是否压缩</label>
+                <div class="layui-input-inline layui-input-wrap" id="compress">
+                    <input type="radio" name="compress" lay-filter="compress" value="0" title="关闭压缩" <eq name="compress" value="0">checked</eq>>
+                    <input type="radio" name="compress" lay-filter="compress" value="1" title="开启压缩" <eq name="compress" value="1">checked</eq>>
+                </div>
+                <div class="layui-form-mid layui-text-em" style="color: red!important;">关闭压缩后，压缩级别无效</div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">压缩级别</label>
+                <div class="layui-input-inline">
+                    <input type="hidden" name="level" id="level" value="{$level}">
+                    <div id="level-rate"></div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">忽略表</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" type="text" id="ignore" name="ignore" value="{$ignore}">
+                </div>
+            </div>
+        </div>
+        <div class="layui-footer layui-form-footer">
+            <button class="layui-btn layui-btn-primary" type="button" sa-event="closeDialog">{:__('取消')}</button>
+            <button class="layui-btn" type="button" lay-filter="submitIframe" lay-submit>{:__('提交')}</button>
+        </div>
+
+    </form>
+</div>
+<include file="/public/static"/>
+<include file="/public/footer"/>
+<script>
+    layui.use(function(){
+        var admin=layui.admin,$=layui.jquery,form=layui.form;
+        // 渲染
+        var slider = layui.slider;
+        let level = slider.render({
+            elem: '#level-rate',
+            value:{$level},
+            min: 1,
+            max: 9,
+            setTips: function(value){ // 自定义提示文本
+                return value + '级压缩模式';
+            },
+            done: function(value){
+                $('#level').val(value);
+            },
+            input: true //输入框
+        });
+        $('#ignore').click(function () {
+            layer.open({
+                type: 2,
+                area: ['680px', '620px'],
+                title:'设置忽略表',
+                content: "{:url('/database/Index/ignoreTable')}",
+                fixed: false, // 不固定
+                maxmin: true,
+                shadeClose: true,
+                btn: ['确认', '取消'],
+                btnAlign: 'c',
+                yes: function(index, layero){
+                    // 获取 iframe 的窗口对象
+                    var iframeWin =  window[layero.find('iframe')[0]['name']];
+                    $('#ignore').val(iframeWin.change());
+                    layer.close(index);
+                }
+            });
+        })
+        form.on('radio(compress)', function(data){
+            var elem = data.elem;
+            if(elem.value==0){
+                level.setValue(1)
+            }else {
+                level.setValue({$level})
+            }
+        });
+    });
+</script>

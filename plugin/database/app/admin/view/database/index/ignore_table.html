@@ -1,0 +1,48 @@
+<include file="/public/header"/>
+<!-- // 重定位style -->
+<!--database-->
+<style>
+    .layui-transfer-box{text-align: left;}
+    .layui-fluid .layui-form{padding-bottom:8px!important;}
+</style>
+<link href="__STATICADMIN__css/content.css" rel="stylesheet" type="text/css"/>
+<div class="layui-fluid">
+    <form class="layui-form layui-card">
+        <div class="layui-card-body">
+            <p>在这里设置备份时不需要备份的数据表</p>
+            <hr class="layui-border-red">
+            <div id="table-ignore" style="margin: 0 auto;text-align: center;"></div>
+        </div>
+    </form>
+</div>
+<include file="/public/static"/>
+<include file="/public/footer"/>
+<script>
+    layui.use(function(){
+        var transfer = layui.transfer;
+        var admin=layui.admin,$=layui.jquery;
+        let table_list={$table_list|raw};
+        let ignore_tables=parent.document.getElementById('ignore').value;
+
+        // 渲染
+       let ignoretable= transfer.render({
+            elem: '#table-ignore',
+            data: table_list,
+            title: ['需要备份的表', '需要忽略的表'],
+            width:260,
+            height:400,
+            value: ignore_tables.split(','),
+            showSearch: true,
+        });
+        window.change=function () {
+            let tables='';
+            layui.each(ignoretable.getData('#table-ignore'),function (index,item) {
+                tables +=item.value + ',';
+            })
+            if(tables.length>0){
+                tables = tables.substring(0,tables.length-1);
+            }
+            return tables;
+        }
+    });
+</script>

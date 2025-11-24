@@ -1,0 +1,216 @@
+<include file="/public/header"/>
+<!--Developer-->
+<style>
+    .layui-input-block textarea {
+        height: 145px;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <!-- // 默认操作按钮 -->
+        <div class="layui-card-header layadmin-card-header-auto ">
+            <div class="layui-form">
+                <div class="layui-form-item">
+
+                    <div class="layui-inline">
+                        <button id="install" class="layui-btn icon-btn layui-btn-danger"><i
+                                class="layui-icon fa-bug" style="font-size: 15px"></i> {:__('安装测试')}
+                        </button>
+                    </div>
+                    <div class="layui-inline">
+                        <button id="upgrade" class="layui-btn icon-btn layui-btn-checked"><i
+                                class="layui-icon fa-upload"></i> {:__('升级测试')}
+                        </button>
+                    </div>
+
+                    <div class="layui-inline">
+                        <button class="layui-btn icon-btn"  lay-open="" data-title="{:__('导入插件')}" data-area="300px,399px" data-shadeClose="true"
+                                data-url="{:url('/developer/Plugin/import')}" >
+                            <i class="layui-icon fa-codepen"></i> {:__('加载插件')}</button>
+                    </div>
+                    <div class="layui-inline">
+                        <!-- // 打开添加页面 -->
+                        <button class="layui-btn icon-btn" lay-open="" data-title="{:__('创建插件')}" data-area="698px"
+                                data-offset="10%" data-url="#editforms">
+                            <i class="layui-icon layui-icon-add-1"></i> {:__('新建插件')}
+                        </button>
+                    </div>
+
+                    <div class="layui-inline">
+                        <button class="layui-btn icon-btn" sa-event="tabs" data-url="/admin/system/Plugin/index" data-title="插件管理">
+                            <i class="layui-icon fa-plug" style="font-size: 15px"></i>{:__('插件管理')}</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- // 创建数据实例 -->
+        <table id="lay-tableList" lay-filter="lay-tableList"></table>
+    </div>
+</div>
+
+<!-- // 添加编辑数据 -->
+<script type="text/html" id="editforms">
+    <div class="layui-fluid layui-bg-white">
+        <form class="layui-form layui-form-fixed" lay-filter="editforms">
+            <input type="text" name="id" hidden="">
+            <div class="layui-form-item">
+                <label class="layui-form-label"><font color="red">* </font>{:__('插件标识')}</label>
+                <div class="layui-input-block">
+                    <input type="text" name="name" class="layui-input" placeholder="请输入唯一插件标识" lay-verify="required"
+                           data-disabled autocomplete="off">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label"><font color="red">* </font>{:__('插件名称')}</label>
+                <div class="layui-input-block">
+                    <input type="text" name="title" class="layui-input" placeholder="演示插件" lay-verify="required"
+                           data-disabled autocomplete="off">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label"><font color="red">* </font>{:__('插件版本')}</label>
+                <div class="layui-input-block">
+                    <input type="text" name="version" class="layui-input" placeholder="示例：1.0.0" lay-verify="required" autocomplete="off">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:__('插件图标')}</label>
+                <div class="layui-input-block">
+                    <input type="text" name="icon" class="layui-input" placeholder="示例：fa-home">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label"><span style="color: red; ">* </span>{:__('插件作者')}</label>
+                <div class="layui-input-block">
+                    <input type="text" name="author" class="layui-input" placeholder="请输入插件作者名称" lay-verify="required">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:__('前台地址')}</label>
+                <div class="layui-input-block">
+                    <input type="text" name="home" class="layui-input" placeholder="如有前台地址请填写 例如/demo/index">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label"><span style="color: red; ">* </span>{:__('菜单配置')}</label>
+                <div class="layui-input-inline">
+                    <input type="radio" name="menu" value="1" title="开启" checked>
+                    <input type="radio" name="menu" value="0" title="关闭">
+                </div>
+                <label class="layui-form-label"><span style="color: red; ">* </span>{:__('插件配置')}</label>
+                <div class="layui-input-inline">
+                    <input type="radio" name="config" value="1" title="开启" checked>
+                    <input type="radio" name="config" value="0" title="关闭">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:__('插件简介')}</label>
+                <div class="layui-input-block">
+                    <textarea name="intro" class="layui-textarea" lay-verify="required"
+                              placeholder="如不需要菜单项(可选)关闭，适合简易型插件应用"></textarea>
+                </div>
+            </div>
+            <div class="layui-footer layui-form-item layui-center">
+                <button class="layui-btn layui-btn-primary" type="button" sa-event="closePageDialog">{:__('取消')}
+                </button>
+                <button class="layui-btn" lay-filter="submitPage" lay-submit>{:__('提交')}</button>
+            </div>
+        </form>
+    </div>
+</script>
+
+<!-- // 列表工具栏 -->
+<script type="text/html" id="tableBar">
+    <a class="layui-table-text" data-title="{:__('编辑插件')}" data-area="698px" data-url="#editforms" data-offset="10%"
+       lay-event="edit">{:__('编辑')}</a>
+    <div class="layui-divider layui-divider-vertical"></div>
+    <a class="layui-table-text" lay-ajax data-url="{:url('/developer/Plugin/build')}?id={{d.id}}" data-callback="build">{:__('生成')}</a>
+    <div class="layui-divider layui-divider-vertical"></div>
+    <a class="layui-table-text" lay-ajax data-url="{:url('/developer/Plugin/package')}?id={{d.id}}" data-jump="true">{:__('打包')}</a>
+    <div class="layui-divider layui-divider-vertical"></div>
+    <a class="layui-table-text" data-url="{:url('/developer/Plugin/del')}?id={{d.id}}" lay-event="del">{:__('删除')}</a>
+</script>
+
+<include file="/public/footer"/>
+<script>
+    layui.use(['table', 'admin', 'layer', 'jquery'], function () {
+
+        var table = layui.table;
+        var admin = layui.admin;
+        var layer = layui.layer;
+        var $ = layui.jquery;
+        /*
+         * 初始化表格
+        */
+        var isTable = table.render({
+            elem: "#lay-tableList"
+            , url: "{:url('/developer/Plugin/index')}"
+            , page: true
+            , limit: 18
+            , cols: [[
+                {type: 'checkbox', width: 50},
+                {field: 'id', align: 'center', sort: true, width: 80, title: 'ID'},
+                {field: 'title', align: 'left', title: '{:__("插件名称")}'},
+                {field: 'name', align: 'left', title: '{:__("插件标识")}'},
+                {field: 'version', align: 'left', title: '{:__("插件版本")}'},
+                {field: 'author', align: 'left', title: '{:__("插件作者")}'},
+                {field: 'home', align: 'left', title: '{:__("前台地址")}'},
+                {field: 'create_time', align: 'center', width: 160, title: '{:__("创建时间")}'},
+                {align: 'center', toolbar: '#tableBar', width: 260, title: '{:__("操作")}'},
+            ]]
+        })
+
+        /**
+         * Ajax回调函数
+         * @type {{success: layui.admin.callback.build.success, error: layui.admin.callback.build.error}}
+         */
+        admin.callback.build = {
+            'success': function (res) {
+                layer.msg(res.msg);
+                top.layui.admin.reloadLayout();
+            },
+            'error': function (res) {
+                layer.error(res.msg);
+            }
+        }
+
+        /**
+         * 本地安装插件
+         */
+        layui.upload.render({
+            elem: '#install'
+            , accept: 'file'  //允许上传的文件类型
+            , url: '{:url("/developer/Plugin/install")}'
+            , done: function (res, index, upload) { //上传后的回调
+                if (res.code === 200) {
+                    layer.msg(res.msg);
+                    top.layui.admin.reloadLayout();
+                } else {
+                    layer.error(res.msg);
+                }
+            }
+        })
+
+        /**
+         * 本地升级测试
+         */
+        layui.upload.render({
+            elem: '#upgrade'
+            , accept: 'file' //允许上传的文件类型
+            , url: '{:url("/developer/Plugin/upgrade")}'
+            , done: function (res, index, upload) { //上传后的回调
+                if (res.code === 200) {
+                    layer.msg(res.msg);
+                    top.layui.admin.reloadLayout();
+                } else {
+                    layer.error(res.msg);
+                }
+            }
+        })
+    })
+</script>

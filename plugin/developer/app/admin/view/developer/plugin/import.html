@@ -1,0 +1,31 @@
+<include file="/public/header"/>
+<!--Developer-->
+<style>
+    .item-dir {
+        cursor: pointer;
+        padding: 2px 8px;
+        margin: 15px 0;
+        color: #1890ff !important;
+        background: #e6f7ff;
+    }
+    .item-dir:hover {
+        background-color: #1890ff;
+        color: #fff !important;
+    }
+</style>
+
+<form class="layui-form layui-card">
+    <div class="layui-card-body">
+        <div class="layui-form-item">
+            <volist name="dirs" id="vo">
+                <div class="item-dir" lay-ajax data-url="{:url('/developer/Plugin/import',['dir'=>$vo.name])}" data-table="lay-tableList">
+                    <span class="">{$vo.name}</span>
+                    <span class="layui-fr">{$vo.title}</span>
+                </div>
+            </volist>
+        </div>
+    </div>
+</form>
+
+<include file="/public/footer"/>
+

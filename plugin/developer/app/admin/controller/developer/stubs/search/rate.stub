@@ -1,0 +1,7 @@
+                <div class="layui-inline">
+                    <div class="layui-form-label">{:__('{%title%}')}</div>
+                    <div class="layui-input-inline" style="max-height:20px;">
+                        <input name="{%field%}" class="layui-input layui-hide {%field%}" type="text" placeholder="{:__('{%title%}')}"/>
+                        <div lay-rate="{%field%}" data-default="1" data-theme="{theme}" data-length="{length}" class="layui-inline"></div>
+                    </div>
+                </div>

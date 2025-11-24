@@ -1,0 +1,7 @@
+                <div class="layui-inline">
+                    <div class="layui-form-label">{:__('{%title%}')}</div>
+                    <div class="layui-input-inline ">
+                        <input name="{%field%}" class="layui-input layui-hide" type="text" />
+                        <div lay-slider="{%field%}" data_default="{default}" data-theme="{theme}" data-step="{step}" data-max="{max}" data-min="{min}" data-input="true"></div>
+                    </div>
+                </div>

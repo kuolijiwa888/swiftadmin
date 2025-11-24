@@ -1,0 +1,3 @@
+templet:function(d) {
+    return JSON.stringify(d.{field});
+}

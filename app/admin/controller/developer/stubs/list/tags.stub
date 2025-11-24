@@ -1,0 +1,3 @@
+templet:function(d) {
+    return d.{field}.replace(',',' ');
+}

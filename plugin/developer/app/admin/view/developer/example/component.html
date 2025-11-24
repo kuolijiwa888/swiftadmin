@@ -1,0 +1,221 @@
+<include file="/public/header"/>
+<!-- // 重定位style -->
+<link href="/static/system/css/content.css" rel="stylesheet" type="text/css"/>
+<div class="layui-fluid layui-form">
+    <!--Developer-->
+    <div class="layui-card">
+        <div class="layui-card-header">上传组件</div>
+        <div class="layui-card-body">
+            <div class="layui-form-item">
+                <label class="layui-form-label">文件上传</label>
+                <div class="layui-input-inline">
+                    <input name="image" type="text" class="layui-input pic" placeholder="请上传或直接粘贴图片地址"/>
+                </div>
+                <button type="button" class="layui-btn layui-btn-normal" lay-upload="pic">{:__('上传图片')}</button>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">图片上传</label>
+                <div class="layui-input-block">
+                    <input class="layui-input layui-input-upload avatar" name="avatar">
+                    <button type="button" class="layui-btn" lay-choose="avatar" data-type="images">
+                        <i class="layui-icon layui-icon-windows"></i> 选择
+                    </button>
+                    <div class="clear"></div>
+
+                    <div class="layui-upload-drag layui-uplpad-image mt10" lay-upload="avatar" data-type="images"
+                         data-accept="file" data-size="102400">
+                        <i class="layui-icon layui-icon-upload"></i>
+                        <p>点击上传，或将文件拖拽到此处</p>
+                        <div class="layui-hide">
+                            <hr>
+                            <img src="" class="layui-upload-dragimg avatar" alt="上传成功后渲染">
+                            <span class="layui-badge layui-upload-clear">删除</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">多图上传</label>
+                <div class="layui-input-block">
+                    <div class="layui-imagesbox">
+                        <div class="layui-input-inline layui-uplpad-image">
+                            <div class="layui-upload-drag" lay-upload="album" data-type="multiple" data-accept="file"
+                                 data-size="102400">
+                                <i class="layui-icon layui-icon-upload"></i>
+                                <p>点击上传，或将文件拖拽到此处</p>
+                                <div class="layui-hide"></div>
+                            </div>
+                            <input class="layui-upload-file" type="file" accept="" name="file">
+                            <button type="button" class="layui-btn layui-btn-xs layui-btn-fluid" lay-choose="album"
+                                    data-type="multiple">
+                                <i class="layui-icon layui-icon-windows"></i> 选择
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-card">
+        <div class="layui-card-header">时间组件</div>
+        <div class="layui-card-body">
+            <div class="layui-form-item">
+                <label class="layui-form-label">时间选择</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" lay-datetime placeholder="yyyy-MM-dd">
+                </div>
+
+                <label class="layui-form-label">左右面板</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" placeholder="yyyy-MM-dd - yyyy-MM-dd" lay-datetime=""
+                           data-range="true" data-datetype="datetime" data-dateformat="yyyy-MM-dd HH:mm:ss"
+                           lay-key="22">
+                </div>
+
+                <label class="layui-form-label">时间选择器</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" placeholder="HH:mm:ss" lay-datetime="" data-datetype="time"
+                           data-dateformat="HH:mm:ss" lay-key="22">
+                </div>
+
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">年选择器</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" placeholder="yyyy" lay-datetime="" data-datetype="year"
+                           data-dateformat="yyyy" lay-key="22">
+                </div>
+
+                <label class="layui-form-label">年月选择器</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" placeholder="yyyy-MM" lay-datetime="" data-datetype="month"
+                           data-dateformat="yyyy-MM" lay-key="22">
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="layui-card">
+        <div class="layui-card-header">评分组件</div>
+        <div class="layui-card-body">
+            <div class="layui-form-item">
+                <label class="layui-form-label">评分组件</label>
+                <div class="layui-input-inline">
+                    <input class="layui-input layui-hide rate_8" name="rate_8">
+                    <div lay-rate="rate_8" data-default="1" data-class="rate_8" data-theme="#1890ff" data-length="5"
+                         class="layui-inline"></div>
+                </div>
+
+                <label class="layui-form-label">显示半星</label>
+                <div class="layui-input-inline">
+                    <input class="layui-input layui-hide rate_81" name="rate_81">
+                    <div lay-rate="rate_8" data-default="1" data-class="rate_81" data-half="true" data-theme="#1890ff"
+                         data-length="5" class="layui-inline"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-card">
+        <div class="layui-card-header">开关单选</div>
+        <div class="layui-card-body">
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">开关</label>
+                <div class="layui-input-inline">
+                    <input type="checkbox" checked="" name="open" lay-skin="switch" lay-filter="switchTest" title="开关">
+                </div>
+
+                <label class="layui-form-label">单选框</label>
+                <div class="layui-input-inline">
+                    <input type="radio" name="sex" value="男" title="男" checked="">
+                    <input type="radio" name="sex" value="女" title="女">
+                    <input type="radio" name="sex" value="禁" title="禁用" disabled="">
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="layui-card" style="overflow: visible!important;">
+        <div class="layui-card-header">下拉多选</div>
+        <div class="layui-card-body">
+            <div class="layui-form-item">
+                <label class="layui-form-label">下拉框</label>
+                <div class="layui-input-inline">
+                    <select name="interest">
+                        <option value=""></option>
+                        <option value="0">写作</option>
+                        <option value="1">阅读</option>
+                        <option value="2">游戏</option>
+                        <option value="3">音乐</option>
+                        <option value="4">旅行</option>
+                    </select>
+                </div>
+
+                <label class="layui-form-label">多选框</label>
+                <div class="layui-input-inline">
+                    <input type="checkbox" name="like1[write]" lay-skin="primary" title="写作" checked="">
+                    <input type="checkbox" name="like1[read]" lay-skin="primary" title="阅读">
+                    <input type="checkbox" name="like1[game]" lay-skin="primary" title="游戏" disabled="">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-card">
+        <div class="layui-card-header">颜色选择器</div>
+        <div class="layui-card-body">
+            <div class="layui-form-item">
+                <label class="layui-form-label">选择器</label>
+                <div class="layui-input-inline">
+                    <input class="layui-input layui-hide colorpicker_10" name="colorpicker_10">
+                    <div lay-colorpicker="colorpicker_10" data-value="undefined" class="layui-inline"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-card">
+        <div class="layui-card-header">标签选择器</div>
+        <div class="layui-card-body">
+            <div class="layui-form-item">
+                <label class="layui-form-label">常规使用</label>
+                <div class="layui-input-inline">
+                    <input type="text" lay-tags>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-card">
+        <div class="layui-card-header">级联选择器</div>
+        <div class="layui-card-body">
+            <div class="layui-form-item" >
+                <label class="layui-form-label">城市</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="city" class="layui-hide" lay-cascader=""  name="city" data-value="label" data-parents="1"  />
+                </div>
+                <div class="layui-input-inline">
+                    对于第三方组件，本框架未进行高度封装，如有特殊需求，可参考第三方文档自行渲染并进行数据处理！
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<include file="/public/footer"/>
+<script>
+    layui.use(['layer'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+
+
+    });
+</script>

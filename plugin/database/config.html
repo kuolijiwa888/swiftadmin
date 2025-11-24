@@ -1,0 +1,88 @@
+<include file="/public/header" />
+<link rel="stylesheet" type="text/css" href="__STATICADMIN__css/plugin.css?v={:release()}">
+<!-- // 重定位style -->
+<style>
+    body {
+        background: #fff;
+    }
+</style>
+<div class="layui-fluid">
+    <form action="{:url('/system/Plugin/config')}" class="layui-form layui-form-fixed" >
+        <input type="text" name="name" value="Database" hidden="">
+        <blockquote class="layui-elem-quote">配置项提示信息 TODO...</blockquote>
+        <div class="layui-form-item"> 
+            <label class="layui-form-label">{:__('配置项')}</label>
+            <div class="layui-input-block">
+                <input name="extends[title]"  
+				type="text" class="layui-input" 
+				value="{$config.extends.title}" 
+				lay-verType="tips" lay-verify="required"
+                placeholder="{:__('请填写配置项')}"/>
+            </div>
+        </div>
+       
+        <div class="layui-form-item"> 
+            <blockquote class="layui-elem-quote">{:__('伪静态规则')}</blockquote>
+             <div class="layui-card">
+                <table class="layui-table" lay-skin="nob">
+                <colgroup>
+                  <col width="100">
+                  <col width="200">
+                  <col width="100">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>变量名</th>
+                    <th>变量值</th>
+                    <th>操作</th>
+                  </tr> 
+                </thead>
+                <tbody id="layui-variable-content">
+                  <volist name="$config['rewrite']" id="vo">
+                  <tr>
+                    <td><input type="text" value="{$key}" class="layui-input layui-variable-key" lay-verType="tips" lay-verify="required" ></td>
+                    <td><input type="text" name="rewrite[{$key}]" value="{$vo}" class="layui-input layui-variable-value"></td>
+                    <td><button type="button" class="layui-btn layui-btn-primary layui-btn-xs"><i class="layui-icon layui-icon-delete"></i></button></td>
+                  </tr>
+                  </volist>
+                </tbody>
+              </table> 
+            </div>
+            <button type="button" class="layui-btn layui-btn-sm layui-variable-add" >{:__('增加变量')}</button>
+        </div>
+        <div class="layui-footer layui-form-item layui-center ">
+            <button class="layui-btn layui-btn-primary" type="button" sa-event="closeDialog">{:__('取消')}</button>
+            <button class="layui-btn" lay-filter="submitIframe" lay-submit>{:__('提交')}</button>
+        </div>
+    </form>
+</div>
+<include file="/public/footer" />
+
+<script>
+    layui.use(['layer', 'admin'], function () {
+        var $ = layui.jquery;
+        var admin = layui.admin;
+
+        // 增加变量
+        $('.layui-variable-add').on('click',function(){
+            var html = '<tr>';
+                html += '<td><input type="text" class="layui-input layui-variable-key" lay-verType="tips" lay-verify="required" ><\/td>';
+                html += '<td><input type="text" class="layui-input layui-variable-value"><\/td>';
+                html += '<td><button type="button" class="layui-btn layui-btn-primary layui-btn-xs"><i class="layui-icon layui-icon-delete"><\/i><\/button><\/td>';
+                html += '<\/tr>';
+            $('#layui-variable-content').append(html);
+        })
+
+        // 改变表单值
+        $('body').on('change','.layui-variable-key',function() {
+            var that = $(this),
+                name = 'rewrite['+ that.val() +']';
+            $(that).parents('tr').find('.layui-variable-value').attr('name',name);
+        })
+
+        // 删除自定义变量
+        $('body').on('click','#layui-variable-content .layui-btn',function() {
+            $(this).parents('tr').remove();
+        })
+    });
+</script>

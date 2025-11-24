@@ -1,0 +1,35 @@
+<?php
+declare (strict_types = 1);
+namespace {%controllerNamespace%};
+
+use app\AdminController;
+use Webman\Http\Request;
+use {%modelNamespace%}\{%modelName%} as {%modelName%}Model;
+
+/**
+ * {%table%}
+ * {%title%}
+ * <!--{%pluginClass%}-->
+ * Class {%controllerName%}
+ * @package {%controllerNamespace%}
+ */
+class {%controllerName%} extends AdminController
+{
+    /**
+     * {%modelName%}模型对象
+     * @var \{%modelNamespace%}\{%modelName%}
+     */
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->model = new {%modelName%}Model;
+    }
+
+    /**
+     * 默认生成的方法为index/add/edit/del/status 五个方法
+     * 当创建CURD的时候，DIY的函数体和模板为空，请自行编写代码
+     */
+    {%controllerDiy%}
+
+}

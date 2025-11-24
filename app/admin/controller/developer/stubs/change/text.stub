@@ -1,0 +1,17 @@
+    public function set{%field%}Attr($value)
+    {
+        if (!empty($value)) {
+            $value = serialize($value);
+        }
+
+        return $value;
+    }
+
+    public function get{%field%}Attr($value)
+    {
+        if (!empty($value)) {
+            $value = unserialize($value);
+        }
+
+        return $value;
+    }

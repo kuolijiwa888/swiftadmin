@@ -1,0 +1,3 @@
+templet:function(d) {
+    return '<a href="javascript:"><img class="filesuffix" lay-image-click src="'+d.{field}+'"></a>';
+}

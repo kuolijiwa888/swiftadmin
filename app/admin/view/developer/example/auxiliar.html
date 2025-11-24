@@ -1,0 +1,225 @@
+<include file="/public/header"/>
+<!-- // 重定位style -->
+<div class="layui-fluid layui-form">
+  <!--Developer-->
+  <div class="layui-card">
+    <div class="layui-card-header">弹窗组件</div>
+    <div class="layui-card-body">
+      <div class="layui-btn-container" style="margin-top: 15px;">
+        <button class="layui-btn" lay-open data-title="标题" data-url="#editor" data-area="600px,500px">内置弹窗</button>
+        <button class="layui-btn" lay-open data-title="标题" data-url="https://api.swiftadmin.net/"  data-area="600px,500px" >iframe弹窗</button>
+        <button class="layui-btn" lay-open data-url="#editor"  data-area="600px,500px" >无标题弹窗</button>
+        <button class="layui-btn" lay-open data-title="标题" data-url="#editor"  data-area="300px,300px" >300X300弹窗</button>
+        <button class="layui-btn" lay-open data-title="标题" data-url="#editor"  data-area="500px,500px" data-maxmin="true" >最大化窗口</button>
+        <button class="layui-btn" lay-open data-title="标题" data-url="#editor"  data-area="500px,500px" data-maxmin="true" data-offset="10px">窗口定位</button>
+        <button class="layui-btn" lay-open data-title="标题" data-url="#editor"  data-area="500px,500px" data-maxmin="true" data-shadeClose="true" >点击阴影关闭</button>
+
+      </div>
+      <p style="margin: 5px 0 10px 0;">
+        更多弹出层的使用示例请查看 <a href="https://layuion.com/layer/" target="_blank">layer弹窗组件</a>
+      </p>
+    </div>
+  </div>
+
+  <div class="layui-card">
+    <div class="layui-card-header">AJAX数据提交</div>
+    <div class="layui-card-body">
+      <button class="layui-btn" lay-ajax data-url="{:url('/ajax/index')}" >常规提交</button>
+      <button class="layui-btn" lay-ajax data-url="{:url('/ajax/index')}" data-table="lay-tableList">刷新表格</button>
+      <button class="layui-btn" lay-ajax data-url="{:url('/ajax/index')}" data-reload="parent">重载父页面</button>
+      <button class="layui-btn" lay-ajax data-url="{:url('/ajax/index')}" data-reload="top">重载顶层页面</button>
+      <button class="layui-btn" lay-ajax data-url="{:url('/ajax/index')}" data-confirm="确定要提交吗？">询问提交</button>
+      <button class="layui-btn" lay-ajax data-url="{:url('/ajax/index')}" data-close="true">提交后关闭窗口/仅适用于窗口</button>
+      <button class="layui-btn" lay-ajax data-url="{:url('/ajax/index')}" data-jump="false">关闭URL跳转</button>
+      <button class="layui-btn layui-btn-primary" lay-ajax="" data-url="{:url('/ajax/index')}" data-object="type:ctype,host:chost,port:cport,user:cuser,pass:cpass">{:__('带参数提交')}</button>
+    </div>
+  </div>
+
+  <div class="layui-card">
+    <div class="layui-card-header">消息通知</div>
+    <div class="layui-card-body">
+      <button class="layui-btn" onclick="layui.layer.msg('成功消息');" >成功通知</button>
+      <button class="layui-btn layui-btn-danger" onclick="layui.layer.error('错误通知');" >错误通知</button>
+      <button class="layui-btn layui-btn-warm" onclick="layui.layer.warning('警告通知');" >警告通知</button>
+      <button class="layui-btn layui-btn-primary" onclick="layui.layer.info('信息通知');" >信息通知</button>
+    </div>
+  </div>
+
+  <div class="layui-card">
+    <div class="layui-card-header">元素切换</div>
+    <div class="layui-card-body">
+      <div class="layui-form-item">
+        <label class="layui-form-label">单选切换</label>
+        <div class="layui-input-inline">
+          <input type="radio" name="cache_status" data-display="radioClass" lay-filter="radioStatus" value="1" title="开启" checked>
+          <input type="radio" name="cache_status" data-display="radioClass" lay-filter="radioStatus" value="0" title="关闭" >
+        </div>
+        <div class="layui-input-inline radioClass">
+          <div class="layui-input-inline">我是元素</div>
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">下拉切换</label>
+        <div class="layui-input-inline">
+          <select name="cache_type" data-display="cache_type" data-disable="file" lay-filter="selectStatus" class="ctype">
+            <option value="file"  >file</option>
+            <option value="redis"  >redis</option>
+            <option value="memcached">memcached</option>
+          </select>
+        </div>
+
+        <div class="layui-input-inline cache_type">
+          <div class="layui-input-inline">我是元素</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="layui-card">
+    <div class="layui-card-header">下拉菜单</div>
+    <div class="layui-card-body">
+      <div class="layui-btn-container" style="margin-top: 15px;">
+        <button class="layui-btn" id="demo1">
+          下拉菜单
+          <i class="layui-icon layui-icon-down layui-font-12"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="layui-card">
+    <div class="layui-card-header">进度条</div>
+    <div class="layui-card-body">
+      <div class="layui-progress">
+        <div class="layui-progress-bar layui-bg-red" lay-percent="20%"></div>
+      </div>
+
+      <br>
+
+      <div class="layui-progress">
+        <div class="layui-progress-bar layui-bg-orange" lay-percent="30%"></div>
+      </div>
+
+      <br>
+
+      <div class="layui-progress">
+        <div class="layui-progress-bar layui-bg-primary" lay-percent="40%"></div>
+      </div>
+
+      <br>
+
+      <div class="layui-progress">
+        <div class="layui-progress-bar layui-bg-blue" lay-percent="50%"></div>
+      </div>
+
+      <br>
+
+      <div class="layui-progress">
+        <div class="layui-progress-bar" lay-percent="60%"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="layui-card">
+    <div class="layui-card-header">其他组件</div>
+    <div class="layui-card-body">
+      <div>其他组件和元素请参考 <a href="https://layuion.com/docs/" target="_blank">Layui官网文档</a> </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/html" id="editor">
+  <form action="" class="layui-form">
+    <div class="layui-card">
+      <div class="layui-card-body">
+        <div class="layui-form-item">我是内置弹窗内容</div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">禁止编辑</label>
+          <div class="layui-input-inline">
+            <input type="text" class="layui-input" value="我是数据" data-disabled="true" >
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</script>
+
+<include file="/public/footer"/>
+<script>
+  layui.use('dropdown', function(){
+    var dropdown = layui.dropdown
+    dropdown.render({
+      elem: '#demo1' //可绑定在任意元素中，此处以上述按钮为例
+      ,data: [{
+        title: 'menu item 1'
+        ,id: 100
+        ,href: '#'
+      },{
+        title: 'menu item 2'
+        ,id: 101
+        ,href: '{{d.root}}/' //开启超链接
+        ,target: '_blank' //新窗口方式打开
+      },{type: '-'},{
+        title: 'menu item 3'
+        ,id: 102
+        ,type: 'group'  //菜单类型，支持：normal/group/parent/-
+        ,child: [{
+          title: 'menu item 3-1'
+          ,id: 103
+        },{
+          title: 'menu item 3-2'
+          ,id: 104
+          ,child: [{
+            title: 'menu item 3-2-1'
+            ,id: 105
+          },{
+            title: 'menu item 3-2-2'
+            ,id: 106
+          }]
+        },{
+          title: 'menu item 3-3'
+          ,id: 107
+        }]
+      },{type: '-'},{
+        title: 'menu item 4'
+        ,id: 108
+      },{
+        title: 'menu item 5'
+        ,id: 109
+        ,child: [{
+          title: 'menu item 5-1'
+          ,id: 11111
+          ,child: [{
+            title: 'menu item 5-1-1'
+            ,id: 2111
+          },{
+            title: 'menu item 5-1-2'
+            ,id: 3111
+          }]
+        },{
+          title: 'menu item 5-2'
+          ,id: 52
+        }]
+      },{type:'-'},{
+        title: 'menu item 6'
+        ,id: 6
+        ,type: 'group'
+        ,isSpreadItem: false
+        ,child: [{
+          title: 'menu item 6-1'
+          ,id: 61
+        },{
+          title: 'menu item 6-2'
+          ,id: 62
+        }]
+      }]
+      ,id: 'demo1'
+      //菜单被点击的事件
+      ,click: function(obj){
+        console.log(obj);
+        layer.msg('回调返回的参数已显示再控制台');
+      }
+    });
+  });
+</script>

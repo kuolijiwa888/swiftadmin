@@ -1,0 +1,17 @@
+public function set{%field%}Attr($value)
+    {
+        if (!empty($value) && is_array($value)) {
+            $value = implode(',',$value);
+        }
+
+        return $value;
+    }
+
+    public function get{%field%}Attr($value)
+    {
+        if (!empty($value) && is_string($value)) {
+            $value = explode(',',$value);
+        }
+
+        return $value;
+    }

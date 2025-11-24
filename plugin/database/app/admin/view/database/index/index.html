@@ -1,0 +1,227 @@
+<include file="/public/header" />
+<!--database-->
+<style>
+    .layui-layer-msg .layui-layer-content .layui-icon-loading:before{ color: #1e9fff}
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <!-- // 默认操作按钮 -->
+        <div class="layui-card-header layadmin-card-header-auto ">
+            <div class="layui-form">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-form-label">{:__('表格名称')}</div>
+                        <div class="layui-input-inline ">
+                            <input name="name" class="layui-input" type="text" placeholder="{:__('表格名称')}"/>
+                        </div>
+                    </div>
+                    <div class="layui-inline" >
+                        <!-- // 默认搜索 -->
+                        <button class="layui-btn icon-btn" lay-filter="search" lay-submit><i class="layui-icon layui-icon-search"></i>{:__('搜索')}</button>
+                        <!--formBegin-->
+                        <eq name=":is_admin()" value="true">
+                            <button class="layui-btn icon-btn" lay-open="" data-title="备份配置" data-area="800px,700px" data-maxmin="true"
+                                    data-url="{:url('/database/Index/setConfig')}" >
+                                <i class="layui-icon fa-cogs"></i>备份配置
+                            </button>
+
+                            <button class="layui-btn icon-btn" lay-open="" data-title="按照备份配置进行整库备份" data-area="800px,750px"
+                                    data-url="{:url('/database/Index/backupTables?whole=1')}" >
+                                <i class="layui-icon fa-download"></i>快捷备份
+                            </button>
+                            <button class="layui-btn icon-btn" lay-open="" data-title="备份恢复" data-area="850px,750px"
+                                    data-url="{:url('/database/Index/restore')}" >
+                                <i class="layui-icon fa-retweet"></i>备份管理
+                            </button>
+                        </eq>
+                        <!--formEnd-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- // 创建数据实例 -->
+        <table id="lay-tableList" lay-filter="lay-tableList"></table>
+    </div>
+</div>
+<!-- // 列表工具栏 -->
+<script type="text/html" id="tableBar">
+    <!--formBegin-->
+<!--    <a class="layui-table-text" data-title="{:__('编辑')}" data-area="900px,750px" data-maxmin="true"-->
+<!--       data-url="{:url('/spread/LiveCodes/edit')}?id={{d.id}}" lay-event="edit" >{:__('编辑')}</a>-->
+    <div class="layui-divider layui-divider-vertical"></div>
+    <a class="layui-table-text" lay-event="empty" >{:__('清空')}</a>
+    <div class="layui-divider layui-divider-vertical"></div>
+    <!--formEnd-->
+    <a class="layui-table-text" lay-event="del" >{:__('删除')}</a>
+</script>
+<script type="text/html" id="table-size">
+    {{ ((d.data_length + d.index_length)/1024).toFixed(2) }} KB
+</script>
+<script type="text/html" id="free-size">
+    {{#if (d.data_free == 0) { }}
+    -
+    {{# }else { }}
+    {{ (d.data_free /1024).toFixed(2) }} KB
+    {{# } }}
+</script>
+<script type="text/html" id="tableButton">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="optimize"><i class="layui-icon fa-check-square-o"></i>优化</button>
+        <button class="layui-btn layui-btn-sm" lay-event="repair"><i class="layui-icon fa-wrench"></i>修复</button>
+        <button class="layui-btn layui-btn-sm layui-bg-red" lay-event="drop"><i class="layui-icon fa-trash-o"></i>删除选中表</button>
+        <button class="layui-btn layui-btn-sm layui-bg-red" lay-event="truncate"><i class="layui-icon layui-icon-circle"></i>清空选中表</button>
+        <button class="layui-btn layui-btn-sm" lay-event="backup"><i class="layui-icon fa-share-square"></i>备份选中表</button>
+<!--        <button class="layui-btn icon-btn layui-btn-sm" lay-open="" data-title="{:__('添加数据表')}" data-area="850px,750px" data-maxmin="true" data-url="{:url('/spread/LiveCodes/add')}" >-->
+<!--            <i class="layui-icon layui-icon-add-circle"></i>{:__('添加数据表')}-->
+<!--        </button>-->
+        <button class="layui-btn layui-btn-sm" lay-event="refresh"><i class="layui-icon layui-icon-refresh-3"></i>刷新</button>
+    </div>
+</script>
+
+<include file="/public/footer" />
+<script>
+    layui.use(['admin','table'], function () {
+        var admin = layui.admin,$=layui.jquery,form=layui.form;
+        var table = layui.table;
+        /*
+         * 初始化表格
+        */
+        var isTable = table.render({
+            elem: "#lay-tableList"
+            ,url: "{:url('/database/Index/index')}"
+            ,method:"post"
+            ,toolbar: '#tableButton'
+            ,cellMinWidth: 80
+            ,defaultToolbar: [
+                // { title: '刷新', layEvent: 'refresh',icon: 'layui-icon-refresh',},
+            ]
+            ,cols: [[
+                {type: 'checkbox', width: 50},
+                {field:'name',title:'{:__("表名")}', width: 170},
+                {field:'engine',title:'{:__("存储引擎")}', width: 100,align: "center"},
+                {field:'collation',title:'{:__("字符编码")}',width: 155,align: "center"},
+                {field:'rows',title:'{:__("记录条数")}',align: "center"},
+                {field:'enable',title:'{:__("存储大小")}',align: 'center',templet: '#table-size',width: 100},
+                {field:'visits',title:'{:__("碎片大小")}',align: 'center',templet: '#free-size',width: 100},
+                // {field:'row_format',title:'{:__("数据格式")}',align: "center"},
+                {field:'comment',title:'{:__("数据表注释")}'},
+                {field:'create_time',title:'{:__("创建时间")}'},
+                {align: 'center', toolbar: '#tableBar', width:200, fixed: 'right', title: '{:__("操作")}'},
+            ]]
+        })
+
+        // 工具栏事件
+        table.on('toolbar(lay-tableList)', function(obj){
+            var id = obj.config.id;
+            var checkStatus = table.checkStatus(id);
+            let table_name=$.map(checkStatus.data,function (value) {
+                return value.name;
+            });
+            var othis = lay(this);
+            switch(obj.event){
+                case 'optimize':
+                    batch_table('optimize',table_name);
+                    break;
+                case 'repair':
+                    batch_table('repair',table_name);
+                    break;
+                case 'drop':
+                    danger_batch_table(checkStatus.isAll,'drop',table_name);
+                    break;
+                case 'truncate':
+                    danger_batch_table(checkStatus.isAll,'truncate',table_name);
+                    break;
+                case 'refresh':
+                    isTable.reloadData()
+                    break;
+                case 'backup':
+                    if(table_name.length==0){
+                        layer.msg('您还没有选择需要备份的数据表呢',{icon: 3})
+                        return false;
+                    }else {
+                        window.Back_tables=table_name;
+                    }
+
+                    layer.open({
+                        type: 2,
+                        title: '当前正在进行数据备份操作，请勿关闭',
+                        shadeClose: true,
+                        shade: false,
+                        area: ['520px', '500px'],
+                        content: "{:url('/database/Index/backupTables')}"
+                    });
+                    //layer post
+                    break;
+            };
+        });
+        table.on('tool(lay-tableList)', function(obj){
+            var data = obj.data; // 获得当前行数据
+            table_name=[data.name];
+            switch(obj.event){
+                case 'del':
+                    danger_batch_table(false,'drop',table_name);
+                    break;
+                case 'empty':
+                    danger_batch_table(false,'truncate',table_name);
+                    break;
+            };
+        });
+        
+        function batch_table(action,tables) {
+            var loadIndex = layer.msg('正在操作数据表...', {
+                icon: 16,
+                time: 100000,
+                shade: 0.5
+            });
+            let opt_url = "{:url('/database/Index/batch_table?action=')}"+action;
+            let post_data='';
+            if(tables.length==0){
+                post_data={table_names: {}};
+            }else {
+                post_data={table_names:tables};
+            }
+            $.post(opt_url,post_data,function(res){
+                if(res.code==200){
+                    layer.msg(res.msg,{icon: 1})
+                    isTable.reloadData()
+                }else {
+                    layer.msg(res.msg,{icon: 5})
+                }
+                layer.close(loadIndex);
+            });
+        }
+        function danger_batch_table(isall,action,tables)
+        {
+            if(isall){
+                layer.msg('不能对全部数据表进行删除或清空操作',{icon: 5})
+                return false;
+            }
+            if(tables.length==0){
+                layer.msg('您还没有选择需要操作的数据表呢',{icon: 3})
+                return false;
+            }
+            let action_tip=action==='drop'?'删除表操作':'清空表操作';
+            layer.confirm('请确认是否需要对所选数据表进行' + action_tip, {
+                btn: ['确定', '取消'] //按钮
+            }, function(){
+                batch_table(action,tables)
+            }, function(){
+                layer.msg('已经取消当前操作');
+            });
+        }
+
+        // 根据条件进行突出显示
+        form.on('submit(search)', function(data) {
+            // isTable.reloadData()
+            let keyword = data.field.name;
+            let table_data = table.cache['lay-tableList'];
+            for(let i = table_data.length - 1; i >= 0; i--){
+                if(table_data[i].name.indexOf(keyword)<0){
+                    table_data.splice(i, 1);
+                }
+            }
+            table.renderData('lay-tableList');
+            return false;
+        });
+    })
+</script>

@@ -1,0 +1,20 @@
+{
+    "name": "developer",
+    "title": "开发助手",
+    "intro": "插件开发助手，流程化建立插件！",
+    "author": "官方",
+    "home": "https:\/\/www.swiftadmin.net",
+    "version": "1.0.3",
+    "status": 1,
+    "extends": [],
+    "rewrite": [],
+    "area": [
+        "600px",
+        "650px"
+    ],
+    "auto": true,
+    "config": 0,
+    "icon": "fa-plug",
+    "menu": 0,
+    "path": "E:\/swiftadmin\/plugin\\developer\/"
+}

@@ -1,0 +1,8 @@
+    /**
+     * method 函数
+     */
+    public function method()
+    {
+        return $this->view();
+    }
+

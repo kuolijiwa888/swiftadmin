@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * Developer插件公共函数库
+ */
+
+if (!function_exists('format_time')) {
+    /*
+     * 格式化时间戳
+     */
+    function format_time()
+    {
+        return date('Y-m-d H:i:s', time());
+    }
+}
+

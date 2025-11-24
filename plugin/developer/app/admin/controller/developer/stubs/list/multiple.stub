@@ -1,0 +1,7 @@
+templet:function(d) {
+    var album = [];
+    for (var i in d.{field}) {
+        album[i] = '<a href="javascript:" class="fileslink" ><img class="filesuffix" lay-image-click src="'+d.{field}[i].src+'"></a>'
+    }
+    return album.join('');
+}

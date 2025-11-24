@@ -1,0 +1,9 @@
+<include file="/public/header" />
+<!-- // 重定位style -->
+<!--{pluginClass}-->
+<link href="__STATICADMIN__css/content.css" rel="stylesheet" type="text/css" />
+<div class="layui-fluid">
+   示例模板，可自行开发
+</div>
+<include file="/public/static" />
+<include file="/public/footer" />

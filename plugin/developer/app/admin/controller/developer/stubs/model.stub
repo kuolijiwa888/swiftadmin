@@ -1,0 +1,28 @@
+<?php
+
+namespace {%modelNamespace%};
+
+use think\Model;
+{%softDeleteClassPath%}
+
+/**
+ * {%table%}
+ * <!--{%pluginClass%}-->
+ * {%title%}
+ * Class {%modelName%}
+ * @package {%modelNamespace%}
+ */
+class {%modelName%} extends Model
+{
+
+    {%softDelete%}
+
+    // 定义时间戳字段名
+    protected $createTime = {%createTime%};
+    protected $updateTime = {%updateTime%};
+    protected $deleteTime = {%deleteTime%};
+
+    {%relationMethodList%}
+    {%fieldAttrArr%}
+
+}

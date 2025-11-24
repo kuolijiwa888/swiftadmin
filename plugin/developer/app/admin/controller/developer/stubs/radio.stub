@@ -1,0 +1,5 @@
+<if (isset($data['id'])) && $data['id']>
+    <eq name="$vo.checked" value="true">checked</eq>
+    <else/>
+    <eq name="$vo.value" value="$data.fieldName">checked</eq>
+</if>

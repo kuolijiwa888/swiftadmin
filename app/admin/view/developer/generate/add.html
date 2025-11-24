@@ -1,0 +1,477 @@
+<include file="/public/header" />
+<!--Developer-->
+<style>
+    .layui-form-checkbox[lay-skin="primary"] span {
+        padding-right: 13px;
+    }
+    
+    @media screen and (max-width: 1200px) {
+        .layui-form-item .layui-input-inline {
+            width: 138px;
+        }
+    }
+</style>
+<div class="layui-fluid" style="display: none">
+    <form class="layui-form layui-card">
+        <div class="layui-card-header">基础配置</div>
+        <div class="layui-card-body" style="padding-bottom:100px;">
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:__('数据库表')}</label>
+                <div class="layui-input-inline">
+                    <select id="table" name="table" lay-verify="required" <notempty name="$data['table']"> disabled </notempty>
+                        lay-search lay-filter="selectTable" data-type="table" >
+                        <option value="">{:__('请选择数据表')}</option>
+                        <volist name="$tables" id="vo">
+                            <option value="{$vo}" <if condition="$vo eq $data['table']"> selected </if> >{$vo}</option>
+                        </volist>
+                    </select>
+                </div>
+                <label class="layui-form-label">{:__('所属插件')}</label>
+                <div class="layui-input-inline">
+                    <select name="plugin">
+                        <option value="">{:__('请选择开发的插件')}</option>
+                        <volist name="pluginList" id="vo">
+                            <option value="{$vo.name}" <if condition="$vo['name'] eq $data['plugin']"> selected </if>
+                            >{$vo.title}</option>
+                        </volist>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <font color="red">* </font>{:__('菜单名称')}
+                </label>
+                <div class="layui-input-inline">
+                    <input name="title" type="text" class="layui-input" lay-verify="required"
+                        placeholder="{:__('请输入菜单名称')}">
+                </div>
+                <label class="layui-form-label">{:__('顶级菜单')}</label>
+                <div class="layui-input-inline">
+                    <select name="pid">
+                        <option value="">{:__('请选择顶级菜单')}</option>
+                        <php>
+                            $where['pid'] = 0;
+                            $rules = \think\facade\Db::name('admin_rules')->where($where)->select();
+                        </php>
+                        <volist name="$rules" id="vo">
+                            <option value="{$vo.id}" <if condition="$vo['id'] eq $data['pid']"> selected </if>
+                                >{$vo.title}</option>
+                        </volist>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span style="color: red; ">* </span>{:__('控制器路径')}
+                </label>
+                <div class="layui-input-inline">
+                    <input name="controller" id="controller" lay-verify="required" type="text" class="layui-input"
+                        placeholder="{:__('请输入控制器路径')}">
+                </div>
+                <label class="layui-form-label">
+                    <span style="color: red; ">* </span>{:__('菜单图标')}
+                </label>
+                <div class="layui-input-inline">
+                    <input name="icon" type="text" id="iconPicker" class="layui-input"
+                        placeholder="{:__('layui-icon-app')}">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <span style="color: red; ">* </span>{:__('其他选项')}
+                </label>
+                <div class="layui-input-block" style="position:relative;">
+                    <input type="checkbox" lay-skin="primary" name="create" title="生成菜单" value="1">
+                    <input type="checkbox" lay-skin="primary" name="auth" title="菜单鉴权" value="1">
+                    <input type="checkbox" lay-skin="primary" name="force" title="强制覆盖" value="1">
+                    <input type="checkbox" lay-skin="primary" name="global" title="全局模型类" value="1">
+                    <i class="layui-icon layui-icon-tips" style="position:absolute; top:4px;"
+                        lay-tips="默认模型生成在app/admin/model目录下<br>* 选中后模型将会生成在app/common/model目录下" data-offset="1"></i>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:__('列表字段')}</label>
+                <div class="layui-input-inline" style="width: 52%;">
+                    <div class="listField" name="listField"></div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:__('关联模型')}</label>
+                <div class="layui-input-block">
+                    <table class="layui-table" id="relationModel">
+                        <thead>
+                            <tr>
+                                <th lay-data="{field:'table', width:300}">数据模型/表</th>
+                                <th lay-data="{field:'style', width:150}">关联方式/HasOne</th>
+                                <th lay-data="{field:'foreignKey'}">关联外键/foreignKey</th>
+                                <th lay-data="{field:'localKey'}">关联主键/localKey</th>
+                                <th lay-data="{field:'Field'}">字段显示/Field</th>
+                            </tr>
+                        </thead>
+                        <tbody id="relationBody"></tbody>
+                    </table>
+                </div>
+                <label class="layui-form-label"></label>
+                <div class="layui-input-inline">
+                    <button class="layui-btn layui-btn-sm layui-relation-add" type="button">添加</button>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:__('控制器/功能')}</label>
+                <div class="layui-input-block">
+                    <table class="layui-table" lay-filter="parse-table">
+                        <thead>
+                            <tr>
+                                <th lay-data="{field:'name'}">名称</th>
+                                <th lay-data="{field:'controller'}">控制器</th>
+                                <th lay-data="{field:'route'}">路由</th>
+                                <th lay-data="{field:'view'}">视图模板</th>
+                                <th lay-data="{field:'type'}">类型</th>
+                                <th lay-data="{field:'auth'}">鉴权</th>
+                            </tr>
+                        </thead>
+                        <tbody id="parse-table">
+                            <tr>
+                                <td><input type="text" name="menus[title][]" class="layui-input" value="查看"></td>
+                                <td><input type="text" name="menus[router][]" data-type="index"
+                                        class="layui-input change-router"></td>
+                                <td><input type="text" name="menus[route][]" disabled
+                                        class="layui-input layui-disabled"></td>
+                                <td><input type="text" name="menus[template][]" class="layui-input"
+                                        placeholder="{:__('默认')}"></td>
+                                <td>
+                                    <input name="menus[type][]" type="text" hidden value="1">
+                                    <span class="layui-badge layui-badge-blue ruletype">{:__("按钮")}</span>
+                                </td>
+                                <td>
+                                    <input name="menus[auth][]" type="text" hidden value="1">
+                                    <span class="layui-badge layui-badge-blue ruleauth">{:__("是")}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" name="menus[title][]" class="layui-input" value="添加"></td>
+                                <td><input type="text" name="menus[router][]" data-type="add"
+                                        class="layui-input change-router"></td>
+                                <td><input type="text" name="menus[route][]" disabled
+                                        class="layui-input layui-disabled"></td>
+                                <td><input type="text" name="menus[template][]" class="layui-input"
+                                        placeholder="{:__('默认')}"></td>
+                                <td>
+                                    <input name="menus[type][]" type="text" hidden value="1">
+                                    <span class="layui-badge layui-badge-blue ruletype">{:__("按钮")}</span>
+                                </td>
+                                <td>
+                                    <input name="menus[auth][]" type="text" hidden value="1">
+                                    <span class="layui-badge layui-badge-blue ruleauth">{:__("是")}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" name="menus[title][]" class="layui-input" value="编辑"></td>
+                                <td><input type="text" name="menus[router][]" data-type="edit"
+                                        class="layui-input change-router"></td>
+                                <td><input type="text" name="menus[route][]" disabled
+                                        class="layui-input layui-disabled"></td>
+                                <td><input type="text" name="menus[template][]" class="layui-input"
+                                        placeholder="{:__('默认')}"></td>
+                                <td>
+                                    <input name="menus[type][]" type="text" hidden value="1">
+                                    <span class="layui-badge layui-badge-blue ruletype">{:__("按钮")}</span>
+                                </td>
+                                <td>
+                                    <input name="menus[auth][]" type="text" hidden value="1">
+                                    <span class="layui-badge layui-badge-blue ruleauth">{:__("是")}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" name="menus[title][]" class="layui-input" value="删除"></td>
+                                <td><input type="text" name="menus[router][]" data-type="del"
+                                        class="layui-input change-router"></td>
+                                <td><input type="text" name="menus[route][]" disabled
+                                        class="layui-input layui-disabled"></td>
+                                <td><input type="text" name="menus[template][]" class="layui-input"
+                                        placeholder="{:__('默认')}"></td>
+                                <td>
+                                    <input name="menus[type][]" type="text" hidden value="2">
+                                    <span class="layui-badge layui-badge-green ruletype">{:__("接口")}</span>
+                                </td>
+                                <td>
+                                    <input name="menus[auth][]" type="text" hidden value="1">
+                                    <span class="layui-badge layui-badge-blue ruleauth">{:__("是")}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" name="menus[title][]" class="layui-input" value="状态"></td>
+                                <td><input type="text" name="menus[router][]" data-type="status"
+                                        class="layui-input change-router"></td>
+                                <td><input type="text" name="menus[route][]" disabled
+                                        class="layui-input layui-disabled"></td>
+                                <td><input type="text" name="menus[template][]" class="layui-input"
+                                        placeholder="{:__('默认')}"></td>
+                                <td>
+                                    <input name="menus[type][]" type="text" hidden value="2">
+                                    <span class="layui-badge layui-badge-green ruletype">{:__("接口")}</span>
+                                </td>
+                                <td>
+                                    <input name="menus[auth][]" type="text" hidden value="1">
+                                    <span class="layui-badge layui-badge-blue ruleauth">{:__("是")}</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="layui-footer layui-form-footer">
+            <button class="layui-btn layui-btn-primary" type="button" sa-event="closeDialog">{:__('取消')}</button>
+            <button class="layui-btn" lay-filter="submitIframe" type="button" lay-submit>{:__('提交')}</button>
+        </div>
+    </form>
+</div>
+
+<script type="text/html" id="relationHtml">
+    <tr>
+        <td>
+            <div class="layui-input-inline" >
+                <select name="relation_table[]" lay-filter="relationTable" lay-verify="required">
+                    <option value="">{:__('请选择数据表')}</option>
+                    <volist name="$tables" id="vo">
+                        <option value="{$vo}" >{$vo}</option>
+                    </volist>
+                </select>
+            </div>
+        </td>
+        <td>
+            <div class="layui-input-inline" >
+                <select name="relation_style[]" lay-verify="required" >
+                    <option value="">{:__('请选择关联方式')}</option>
+                    <option value="hasOne">hasOne</option>
+                    <option value="hasMany">hasMany</option>
+                </select>
+            </div>
+        </td>
+        <td>
+            <div class="layui-input-inline" >
+                <select name="foreignKey[]" class="foreignKey" lay-verify="required" >
+                    <option value="">{:__('请选择关联外键')}</option>
+                </select>
+            </div>
+        </td>
+        <td>
+            <div class="layui-input-inline" >
+                <select name="localKey[]" class="localKey" lay-verify="required" >
+                    <option value="">{:__('请选择关联主键')}</option>
+                </select>
+            </div>
+        </td>
+        <td>
+            <div class="layui-input-inline" >
+                <!-- // 隐藏关联字段表单 -->
+                <div class="relationField"></div>
+            </div>
+            <span class="layui-relation-delete"><i class="layui-icon layui-icon-close"></i></span>
+        </td>
+    </tr>
+</script>
+
+<include file="/public/static" />
+<include file="/public/footer" />
+
+<script>
+    layui.use(['form', 'jquery', 'admin', 'iconPicker'], function () {
+        let form = layui.form;
+        let $ = layui.jquery;
+        let admin = layui.admin;
+        let iconPicker = layui.iconPicker;
+        let localFields = [];
+        let fieldUrl = "{:url('/developer/Generate/queryFields')}";
+
+        form.on('select(selectTable)', function (data) {
+            var route = data.value.split('_').slice(1).join('_');
+            localFields = admin.event.ajax(fieldUrl, { table: route });
+            route = route.substring(0,1).toUpperCase() + route.substring(1);
+            route = route.replace(/\_(\w)/g, (_, letter) => letter.toUpperCase());
+            var controller = '/' + route + '/';
+            syncChengeController(controller);
+            $('#controller').val(controller + 'index');
+            // 重载字段
+            $('.localKey').each(function (key, elem) {
+                $(elem).empty();
+                $(elem).append(new Option('请选择关联主键', ''));
+                for (let index = 0; index < localFields.length; index++) {
+                    const element = localFields[index];
+                    $(elem).append(new Option(element.value, element.value));
+                }
+            });
+
+            form.render();
+            xmRender('.listField', 'listField', localFields);
+        })
+
+        // 改变控制器
+        $('#controller').keyup(function (elem) {
+            syncChengeController($(this).val().substring(0, $(this).val().lastIndexOf('/') + 1));
+        })
+
+        var syncChengeController = function (route = null) {
+            $('.change-router').each(function (index, elem) {
+                var type = $(elem).data('type');
+                var router = route + type;
+                $(elem).val(router);
+                $(elem).parent('td').next().find('input').val(router.substring(1).replaceAll('/', ':'));
+            })
+        }
+
+        $('.change-router').keyup(function(e) {
+            var route = $(this).val().substring(1).replace('/', ':');
+            $(this).parent('td').next().find('input').val(route);
+        })
+
+        // 渲染字段显示
+        var xmRender = function (elem, name = 'listField', field = [], init = []) {
+            xmSelect.render({
+                el: elem,
+                name: name,
+                theme: {
+                    color: '#1890ff',
+                },
+                data: field,
+                initValue: init
+            })
+        }
+
+        // 增加关联选项
+        $('.layui-relation-add').click(function (params) {
+            var html = $('#relationHtml').html();
+            $('#relationBody').append(html);
+            form.render();
+        })
+
+        // 关联表操作
+        form.on('select(relationTable)', function (data) {
+            var index = $(this).parents('tr').index();
+            var xm_obj = $('.relationField:eq(' + index + ')');
+            var foreignElem = $('.foreignKey:eq(' + index + ')');
+            var localElem = $('.localKey:eq(' + index + ')');
+            var route = data.value.split('_').slice(1).join('_');
+            var foreignfiled = admin.event.ajax(fieldUrl, { table: route }, false);
+
+            console.log(foreignfiled);
+
+            // 重载关联外键
+            foreignElem.empty();
+            foreignElem.append(new Option('请选择关联外键', ''));
+            for (let index = 0; index < foreignfiled.length; index++) {
+                const element = foreignfiled[index];
+                foreignElem.append(new Option(element.value, element.value));
+            }
+
+            // 重载关联主键
+            localElem.empty();
+            localElem.append(new Option('请选择关联主键', ''));
+            for (let index = 0; index < localFields.length; index++) {
+                const element = localFields[index];
+                localElem.append(new Option(element.value, element.value));
+            }
+
+            form.render();
+            multi_xml_func(index, foreignfiled, xm_obj);
+        })
+
+        // 管理XM对象集合
+        var xm_tree = [];
+        var multi_xml_func = function (index, field, xm_obj, init = []) {
+            if (xm_tree[index] !== undefined) {
+                xm_tree[index].update({ data: field });
+            } else {
+                xm_tree[index] = xmSelect.render({
+                    el: xm_obj[0],
+                    name: 'relationField[' + index + ']',
+                    theme: {
+                        color: '#1890ff',
+                    },
+                    data: field,
+                    initValue: init,
+                    on: function (data) {
+                        let f = [];
+                        data.arr.forEach(v => {
+                            f.push(v.value);
+                        });
+                        xm_obj.prev().val(f.join());
+                    }
+                })
+            }
+        }
+
+        // 删除关联元素
+        $('body').on('click', '.layui-relation-delete i', function (elem) {
+            if ($('#relationModel tbody tr').length) {
+                $(this).parents('tr').remove();
+            }
+        })
+
+        // 修改鉴权操作
+        $('.ruleauth').click(function (e) {
+            var that = $(this), prev = that.prev();
+            var val = prev.val();
+            if (val >= 1) {
+                that.addClass('layui-badge-red').text('否');
+            } else {
+                that.removeClass('layui-badge-red').text('是');
+            }
+            val >= 1 ? prev.val(0) : prev.val(1);
+        })
+
+        // 切换类型
+        $('.ruletype').click(function (e) {
+            var that = $(this), prev = that.prev(),
+                arr = {
+                    1: {
+                        value: '1',
+                        title: '按钮',
+                        class: 'layui-badge-blue'
+                    },
+                    2: {
+                        value: '2',
+                        title: '接口',
+                        class: 'layui-badge-green'
+                    },
+                    3: {
+                        value: '3',
+                        title: '系统',
+                        class: 'layui-badge-red'
+                    }
+                };
+            var val = Number(prev.val()) + 1;
+
+            if (val > 3) {
+                val = 1;
+            }
+            $(that).prop('class', 'layui-badge');
+            $(that).addClass(arr[val].class);
+            $(that).text(arr[val].title);
+            $(prev).val(arr[val].value);
+        })
+
+        // 图标选择
+        iconPicker.render({
+            elem: '#iconPicker',
+            type: 'fontClass',
+            search: true,
+            cellWidth: "14%",
+            page: true,
+            limit: 20,
+            click: function (data) {
+                $('#iconPicker').val(data.icon);
+            },
+            success: function (d) { }
+        });
+
+        // 初始化元素
+        xmRender('.listField');
+        $('.layui-fluid').show();
+    })
+</script>

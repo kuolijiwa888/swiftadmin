@@ -1,0 +1,315 @@
+<include file="/public/header"/>
+<!-- // 重定位style -->
+<!--Developer-->
+<div class="layui-fluid ">
+  <div class="layui-card">
+    <div class="layui-card-body">
+      <div id="demo"></div>
+    </div>
+  </div>
+
+  <div class="layui-row layui-col-space10">
+
+    <div class="layui-col-md4">
+      <div class="layui-card">
+        <div class="layui-card-header">我的任务</div>
+        <div class="layui-card-body task" style="height: 260px">
+          <table class="layui-table" lay-skin="nob">
+            <colgroup>
+              <col>
+              <col>
+              <col width="250">
+              <col>
+            </colgroup>
+            <thead>
+            <tr>
+              <th>发起人</th>
+              <th>发起时间</th>
+              <th>当前进度</th>
+              <th>&nbsp;状态</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>权栈</td>
+              <td>2021/01/28 10:23:46</td>
+              <td>
+                <div class="layui-progress">
+                  <div class="layui-progress-bar layui-bg-blue" lay-percent="92%"
+                       style="width: 92%;"></div>
+                </div>
+              </td>
+              <td>
+                <span class="layui-badge layui-bg-blue" lay-tips="这里可以增加额外的提示信息！">已完成</span>
+              </td>
+            </tr>
+            <tr>
+              <td>张爱玲</td>
+              <td>2021/01/28 10:23:46</td>
+              <td>
+                <div class="layui-progress">
+                  <div class="layui-progress-bar layui-bg-orange" lay-percent="30%"
+                       style="width: 30%;"></div>
+                </div>
+              </td>
+              <td>
+                <span class="layui-badge layui-bg-orange" lay-tips="当前任务出现BUG急需修复！">待修复</span>
+              </td>
+            </tr>
+            <tr>
+              <td>岳飞</td>
+              <td>2021/01/28 10:23:46</td>
+              <td>
+                <div class="layui-progress">
+                  <div class="layui-progress-bar layui-bg-green" lay-percent="83%"
+                       style="width: 83%;"></div>
+                </div>
+              </td>
+              <td>
+                <span class="layui-badge layui-bg-green">进行中</span>
+              </td>
+            </tr>
+            <tr>
+              <td>张三丰</td>
+              <td>2021/01/28 10:23:46</td>
+              <td>
+                <div class="layui-progress">
+                  <div class="layui-progress-bar layui-bg-red" lay-percent="54%"
+                       style="width: 54%;"></div>
+                </div>
+              </td>
+              <td>
+                <span class="layui-badge">已延期</span>
+              </td>
+            </tr>
+            <tr>
+              <td>乔峰</td>
+              <td>2021/01/28 10:23:46</td>
+              <td>
+                <div class="layui-progress">
+                  <div class="layui-progress-bar layui-bg-cyan" lay-percent="10%"
+                       style="width: 10%;"></div>
+                </div>
+              </td>
+              <td>
+                <span class="layui-badge layui-bg-cyan">未开始</span>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="layui-col-md4">
+      <div class="layui-card">
+        <div class="layui-card-header">版本信息</div>
+        <div class="layui-card-body">
+          <table class="layui-table">
+            <colgroup>
+              <col width="90">
+              <col>
+            </colgroup>
+            <tbody>
+            <tr>
+              <td>当前版本</td>
+              <td><a href="http://www.swiftadmin.net/" target="_blank">{:release()}</a>
+                <a href="https://www.swiftadmin.net/download/" target="_blank"
+                   style="padding-left: 10px;">日志</a>
+                <a href="javascript:;" sa-event="update" style="padding-left: 5px;">检查更新</a>
+              </td>
+            </tr>
+            <tr>
+              <td>前端框架</td>
+              <td>layui-v2.6-Fix / 多语言 / 多布局 / 前端鉴权</td>
+            </tr>
+            <tr>
+              <td>后端框架</td>
+              <td>ThinkPHP6lts</td>
+            </tr>
+            <tr>
+              <td>PHP版本</td>
+              <td>支持>=7.3 &8 QQ群：68221484</td>
+            </tr>
+            <tr>
+              <td>主要特色</td>
+              <td><font color="red">ant design</font> / 零门槛 / 响应式 / 清爽</td>
+            </tr>
+            <tr>
+              <td>获取渠道</td>
+              <td style="padding-bottom: 0;">
+                <div class="layui-btn-container">
+                  <div class="layui-col-md4"><a href="https://www.swiftadmin.net/authorize.html"
+                                                target="_blank" class="layui-btn layui-btn-danger">获取授权</a>
+                  </div>
+                  <div class="layui-col-md4">
+                    <a href="https://www.swiftadmin.net/download/" target="_blank" class="layui-btn">立即下载</a>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="layui-col-md4">
+      <div class="layui-card" id="console">
+        <div class="layui-card-header">小组成员</div>
+        <div class="layui-card-body" style="height: 260px">
+          <div class="console-user-group">
+            <img src="__ADMINIMAGES__/user.png" class="console-user-group-head" alt=""/>
+            <div class="console-user-group-name">周星星</div>
+            <div class="console-user-group-desc">产品负责人</div>
+            <span class="layui-badge layui-badge-green">在线</span>
+          </div>
+          <div class="console-user-group">
+            <img src="__ADMINIMAGES__/user.png" class="console-user-group-head" alt=""/>
+            <div class="console-user-group-name">周星星</div>
+            <div class="console-user-group-desc">项目负责人</div>
+            <span class="layui-badge layui-badge-green">在线</span>
+          </div>
+          <div class="console-user-group">
+            <img src="__ADMINIMAGES__/user.png" class="console-user-group-head" alt=""/>
+            <div class="console-user-group-name">周星星</div>
+            <div class="console-user-group-desc">产品负责人</div>
+            <span class="layui-badge layui-badge-red">离线</span>
+          </div>
+          <div class="console-user-group">
+            <img src="__ADMINIMAGES__/user.png" class="console-user-group-head" alt=""/>
+            <div class="console-user-group-name">周星星</div>
+            <div class="console-user-group-desc">测试负责人</div>
+            <span class="layui-badge layui-badge-red">离线</span>
+          </div>
+          <div class="console-user-group">
+            <img src="__ADMINIMAGES__/user.png" class="console-user-group-head" alt=""/>
+            <div class="console-user-group-name">周星星</div>
+            <div class="console-user-group-desc">测试负责人</div>
+            <span class="layui-badge layui-badge-red">离线</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<include file="/public/footer"/>
+<script>
+  layui.use(['layer','table'], function () {
+    var $ = layui.jquery;
+    var layer = layui.layer;
+    var table = layui.table;
+
+    //展示已知数据
+    table.render({
+      elem: '#demo'
+      ,cols: [[ //标题栏
+        {type: 'checkbox', width: 50},
+        ,{field: 'id', title: 'ID', width: 80, sort: true}
+        ,{field: 'username', title: '用户名', width: 120}
+        ,{field: 'email', title: '邮箱', minWidth: 150}
+        ,{field: 'sign', title: '签名', minWidth: 160}
+        ,{field: 'sex', title: '性别', width: 80}
+        ,{field: 'city', title: '城市', width: 100}
+        ,{field: 'experience', title: '积分', width: 80, sort: true}
+      ]]
+      ,data: [{
+        "id": "10001"
+        ,"username": "杜甫"
+        ,"email": "test@email.com"
+        ,"sex": "男"
+        ,"city": "浙江杭州"
+        ,"sign": "人生恰似一场修行"
+        ,"experience": "116"
+        ,"ip": "192.168.0.8"
+        ,"logins": "108"
+        ,"joinTime": "2016-10-14"
+      }, {
+        "id": "10002"
+        ,"username": "李白"
+        ,"email": "test@email.com"
+        ,"sex": "男"
+        ,"city": "浙江杭州"
+        ,"sign": "人生恰似一场修行"
+        ,"experience": "12"
+        ,"ip": "192.168.0.8"
+        ,"logins": "106"
+        ,"joinTime": "2016-10-14"
+        ,"LAY_CHECKED": true
+      }, {
+        "id": "10003"
+        ,"username": "王勃"
+        ,"email": "test@email.com"
+        ,"sex": "男"
+        ,"city": "浙江杭州"
+        ,"sign": "人生恰似一场修行"
+        ,"experience": "65"
+        ,"ip": "192.168.0.8"
+        ,"logins": "106"
+        ,"joinTime": "2016-10-14"
+      }, {
+        "id": "10004"
+        ,"username": "贤心"
+        ,"email": "test@email.com"
+        ,"sex": "男"
+        ,"city": "浙江杭州"
+        ,"sign": "人生恰似一场修行"
+        ,"experience": "666"
+        ,"ip": "192.168.0.8"
+        ,"logins": "106"
+        ,"joinTime": "2016-10-14"
+      }, {
+        "id": "10005"
+        ,"username": "贤心"
+        ,"email": "test@email.com"
+        ,"sex": "男"
+        ,"city": "浙江杭州"
+        ,"sign": "人生恰似一场修行"
+        ,"experience": "86"
+        ,"ip": "192.168.0.8"
+        ,"logins": "106"
+        ,"joinTime": "2016-10-14"
+      }, {
+        "id": "10006"
+        ,"username": "贤心"
+        ,"email": "test@email.com"
+        ,"sex": "男"
+        ,"city": "浙江杭州"
+        ,"sign": "人生恰似一场修行"
+        ,"experience": "12"
+        ,"ip": "192.168.0.8"
+        ,"logins": "106"
+        ,"joinTime": "2016-10-14"
+      }, {
+        "id": "10007"
+        ,"username": "贤心"
+        ,"email": "test@email.com"
+        ,"sex": "男"
+        ,"city": "浙江杭州"
+        ,"sign": "人生恰似一场修行"
+        ,"experience": "16"
+        ,"ip": "192.168.0.8"
+        ,"logins": "106"
+        ,"joinTime": "2016-10-14"
+      }, {
+        "id": "10008"
+        ,"username": "贤心"
+        ,"email": "test@email.com"
+        ,"sex": "男"
+        ,"city": "浙江杭州"
+        ,"sign": "人生恰似一场修行"
+        ,"experience": "106"
+        ,"ip": "192.168.0.8"
+        ,"logins": "106"
+        ,"joinTime": "2016-10-14"
+      }]
+      //,skin: 'line' //表格风格
+      ,even: true
+      ,page: true //是否显示分页
+      ,limits: [5, 7, 10]
+      //,limit: 5 //每页默认显示的数量
+    });
+  });
+</script>

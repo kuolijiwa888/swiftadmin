@@ -1,0 +1,6 @@
+                <div class="layui-inline">
+                    <div class="layui-form-label">{:__('{%title%}')}</div>
+                    <div class="layui-input-inline ">
+                    <input name="{%field%}" lay-datetime data-range="true" data-type="date" data-dateformat="yyyy/MM/dd" class="layui-input" type="text" placeholder="{:__('{%title%}')}"/>
+                    </div>
+                </div>

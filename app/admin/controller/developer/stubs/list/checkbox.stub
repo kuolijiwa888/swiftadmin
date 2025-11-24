@@ -1,0 +1,12 @@
+templet:function(d) {
+    var colsTit = [];
+    var colsArr = {colsArr};
+    for (var key in colsArr) {
+        let el = colsArr[key];
+        if (d.{field}.indexOf(el.value) !== -1) {
+            colsTit.push(el.title);
+        }
+    }
+
+    return colsTit.join(' ');
+}

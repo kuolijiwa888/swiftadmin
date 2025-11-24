@@ -1,0 +1,72 @@
+<include file="/public/header"/>
+<!-- // 重定位style -->
+<!--database-->
+<link href="__STATICADMIN__css/content.css" rel="stylesheet" type="text/css"/>
+<div class="layui-fluid">
+    <div class="layui-form layui-card">
+        <div class="layui-card-body">
+            <p>您正在进行数据表备份操作，请勿手动管理当前窗口</p>
+            <hr class="layui-border-red">
+            <div id="process-details" style="margin: 0 auto;padding: 15px">
+
+            </div>
+            <div class="layui-progress layui-progress-big" lay-showpercent="true" lay-filter="back_progress">
+                <div class="layui-progress-bar"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<include file="/public/static"/>
+<include file="/public/footer"/>
+<script>
+
+    layui.use(function(){
+        var $=layui.jquery;var element = layui.element;
+        <eq name="$whole" value="1">let tables={$tables|raw};<else/>  let tables=parent.Back_tables; </eq>
+        var details_box = document.getElementById('process-details');
+        $.post("{:url('/database/Index/backupInit')}",function(res){
+            if(res.code!==200){
+                layui.msg(res.msg);
+            }else {
+                details_box.innerHTML = details_box.innerHTML + '<p>' + res.msg + '</p>';
+                details_box.scrollTop = details_box.scrollHeight;
+                progress_render('back_progress',0,tables.length);
+                change_html(0,0);
+            }
+        });
+
+        function change_html(index,start) {
+            $.post(window.location.href,{table_name:tables[index],start:start,tab_index:index},function(res){
+                let current=index+1;
+                details_box.innerHTML = details_box.innerHTML + '<p>第'+ current +'张表 ：' + tables[index] + ' 备份完成</p>';
+                details_box.scrollTop = details_box.scrollHeight;
+                progress_render('back_progress',current,tables.length);
+                 if(res.data.table_index < tables.length){
+                    setTimeout(function(){
+                    change_html(res.data.table_index,res.data.start)
+                    }, 500);
+                }else {
+                     details_box.innerHTML = details_box.innerHTML + '<p>本次共计备份'+ tables.length +'张表 ，已经备份完成</p>';
+                     details_box.scrollTop = details_box.scrollHeight;
+                     $.post("{:url('/database/Index/ClearCache_key')}",function(res){
+                         if(res.code==200){
+                             layer.msg('备份完成,窗口即将关闭',{icon: 1,time: 3000},function (){
+                                 parent.layer.close(parent.layer.getFrameIndex(window.name));
+                             });
+                         }else {
+                             layer.msg(res.msg,{icon: 1,time: 3000},function (){
+                                 parent.layer.close(parent.layer.getFrameIndex(window.name));
+                             });
+                         }
+                     });
+
+
+                 }
+            });
+        }
+        function progress_render(filter,current,total) {
+            element.progress(filter,  current + '/' + total);
+            element.render('progress', filter);
+        }
+    });
+</script>

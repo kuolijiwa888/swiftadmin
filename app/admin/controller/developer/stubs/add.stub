@@ -1,0 +1,22 @@
+<include file="/public/header" />
+<!-- // 重定位style -->
+<!--{pluginClass}-->
+<link href="__STATICADMIN__css/content.css" rel="stylesheet" type="text/css" />
+<div class="layui-fluid">
+    <form class="layui-form layui-card" >
+
+        <div class="layui-card-body">
+        <gt name="$data.id" value="0">
+            <input type="text" name="id" value="{$data.id}" hidden="">
+            <else/>
+            <input type="text" name="id" value="" hidden="">
+        </gt>
+        {formItems}
+        <div class="layui-footer layui-form-footer">
+            <button class="layui-btn layui-btn-primary" type="button" sa-event="closeDialog">{:__('取消')}</button>
+            <button class="layui-btn" type="button" lay-filter="submitIframe" lay-submit>{:__('提交')}</button>
+        </div>
+    </form>
+</div>
+<include file="/public/static" />
+<include file="/public/footer" />
