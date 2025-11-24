@@ -11,7 +11,7 @@
  Target Server Version : 50740 (5.7.40)
  File Encoding         : 65001
 
- Date: 24/11/2025 19:34:22
+ Date: 24/11/2025 23:59:59
 */
 
 SET NAMES utf8mb4;
@@ -56,7 +56,7 @@ CREATE TABLE `sa_admin`  (
 -- ----------------------------
 -- Records of sa_admin
 -- ----------------------------
-INSERT INTO `sa_admin` VALUES (1, '1,2', '2', '3', 'admin', '超级管理员', 'e080ff2de392f21424f2ffa826657161', 1, 'a:3:{i:0;s:12:\"测试效果\";i:1;s:15:\"隔壁帅小伙\";i:2;s:9:\"技术宅\";}', '/upload/avatars/f8e34ec67a2a0233_100x100.jpg', '海阔天空，有容乃大', 'admin@swiftadmin.net', '0310', '15188888888', '高级管理人员', 417, '河北省邯郸市', '127.0.0.1', 1763983959, '3232254977', 1, NULL, 1596682835, 1763983959, NULL);
+INSERT INTO `sa_admin` VALUES (1, '1,2', '2', '3', 'admin', '超级管理员', 'e080ff2de392f21424f2ffa826657161', 1, 'a:3:{i:0;s:12:\"测试效果\";i:1;s:15:\"隔壁帅小伙\";i:2;s:9:\"技术宅\";}', '/upload/avatars/f8e34ec67a2a0233_100x100.jpg', '海阔天空，有容乃大', 'admin@swiftadmin.net', '0310', '15188888888', '高级管理人员', 418, '河北省邯郸市', '127.0.0.1', 1763994358, '3232254977', 1, NULL, 1596682835, 1763994358, NULL);
 INSERT INTO `sa_admin` VALUES (2, '2', '4', '5,4', 'ceshi', '测试用户', '13682bec405cf4b9002e6e8306312ce6', 1, 'a:3:{i:0;s:6:\"呵呵\";i:1;s:5:\"Think\";i:2;s:12:\"铁血柔肠\";}', '/upload/avatars/a0b923820dcc509a_100x100.png', 'PHP是全世界最好的语言', 'baimei@your.com', '0310', '15188888888', '我原本以为吕布已经天下无敌了，没想到还有比吕布勇猛的，这谁的部将？', 58, '河北省邯郸市廉颇大道110号指挥中心', '127.0.0.1', 1687154742, '3232254977', 1, '违规', 1609836672, 1687154742, NULL);
 
 -- ----------------------------
@@ -123,12 +123,13 @@ CREATE TABLE `sa_admin_log`  (
   `create_time` int(11) NULL DEFAULT NULL COMMENT '登录时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `user_ip`(`user_ip`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 40 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '用户登录记录表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 41 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '用户登录记录表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sa_admin_log
 -- ----------------------------
 INSERT INTO `sa_admin_log` VALUES (39, 'admin', '超级管理员', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', 'Windows NT 10.0', 'Chrome/142.0.0.0 Safari/537.36', 1, '登录成功', 1763983959, 1763983959);
+INSERT INTO `sa_admin_log` VALUES (40, 'admin', '超级管理员', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', 'Windows NT 10.0', 'Chrome/142.0.0.0 Safari/537.36', 1, '登录成功', 1763994358, 1763994358);
 
 -- ----------------------------
 -- Table structure for sa_admin_notice
@@ -183,7 +184,7 @@ CREATE TABLE `sa_admin_rules`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `id`(`id`) USING BTREE,
   INDEX `sort`(`sort`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 130 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '菜单权限表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 148 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '菜单权限表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sa_admin_rules
@@ -317,6 +318,12 @@ INSERT INTO `sa_admin_rules` VALUES (126, 122, '统计图表', '/developer/Examp
 INSERT INTO `sa_admin_rules` VALUES (127, 122, '组件示例', '/developer/Example/component', 'developer:Example:component', 0, 'developer', '', 127, '', 1, 1, 0, 1763983975, 1763983975, NULL);
 INSERT INTO `sa_admin_rules` VALUES (128, 122, '文本编辑器', '/developer/Example/editor', 'developer:Example:editor', 0, 'developer', '', 128, '', 1, 1, 0, 1763983975, 1763983975, NULL);
 INSERT INTO `sa_admin_rules` VALUES (129, 122, '常规辅助元素', '/developer/Example/auxiliar', 'developer:Example:auxiliar', 0, 'developer', '', 129, '', 1, 1, 0, 1763983975, 1763983975, NULL);
+INSERT INTO `sa_admin_rules` VALUES (142, 5, '定时任务', '/Crontab/index', 'Crontab:index', 0, 'crontab', '', 136, 'fa-list-alt', 1, 1, 0, 1763998032, 1763998032, NULL);
+INSERT INTO `sa_admin_rules` VALUES (143, 142, '查看', '/Crontab/index', 'Crontab:index', 1, 'crontab', '', 136, NULL, 1, 1, 0, 1763998032, 1763998032, NULL);
+INSERT INTO `sa_admin_rules` VALUES (144, 142, '添加', '/Crontab/add', 'Crontab:add', 1, 'crontab', '', 136, NULL, 1, 1, 0, 1763998032, 1763998032, NULL);
+INSERT INTO `sa_admin_rules` VALUES (145, 142, '编辑', '/Crontab/edit', 'Crontab:edit', 1, 'crontab', '', 136, NULL, 1, 1, 0, 1763998032, 1763998032, NULL);
+INSERT INTO `sa_admin_rules` VALUES (146, 142, '删除', '/Crontab/del', 'Crontab:del', 2, 'crontab', '', 136, NULL, 1, 1, 0, 1763998032, 1763998032, NULL);
+INSERT INTO `sa_admin_rules` VALUES (147, 142, '状态', '/Crontab/status', 'Crontab:status', 2, 'crontab', '', 136, NULL, 1, 1, 0, 1763998032, 1763998032, NULL);
 
 -- ----------------------------
 -- Table structure for sa_attachment
@@ -519,6 +526,53 @@ INSERT INTO `sa_config` VALUES (90, 'editor', 0, NULL, 'string', 'lay-editor', '
 INSERT INTO `sa_config` VALUES (91, 'minify_page', 0, NULL, 'string', '0', '模板mini压缩');
 
 -- ----------------------------
+-- Table structure for sa_crontab
+-- ----------------------------
+DROP TABLE IF EXISTS `sa_crontab`;
+CREATE TABLE `sa_crontab`  (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `title` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '任务标题',
+  `type` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '任务类型',
+  `content` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '事件内容',
+  `schedule` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '执行周期(Crontab格式)',
+  `maximums` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '最大执行次数 0为不限',
+  `executes` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '已经执行的次数',
+  `begintime` bigint(16) NULL DEFAULT NULL COMMENT '开始时间',
+  `endtime` bigint(16) NULL DEFAULT NULL COMMENT '结束时间',
+  `weigh` int(10) NOT NULL DEFAULT 0 COMMENT '权重(优先级)',
+  `createtime` bigint(16) NULL DEFAULT NULL COMMENT '创建时间',
+  `updatetime` bigint(16) NULL DEFAULT NULL COMMENT '更新时间',
+  `executetime` bigint(16) NULL DEFAULT NULL COMMENT '最后执行时间',
+  `status` enum('completed','expired','hidden','normal') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'normal' COMMENT '状态',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '定时任务表' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of sa_crontab
+-- ----------------------------
+INSERT INTO `sa_crontab` VALUES (7, '0000', '', 's:4:\"0000\";', '*/1 * * * *', 0, 0, 1763999935, 1763999936, 0, 1763999961, 1763999961, NULL, 'normal');
+
+-- ----------------------------
+-- Table structure for sa_crontab_log
+-- ----------------------------
+DROP TABLE IF EXISTS `sa_crontab_log`;
+CREATE TABLE `sa_crontab_log`  (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `crontab_id` int(10) NULL DEFAULT NULL COMMENT '任务ID',
+  `executetime` bigint(16) NULL DEFAULT NULL COMMENT '执行时间',
+  `completetime` bigint(16) NULL DEFAULT NULL COMMENT '结束时间',
+  `content` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '执行结果',
+  `processid` int(10) NULL DEFAULT 0 COMMENT '进程ID',
+  `status` enum('success','failure','inprogress') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'failure' COMMENT '状态',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `crontab_id`(`crontab_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 11028 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '定时任务日志表' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of sa_crontab_log
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for sa_department
 -- ----------------------------
 DROP TABLE IF EXISTS `sa_department`;
@@ -613,12 +667,13 @@ CREATE TABLE `sa_generate`  (
   `update_time` int(11) NULL DEFAULT NULL COMMENT '更新时间',
   `create_time` int(11) NULL DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '代码生成器' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '代码生成器' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sa_generate
 -- ----------------------------
 INSERT INTO `sa_generate` VALUES (1, '测试代码', 0, 'sa_ceshi', '1', '', '1', '1', 0, 'layui-icon-android', 'name,sex,avatar,hobby,age,tags,stars,city,album,json', '/ceshi/index', 'a:5:{i:0;a:6:{s:5:\"title\";s:6:\"查看\";s:5:\"route\";s:11:\"ceshi:index\";s:6:\"router\";s:12:\"/ceshi/index\";s:8:\"template\";s:6:\"默认\";s:4:\"auth\";s:1:\"1\";s:4:\"type\";s:1:\"1\";}i:1;a:6:{s:5:\"title\";s:6:\"添加\";s:5:\"route\";s:9:\"ceshi:add\";s:6:\"router\";s:10:\"/ceshi/add\";s:8:\"template\";s:6:\"默认\";s:4:\"auth\";s:1:\"1\";s:4:\"type\";s:1:\"1\";}i:2;a:6:{s:5:\"title\";s:6:\"编辑\";s:5:\"route\";s:9:\"ceshi:zdy\";s:6:\"router\";s:10:\"/ceshi/zdy\";s:8:\"template\";s:6:\"默认\";s:4:\"auth\";s:1:\"1\";s:4:\"type\";s:1:\"1\";}i:3;a:6:{s:5:\"title\";s:6:\"删除\";s:5:\"route\";s:14:\"ceshi:xiaoMing\";s:6:\"router\";s:15:\"/ceshi/xiaoMing\";s:8:\"template\";s:6:\"默认\";s:4:\"auth\";s:1:\"1\";s:4:\"type\";s:1:\"2\";}i:4;a:6:{s:5:\"title\";s:6:\"状态\";s:5:\"route\";s:12:\"ceshi:status\";s:6:\"router\";s:13:\"/ceshi/status\";s:8:\"template\";s:6:\"默认\";s:4:\"auth\";s:1:\"1\";s:4:\"type\";s:1:\"2\";}}', 'form', '1', '[{\"index\":0,\"tag\":\"input\",\"label\":\"姓名\",\"name\":\"name\",\"type\":\"text\",\"placeholder\":\"请输入\",\"default\":\"\",\"labelwidth\":\"110\",\"width\":100,\"maxlength\":\"\",\"min\":0,\"max\":0,\"required\":false,\"readonly\":false,\"disabled\":false,\"labelhide\":false,\"lay_verify\":\"\"},{\"index\":2,\"tag\":\"radio\",\"name\":\"sex\",\"label\":\"性别\",\"labelwidth\":110,\"width\":100,\"disabled\":false,\"labelhide\":false,\"options\":[{\"title\":\"男\",\"value\":\"1\",\"checked\":true},{\"title\":\"女\",\"value\":\"0\",\"checked\":false}]},{\"index\":3,\"tag\":\"upload\",\"name\":\"avatar\",\"label\":\"用户头像\",\"uploadtype\":\"images\",\"labelwidth\":110,\"width\":100,\"data_size\":102400,\"data_accept\":\"file\",\"disabled\":false,\"required\":false,\"labelhide\":false},{\"index\":7,\"tag\":\"upload\",\"name\":\"album\",\"label\":\"相册\",\"uploadtype\":\"multiple\",\"labelwidth\":110,\"width\":100,\"data_size\":102400,\"data_accept\":\"file\",\"disabled\":false,\"required\":false,\"labelhide\":false},{\"index\":8,\"tag\":\"rate\",\"name\":\"stars\",\"label\":\"星级\",\"labelwidth\":110,\"width\":100,\"data_default\":1,\"data_length\":5,\"data_half\":false,\"data_theme\":\"#1890ff\",\"readonly\":false,\"labelhide\":false},{\"index\":5,\"tag\":\"cascader\",\"name\":\"city\",\"label\":\"城市\",\"data_value\":\"label\",\"labelwidth\":110,\"width\":100,\"data_parents\":true,\"labelhide\":false},{\"index\":4,\"tag\":\"checkbox\",\"name\":\"hobby\",\"label\":\"爱好\",\"lay_skin\":\"primary\",\"labelwidth\":110,\"width\":100,\"disabled\":false,\"labelhide\":false,\"options\":[{\"title\":\"写作\",\"value\":\"write\",\"checked\":true},{\"title\":\"阅读\",\"value\":\"read\",\"checked\":true},{\"title\":\"游戏\",\"value\":\"game\",\"checked\":false}]},{\"index\":6,\"tag\":\"json\",\"name\":\"json\",\"label\":\"数组组件\",\"labelwidth\":110,\"width\":100,\"labelhide\":false},{\"index\":7,\"tag\":\"editor\",\"name\":\"content\",\"label\":\"编辑器\",\"editorType\":\"lay-editor\",\"labelwidth\":110,\"width\":100,\"labelhide\":false}]', '1200px', '900px', 'a:1:{i:0;a:5:{s:5:\"table\";s:7:\"sa_user\";s:5:\"style\";s:6:\"hasOne\";s:10:\"foreignKey\";s:8:\"group_id\";s:8:\"localKey\";s:2:\"id\";s:13:\"relationField\";s:12:\"group_id,pwd\";}}', '0', 1658227430, 1646395278);
+INSERT INTO `sa_generate` VALUES (3, '定时任务', 5, 'sa_crontab', '1', '', '1', '1', 1, 'fa-list-alt', 'type,title,maximums,executes,begintime,endtime,executetime,weigh,status', '/Crontab/index', 'a:5:{i:0;a:6:{s:5:\"title\";s:6:\"查看\";s:5:\"route\";s:13:\"Crontab:index\";s:6:\"router\";s:14:\"/Crontab/index\";s:8:\"template\";s:6:\"默认\";s:4:\"auth\";s:1:\"1\";s:4:\"type\";s:1:\"1\";}i:1;a:6:{s:5:\"title\";s:6:\"添加\";s:5:\"route\";s:11:\"Crontab:add\";s:6:\"router\";s:12:\"/Crontab/add\";s:8:\"template\";s:6:\"默认\";s:4:\"auth\";s:1:\"1\";s:4:\"type\";s:1:\"1\";}i:2;a:6:{s:5:\"title\";s:6:\"编辑\";s:5:\"route\";s:12:\"Crontab:edit\";s:6:\"router\";s:13:\"/Crontab/edit\";s:8:\"template\";s:6:\"默认\";s:4:\"auth\";s:1:\"1\";s:4:\"type\";s:1:\"1\";}i:3;a:6:{s:5:\"title\";s:6:\"删除\";s:5:\"route\";s:11:\"Crontab:del\";s:6:\"router\";s:12:\"/Crontab/del\";s:8:\"template\";s:6:\"默认\";s:4:\"auth\";s:1:\"1\";s:4:\"type\";s:1:\"2\";}i:4;a:6:{s:5:\"title\";s:6:\"状态\";s:5:\"route\";s:14:\"Crontab:status\";s:6:\"router\";s:15:\"/Crontab/status\";s:8:\"template\";s:6:\"默认\";s:4:\"auth\";s:1:\"1\";s:4:\"type\";s:1:\"2\";}}', 'form', '1', '[{\"index\":0,\"tag\":\"input\",\"name\":\"title\",\"label\":\"任务标题\",\"type\":\"text\",\"placeholder\":\"请输入\",\"default\":\"\",\"labelwidth\":\"110\",\"width\":100,\"maxlength\":\"\",\"min\":0,\"max\":0,\"required\":false,\"readonly\":false,\"disabled\":false,\"labelhide\":false,\"lay_verify\":\"\"},{\"index\":2,\"tag\":\"select\",\"name\":\"select_2\",\"label\":\"任务类型\",\"labelwidth\":110,\"width\":100,\"lay_search\":false,\"disabled\":false,\"required\":false,\"labelhide\":false,\"options\":[{\"title\":\"请求URL\",\"value\":\"url\",\"checked\":false},{\"title\":\"执行SQL\",\"value\":\"sql\",\"checked\":true},{\"title\":\"执行Shell\",\"value\":\"shell\",\"checked\":false}]},{\"index\":3,\"tag\":\"textarea\",\"name\":\"content\",\"label\":\"事件内容\",\"placeholder\":\"请输入\",\"default\":\"\",\"maxlength\":\"\",\"labelwidth\":110,\"width\":100,\"required\":false,\"readonly\":false,\"disabled\":false,\"labelhide\":false},{\"index\":4,\"tag\":\"input\",\"name\":\"schedule\",\"label\":\"执行周期\",\"type\":\"text\",\"placeholder\":\"请输入\",\"default\":\"\",\"labelwidth\":\"110\",\"width\":100,\"maxlength\":\"\",\"min\":0,\"max\":0,\"required\":false,\"readonly\":false,\"disabled\":false,\"labelhide\":false,\"lay_verify\":\"\"},{\"index\":5,\"tag\":\"input\",\"name\":\"maximums\",\"label\":\"最大执行次数\",\"type\":\"text\",\"placeholder\":\"请输入\",\"default\":\"0\",\"labelwidth\":94,\"width\":100,\"maxlength\":\"\",\"min\":0,\"max\":0,\"required\":false,\"readonly\":false,\"disabled\":false,\"labelhide\":false,\"lay_verify\":\"\"},{\"index\":6,\"tag\":\"date\",\"name\":\"begintime\",\"label\":\"开始时间\",\"labelwidth\":110,\"width\":100,\"data_datetype\":\"datetime\",\"data_dateformat\":\"yyyy-MM-dd HH:mm:ss\",\"placeholder\":\"yyyy-MM-dd\",\"data_maxvalue\":\"9999-12-31\",\"data_minvalue\":\"1900-01-01\",\"data_range\":false,\"readonly\":false,\"disabled\":false,\"required\":false,\"labelhide\":false},{\"index\":7,\"tag\":\"date\",\"name\":\"endtime\",\"label\":\"结束时间\",\"labelwidth\":110,\"width\":100,\"data_datetype\":\"datetime\",\"data_dateformat\":\"yyyy-MM-dd HH:mm:ss\",\"placeholder\":\"yyyy-MM-dd\",\"data_maxvalue\":\"9999-12-31\",\"data_minvalue\":\"1900-01-01\",\"data_range\":false,\"readonly\":false,\"disabled\":false,\"required\":false,\"labelhide\":false},{\"index\":7,\"tag\":\"radio\",\"name\":\"status\",\"label\":\"状态\",\"labelwidth\":110,\"width\":100,\"disabled\":false,\"labelhide\":false,\"options\":[{\"title\":\"正常\",\"value\":\"normal\",\"checked\":true},{\"title\":\"已完成\",\"value\":\"completed\",\"checked\":false},{\"title\":\"已过期\",\"value\":\"expired\",\"checked\":false},{\"title\":\"已禁用\",\"value\":\"hidden\",\"checked\":false}]}]', '1100px', '750px', '', '1', 1763999895, 1763998780);
 
 -- ----------------------------
 -- Table structure for sa_jobs
@@ -700,12 +755,33 @@ CREATE TABLE `sa_system_log`  (
   INDEX `method`(`method`) USING BTREE,
   INDEX `create_time`(`create_time`) USING BTREE,
   INDEX `line`(`line`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 66 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '系统日志表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 87 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '系统日志表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sa_system_log
 -- ----------------------------
 INSERT INTO `sa_system_log` VALUES (65, 'admin', 'index', 'app\\index\\controller\\Index', 'index', '//127.0.0.1:8787/index', 'D:\\Project\\swiftadmin\\app\\index\\controller\\Index.php', 29, '0', 'include(D:\\Project\\swiftadmin\\public123.php): Failed to open stream: No such file or directory', 'a:0:{}', '127.0.0.1', 'GET', '1', 1, 1688348865);
+INSERT INTO `sa_system_log` VALUES (66, 'admin', 'api', 'app\\api\\controller\\Ajax', 'emailSend', '//localhost:8787/api/ajax/emailSend', 'E:\\swiftadmin\\app\\common\\service\\notice\\EmailService.php', 152, '0', 'app\\common\\service\\notice\\EmailService::filterEmail(): Argument #1 ($email) must be of type string, null given, called in E:\\swiftadmin\\app\\api\\controller\\Ajax.php on line 64', 'a:0:{}', '127.0.0.1', 'POST', '1', 1, 1763984718);
+INSERT INTO `sa_system_log` VALUES (67, 'admin', 'api', 'app\\api\\controller\\Ajax', 'emailSend', '//localhost:8787/api/ajax/emailSend', 'E:\\swiftadmin\\app\\common\\service\\notice\\EmailService.php', 152, '0', 'app\\common\\service\\notice\\EmailService::filterEmail(): Argument #1 ($email) must be of type string, null given, called in E:\\swiftadmin\\app\\api\\controller\\Ajax.php on line 64', 'a:0:{}', '127.0.0.1', 'POST', '1', 1, 1763989582);
+INSERT INTO `sa_system_log` VALUES (68, 'admin', 'api', 'app\\api\\controller\\Ajax', 'emailSend', '//localhost:8787/api/ajax/emailSend', 'E:\\swiftadmin\\app\\common\\service\\notice\\EmailService.php', 152, '0', 'app\\common\\service\\notice\\EmailService::filterEmail(): Argument #1 ($email) must be of type string, null given, called in E:\\swiftadmin\\app\\api\\controller\\Ajax.php on line 64', 'a:0:{}', '127.0.0.1', 'POST', '1', 1, 1763991563);
+INSERT INTO `sa_system_log` VALUES (69, 'admin', 'admin', 'app\\admin\\controller\\developer\\Generate', 'queryFields', '//localhost:8787/admin/developer/Generate/queryFields', 'E:\\swiftadmin\\vendor\\topthink\\think-orm\\src\\db\\PDOConnection.php', 840, '10501', 'SQLSTATE[42S02]: Base table or view not found: 1146 Table \'swiftadmin.sa_\' doesn\'t exist', 'a:1:{s:5:\"table\";s:0:\"\";}', '127.0.0.1', 'POST', '1', 1, 1763995016);
+INSERT INTO `sa_system_log` VALUES (70, 'admin', 'admin', 'app\\admin\\controller\\Crontab', 'add', '//localhost:8787/admin/Crontab/add', 'E:\\swiftadmin\\vendor\\topthink\\think-orm\\src\\db\\PDOConnection.php', 840, '10501', 'SQLSTATE[01000]: Warning: 1265 Data truncated for column \'begintime\' at row 1', 'a:11:{s:2:\"id\";s:0:\"\";s:5:\"title\";s:12:\"请求百度\";s:4:\"type\";s:3:\"url\";s:7:\"content\";s:13:\"www.baidu.com\";s:11:\"period_type\";s:6:\"minute\";s:15:\"minute_interval\";s:1:\"1\";s:8:\"schedule\";s:11:\"*/1 * * * *\";s:8:\"maximums\";s:4:\"1000\";s:9:\"begintime\";s:19:\"2025-11-24 22:50:53\";s:7:\"endtime\";s:19:\"2027-12-24 00:00:00\";s:6:\"status\";s:6:\"normal\";}', '127.0.0.1', 'POST', '1', 1, 1763995859);
+INSERT INTO `sa_system_log` VALUES (71, 'admin', 'admin', 'app\\admin\\controller\\Crontab', 'add', '//localhost:8787/admin/Crontab/add', 'E:\\swiftadmin\\vendor\\topthink\\think-orm\\src\\db\\PDOConnection.php', 840, '10501', 'SQLSTATE[01000]: Warning: 1265 Data truncated for column \'begintime\' at row 1', 'a:11:{s:2:\"id\";s:0:\"\";s:5:\"title\";s:12:\"请求百度\";s:4:\"type\";s:3:\"url\";s:7:\"content\";s:13:\"www.baidu.com\";s:11:\"period_type\";s:6:\"minute\";s:15:\"minute_interval\";s:1:\"1\";s:8:\"schedule\";s:11:\"*/1 * * * *\";s:8:\"maximums\";s:4:\"1000\";s:9:\"begintime\";s:19:\"2025-11-24 22:50:53\";s:7:\"endtime\";s:19:\"2027-12-24 00:00:00\";s:6:\"status\";s:6:\"normal\";}', '127.0.0.1', 'POST', '1', 1, 1763995863);
+INSERT INTO `sa_system_log` VALUES (72, 'admin', 'admin', 'app\\admin\\controller\\Crontab', 'add', '//localhost:8787/admin/Crontab/add', 'E:\\swiftadmin\\vendor\\topthink\\think-orm\\src\\db\\PDOConnection.php', 840, '10501', 'SQLSTATE[01000]: Warning: 1265 Data truncated for column \'begintime\' at row 1', 'a:11:{s:2:\"id\";s:0:\"\";s:5:\"title\";s:12:\"请求百度\";s:4:\"type\";s:3:\"url\";s:7:\"content\";s:13:\"www.baidu.com\";s:11:\"period_type\";s:6:\"minute\";s:15:\"minute_interval\";s:1:\"1\";s:8:\"schedule\";s:11:\"*/1 * * * *\";s:8:\"maximums\";s:4:\"1000\";s:9:\"begintime\";s:19:\"2025-11-24 22:50:53\";s:7:\"endtime\";s:19:\"2027-12-24 00:00:00\";s:6:\"status\";s:6:\"normal\";}', '127.0.0.1', 'POST', '1', 1, 1763995872);
+INSERT INTO `sa_system_log` VALUES (73, 'admin', 'admin', 'app\\admin\\controller\\Crontab', 'add', '//localhost:8787/admin/Crontab/add', 'E:\\swiftadmin\\vendor\\topthink\\think-orm\\src\\db\\PDOConnection.php', 840, '10501', 'SQLSTATE[01000]: Warning: 1265 Data truncated for column \'begintime\' at row 1', 'a:11:{s:2:\"id\";s:0:\"\";s:5:\"title\";s:12:\"请求百度\";s:4:\"type\";s:3:\"url\";s:7:\"content\";s:13:\"www.baidu.com\";s:11:\"period_type\";s:6:\"minute\";s:15:\"minute_interval\";s:1:\"1\";s:8:\"schedule\";s:11:\"*/1 * * * *\";s:8:\"maximums\";s:4:\"1000\";s:9:\"begintime\";s:19:\"2025-11-24 22:50:53\";s:7:\"endtime\";s:19:\"2027-12-24 00:00:00\";s:6:\"status\";s:6:\"normal\";}', '127.0.0.1', 'POST', '1', 1, 1763995881);
+INSERT INTO `sa_system_log` VALUES (74, 'admin', 'admin', 'app\\admin\\controller\\Crontab', 'add', '//localhost:8787/admin/Crontab/add', 'E:\\swiftadmin\\vendor\\topthink\\think-orm\\src\\db\\PDOConnection.php', 840, '10501', 'SQLSTATE[01000]: Warning: 1265 Data truncated for column \'begintime\' at row 1', 'a:9:{s:2:\"id\";s:0:\"\";s:5:\"title\";s:3:\"111\";s:4:\"type\";s:5:\"shell\";s:7:\"content\";s:4:\"1111\";s:8:\"schedule\";s:11:\"*/1 * * * *\";s:8:\"maximums\";s:4:\"1000\";s:9:\"begintime\";s:19:\"2025-11-24 22:56:12\";s:7:\"endtime\";s:19:\"2025-11-24 22:56:14\";s:6:\"status\";s:6:\"normal\";}', '127.0.0.1', 'POST', '1', 1, 1763996174);
+INSERT INTO `sa_system_log` VALUES (75, 'admin', 'admin', 'app\\admin\\controller\\Crontab', 'add', '//localhost:8787/admin/Crontab/add', 'E:\\swiftadmin\\vendor\\topthink\\think-orm\\src\\db\\PDOConnection.php', 840, '10501', 'SQLSTATE[01000]: Warning: 1265 Data truncated for column \'begintime\' at row 1', 'a:9:{s:2:\"id\";s:0:\"\";s:5:\"title\";s:3:\"111\";s:4:\"type\";s:5:\"shell\";s:7:\"content\";s:4:\"1111\";s:8:\"schedule\";s:11:\"*/1 * * * *\";s:8:\"maximums\";s:4:\"1000\";s:9:\"begintime\";s:19:\"2025-11-24 22:56:12\";s:7:\"endtime\";s:19:\"2025-11-24 22:56:14\";s:6:\"status\";s:6:\"normal\";}', '127.0.0.1', 'POST', '1', 1, 1763996178);
+INSERT INTO `sa_system_log` VALUES (76, 'admin', 'admin', 'app\\admin\\controller\\Crontab', 'add', '//localhost:8787/admin/Crontab/add', 'E:\\swiftadmin\\vendor\\topthink\\think-orm\\src\\db\\PDOConnection.php', 840, '10501', 'SQLSTATE[01000]: Warning: 1265 Data truncated for column \'begintime\' at row 1', 'a:9:{s:2:\"id\";s:0:\"\";s:5:\"title\";s:3:\"111\";s:4:\"type\";s:5:\"shell\";s:7:\"content\";s:4:\"1111\";s:8:\"schedule\";s:11:\"*/1 * * * *\";s:8:\"maximums\";s:4:\"1000\";s:9:\"begintime\";s:19:\"2025-11-24 22:56:12\";s:7:\"endtime\";s:19:\"2025-11-24 22:56:14\";s:6:\"status\";s:6:\"normal\";}', '127.0.0.1', 'POST', '1', 1, 1763996182);
+INSERT INTO `sa_system_log` VALUES (77, 'admin', 'admin', 'app\\admin\\controller\\Crontab', 'add', '//localhost:8787/admin/Crontab/add', 'E:\\swiftadmin\\vendor\\topthink\\think-orm\\src\\db\\PDOConnection.php', 840, '10501', 'SQLSTATE[01000]: Warning: 1265 Data truncated for column \'begintime\' at row 1', 'a:8:{s:2:\"id\";s:0:\"\";s:5:\"title\";s:18:\"请求一次百度\";s:8:\"select_2\";s:3:\"url\";s:7:\"content\";s:13:\"www.baidu.com\";s:8:\"schedule\";s:11:\"*/1 * * * *\";s:8:\"maximums\";s:1:\"0\";s:9:\"begintime\";s:19:\"2025-11-24 23:51:19\";s:7:\"endtime\";s:19:\"2030-11-24 00:00:00\";}', '127.0.0.1', 'POST', '1', 1, 1763999483);
+INSERT INTO `sa_system_log` VALUES (78, 'admin', 'admin', 'app\\admin\\controller\\Crontab', 'add', '//localhost:8787/admin/Crontab/add', 'E:\\swiftadmin\\vendor\\topthink\\think-orm\\src\\db\\PDOConnection.php', 840, '10501', 'SQLSTATE[01000]: Warning: 1265 Data truncated for column \'begintime\' at row 1', 'a:8:{s:2:\"id\";s:0:\"\";s:5:\"title\";s:18:\"请求一次百度\";s:8:\"select_2\";s:3:\"url\";s:7:\"content\";s:13:\"www.baidu.com\";s:8:\"schedule\";s:11:\"*/1 * * * *\";s:8:\"maximums\";s:1:\"0\";s:9:\"begintime\";s:19:\"2025-11-24 23:51:19\";s:7:\"endtime\";s:19:\"2030-11-24 00:00:00\";}', '127.0.0.1', 'POST', '1', 1, 1763999486);
+INSERT INTO `sa_system_log` VALUES (79, 'admin', 'admin', 'app\\admin\\controller\\Crontab', 'add', '//localhost:8787/admin/Crontab/add', 'E:\\swiftadmin\\vendor\\topthink\\think-orm\\src\\db\\PDOConnection.php', 840, '10501', 'SQLSTATE[01000]: Warning: 1265 Data truncated for column \'begintime\' at row 1', 'a:8:{s:2:\"id\";s:0:\"\";s:5:\"title\";s:18:\"请求一次百度\";s:8:\"select_2\";s:3:\"url\";s:7:\"content\";s:13:\"www.baidu.com\";s:8:\"schedule\";s:11:\"*/1 * * * *\";s:8:\"maximums\";s:1:\"0\";s:9:\"begintime\";s:19:\"2025-11-24 23:51:19\";s:7:\"endtime\";s:19:\"2030-11-24 00:00:00\";}', '127.0.0.1', 'POST', '1', 1, 1763999489);
+INSERT INTO `sa_system_log` VALUES (80, 'admin', 'admin', 'app\\admin\\controller\\Crontab', 'edit', '//localhost:8787/admin/Crontab/edit', 'E:\\swiftadmin\\runtime\\views\\ac95e75301df58740eba7bf2fdbc4fe8.php', 58, '0', 'Undefined array key \"select_2\"', 'a:1:{s:2:\"id\";s:1:\"7\";}', '127.0.0.1', 'GET', '1', 1, 1763999586);
+INSERT INTO `sa_system_log` VALUES (81, 'admin', 'admin', 'app\\admin\\controller\\Crontab', 'edit', '//localhost:8787/admin/Crontab/edit', 'E:\\swiftadmin\\runtime\\views\\ac95e75301df58740eba7bf2fdbc4fe8.php', 58, '0', 'Undefined array key \"select_2\"', 'a:1:{s:2:\"id\";s:1:\"7\";}', '127.0.0.1', 'GET', '1', 1, 1763999591);
+INSERT INTO `sa_system_log` VALUES (82, 'admin', 'admin', 'app\\admin\\controller\\Crontab', 'edit', '//localhost:8787/admin/Crontab/edit', 'E:\\swiftadmin\\runtime\\views\\ac95e75301df58740eba7bf2fdbc4fe8.php', 58, '0', 'Undefined array key \"select_2\"', 'a:1:{s:2:\"id\";s:1:\"7\";}', '127.0.0.1', 'GET', '1', 1, 1763999656);
+INSERT INTO `sa_system_log` VALUES (83, 'admin', 'admin', 'app\\admin\\controller\\Crontab', 'edit', '//localhost:8787/admin/Crontab/edit', 'E:\\swiftadmin\\runtime\\views\\ac95e75301df58740eba7bf2fdbc4fe8.php', 58, '0', 'Undefined array key \"select_2\"', 'a:1:{s:2:\"id\";s:1:\"7\";}', '127.0.0.1', 'GET', '1', 1, 1763999732);
+INSERT INTO `sa_system_log` VALUES (84, 'admin', 'admin', 'app\\admin\\controller\\Crontab', 'edit', '//localhost:8787/admin/Crontab/edit', 'E:\\swiftadmin\\runtime\\views\\ac95e75301df58740eba7bf2fdbc4fe8.php', 58, '0', 'Undefined array key \"select_2\"', 'a:1:{s:2:\"id\";s:1:\"7\";}', '127.0.0.1', 'GET', '1', 1, 1763999795);
+INSERT INTO `sa_system_log` VALUES (85, 'admin', 'admin', 'app\\admin\\controller\\Crontab', 'add', '//localhost:8787/admin/Crontab/add', 'E:\\swiftadmin\\vendor\\topthink\\think-orm\\src\\db\\PDOConnection.php', 840, '10501', 'SQLSTATE[01000]: Warning: 1265 Data truncated for column \'begintime\' at row 1', 'a:9:{s:2:\"id\";s:0:\"\";s:5:\"title\";s:4:\"0000\";s:8:\"select_2\";s:3:\"sql\";s:7:\"content\";s:4:\"0000\";s:8:\"schedule\";s:11:\"*/1 * * * *\";s:8:\"maximums\";s:1:\"0\";s:9:\"begintime\";s:19:\"2025-11-24 23:58:55\";s:7:\"endtime\";s:19:\"2025-11-24 23:58:56\";s:6:\"status\";s:6:\"normal\";}', '127.0.0.1', 'POST', '1', 1, 1763999937);
+INSERT INTO `sa_system_log` VALUES (86, 'admin', 'admin', 'app\\admin\\controller\\Crontab', 'add', '//localhost:8787/admin/Crontab/add', 'E:\\swiftadmin\\vendor\\topthink\\think-orm\\src\\db\\PDOConnection.php', 840, '10501', 'SQLSTATE[01000]: Warning: 1265 Data truncated for column \'begintime\' at row 1', 'a:9:{s:2:\"id\";s:0:\"\";s:5:\"title\";s:4:\"0000\";s:8:\"select_2\";s:3:\"sql\";s:7:\"content\";s:4:\"0000\";s:8:\"schedule\";s:11:\"*/1 * * * *\";s:8:\"maximums\";s:1:\"0\";s:9:\"begintime\";s:19:\"2025-11-24 23:58:55\";s:7:\"endtime\";s:19:\"2025-11-24 23:58:56\";s:6:\"status\";s:6:\"normal\";}', '127.0.0.1', 'POST', '1', 1, 1763999942);
 
 -- ----------------------------
 -- Table structure for sa_user
@@ -767,7 +843,7 @@ CREATE TABLE `sa_user`  (
 -- ----------------------------
 -- Records of sa_user
 -- ----------------------------
-INSERT INTO `sa_user` VALUES (1, 1, '创始人', '513bd12b00b512d0b879962b777b5560', 'wdONQC', NULL, NULL, '/upload/avatars/a0b923820dcc509a_100x100.png', '这个人很懒，什么都没有留下～ ', 'test@swiftadmin.net', NULL, '林自图', 0, '2022-11-04 20:04:55', '15253325632533', '河北省邯郸市中华区人民东路023号', '', 0, 100, 1983.56, NULL, NULL, NULL, NULL, '你的幸运数字是？', '1', 1, 1, 10001, 'myKDalrGjpEVxWPQcXzwFu', NULL, NULL, NULL, NULL, NULL, NULL, 1, '127.0.0.1', 1686621464, 163, NULL, '1861775580', 1657332918, NULL);
+INSERT INTO `sa_user` VALUES (1, 1, 'zm8080', '620f8affd3aaf8e693cf8f213d915dae', 'PhMFnb', NULL, NULL, '/upload/avatars/a0b923820dcc509a_100x100.png', '这个人很懒，什么都没有留下～ ', 'test@swiftadmin.net', 15188888888, '林自图', 0, '2022-11-04 20:04:55', '15253325632533', '河北省邯郸市中华区人民东路023号', '', 0, 100, 1983.56, NULL, NULL, NULL, NULL, '你的幸运数字是？', '1', 1, 1, 10001, 'myKDalrGjpEVxWPQcXzwFu', NULL, NULL, NULL, NULL, NULL, NULL, 1, '127.0.0.1', 1686621464, 163, NULL, '1861775580', 1657332918, NULL);
 
 -- ----------------------------
 -- Table structure for sa_user_group

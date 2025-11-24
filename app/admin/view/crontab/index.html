@@ -1,0 +1,183 @@
+<include file="/public/header" />
+<!---->
+<div class="layui-fluid">
+    <div class="layui-card">
+        <!-- // 默认操作按钮 -->
+        <div class="layui-card-header layadmin-card-header-auto ">
+            <div class="layui-form">
+                <!-- // 自定义搜索参数 -->
+                <div id="laytable-search" class="layui-form-item" >
+                                    <div class="layui-inline">
+                    <div class="layui-form-label">{:__('ID')}</div>
+                    <div class="layui-input-inline ">
+                    <input name="id" class="layui-input" type="text" placeholder="{:__('ID')}"/>
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <div class="layui-form-label">{:__('任务类型')}</div>
+                    <div class="layui-input-inline ">
+                    <input name="type" class="layui-input" type="text" placeholder="{:__('任务类型')}"/>
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <div class="layui-form-label">{:__('事件内容')}</div>
+                    <div class="layui-input-inline ">
+                    <input name="content" class="layui-input" type="text" placeholder="{:__('事件内容')}"/>
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <div class="layui-form-label">{:__('执行周期(Crontab格式)')}</div>
+                    <div class="layui-input-inline ">
+                    <input name="schedule" class="layui-input" type="text" placeholder="{:__('执行周期(Crontab格式)')}"/>
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <div class="layui-form-label">{:__('最大执行次数 0为不限')}</div>
+                    <div class="layui-input-inline ">
+                    <input name="maximums" class="layui-input" type="text" placeholder="{:__('最大执行次数 0为不限')}"/>
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <div class="layui-form-label">{:__('已经执行的次数')}</div>
+                    <div class="layui-input-inline ">
+                    <input name="executes" class="layui-input" type="text" placeholder="{:__('已经执行的次数')}"/>
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <div class="layui-form-label">{:__('开始时间')}</div>
+                    <div class="layui-input-inline ">
+                    <input name="begintime" lay-datetime data-range="true" data-type="date" data-dateformat="yyyy/MM/dd" class="layui-input" type="text" placeholder="{:__('开始时间')}"/>
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <div class="layui-form-label">{:__('结束时间')}</div>
+                    <div class="layui-input-inline ">
+                    <input name="endtime" lay-datetime data-range="true" data-type="date" data-dateformat="yyyy/MM/dd" class="layui-input" type="text" placeholder="{:__('结束时间')}"/>
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <div class="layui-form-label">{:__('权重(优先级)')}</div>
+                    <div class="layui-input-inline ">
+                    <input name="weigh" class="layui-input" type="text" placeholder="{:__('权重(优先级)')}"/>
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <div class="layui-form-label">{:__('创建时间')}</div>
+                    <div class="layui-input-inline ">
+                    <input name="createtime" class="layui-input" type="text" placeholder="{:__('创建时间')}"/>
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <div class="layui-form-label">{:__('更新时间')}</div>
+                    <div class="layui-input-inline ">
+                    <input name="updatetime" class="layui-input" type="text" placeholder="{:__('更新时间')}"/>
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <div class="layui-form-label">{:__('最后执行时间')}</div>
+                    <div class="layui-input-inline ">
+                    <input name="executetime" class="layui-input" type="text" placeholder="{:__('最后执行时间')}"/>
+                    </div>
+                </div>
+                </div>
+                <div class="layui-form-item">
+                                    <div class="layui-inline">
+                    <select name="status">
+                        <option value="">{:__('按状态查询')}</option>
+                        <option value="2" >{:__('正常')}</option>                                 
+                        <option value="1" >{:__('关闭')}</option>      
+                    </select>
+                </div>
+
+                <div class="layui-inline">
+                    <div class="layui-form-label">{:__('任务标题')}</div>
+                    <div class="layui-input-inline ">
+                    <input name="title" class="layui-input" type="text" placeholder="{:__('任务标题')}"/>
+                    </div>
+                </div>
+                    <div class="layui-inline" >
+                        <!-- // 默认搜索 -->
+                        <button class="layui-btn icon-btn" lay-filter="formSearch" lay-submit><i class="layui-icon layui-icon-search"></i>{:__('搜索')}</button>
+                        <!--formBegin-->
+                        <button class="layui-btn icon-btn" lay-open="" data-title="{:__('添加')}" data-area="1100px,750px" data-maxmin="true" data-url="{:url('/Crontab/add')}" >
+                            <i class="layui-icon layui-icon-add-1"></i>{:__('添加')}
+                        </button>
+                        <!--formEnd-->
+                    </div>
+                </div>
+            </div>   
+        </div>
+        <!-- // 创建数据实例 -->
+        <table id="lay-tableList" lay-filter="lay-tableList"></table>        
+    </div>
+</div>
+
+<!-- // 列表状态栏 -->
+<script type="text/html" id="columnStatus">
+    <input type="checkbox" lay-filter="switchStatus" data-url="{:url('/Crontab/status')}" value="{{d.id}}" lay-skin="switch" {{d.status==1?'checked':''}}  />
+</script>
+ 
+<!-- // 列表工具栏 -->
+<script type="text/html" id="tableBar">
+    <!--formBegin-->
+    <a class="layui-table-text" data-title="{:__('编辑')}" data-area="1100px,750px" data-maxmin="true"
+        data-url="{:url('/Crontab/edit')}?id={{d.id}}" lay-event="edit" >{:__('编辑')}</a>
+    <div class="layui-divider layui-divider-vertical"></div>
+    <!--formEnd-->
+    <a class="layui-table-text"  data-url="{:url('/Crontab/del')}?id={{d.id}}" lay-event="del" >{:__('删除')}</a>
+</script>
+
+
+
+<script type="text/html" id="tableButton"></script>
+
+<include file="/public/footer" />
+<script>
+    layui.use(['admin','table'], function () {
+
+        var admin = layui.admin;
+        var table = layui.table;
+
+        /*
+         * 初始化表格
+        */
+        var isTable = table.render({
+            elem: "#lay-tableList"
+            ,url: "{:url('/Crontab/index')}"
+            ,toolbar: '#tableButton'
+            ,defaultToolbar: ['filter', 'exports', 'print','search']
+            ,cellMinWidth: 160
+            ,page: true
+            ,limit: 18
+            ,cols: [[
+                {type: 'checkbox', width: 50},
+                {field: 'id', align: 'center',sort: true,width: 80, title: 'ID'},
+                {field:'title',title:'{:__("任务标题")}'},
+{field:'type',title:'{:__("任务类型")}'},
+{field:'maximums',title:'{:__("最大执行次数 0为不限")}'},
+{field:'executes',title:'{:__("已经执行的次数")}'},
+{field:'begintime',title:'{:__("开始时间")}'},
+{field:'endtime',title:'{:__("结束时间")}'},
+{field:'weigh',title:'{:__("权重(优先级)")}'},
+{field:'executetime',title:'{:__("最后执行时间")}'},
+{field:'status',templet:function(d) {
+    var colsArr = {"normal":{"title":"{:__('正常')}","value":"normal"},"completed":{"title":"{:__('已完成')}","value":"completed"},"expired":{"title":"{:__('已过期')}","value":"expired"},"hidden":{"title":"{:__('已禁用')}","value":"hidden"}};
+    return colsArr[d.status].title;
+},templet:function(d) { var colsArr = [{"value":"completed","title":"{:__('已完成')}"},{"value":"expired","title":"{:__('已过期')}"},{"value":"hidden","title":"{:__('已禁用')}"},{"value":"normal","title":"{:__('正常')}"}]; var statusMap = {}; colsArr.forEach(function(item) { statusMap[item.value] = item.title; }); return statusMap[d.status] || d.status; },title:'{:__("状态")}'},
+                {align: 'center', toolbar: '#tableBar', width:160, fixed: 'right', title: '{:__("操作")}'},
+            ]]
+        })
+
+    })
+</script>

@@ -272,7 +272,7 @@ class Curd extends AdminController
             $everySearch = array_diff($everySearch, $adviceSearch);
             $everySearchHtml = $this->getAdviceSearch($everySearch, $formDesign);
             $controller = substr($controller, 0, (strrpos($controller, '/') + 1));
-            $colsListArr = $this->getColsListFields($colsFields, $formDesign);
+            $colsListArr = $this->getColsListFields($colsFields, $formDesign, $this->tableFields);
 
             $replaces['table'] = $table;
             $replaces['title'] = $data['title'];
@@ -310,6 +310,9 @@ class Curd extends AdminController
             $template = $formType ? 'add' : 'inside';
             $formHtml = read_file($this->getStubTpl($template));
             if (!empty($formDesign) && $data['listField']) {
+                
+                // 修正 formDesign 中的字段名：将临时字段名（如 select_2）替换为正确的数据库字段名
+                $formDesign = $this->correctFormDesignFieldNames($formDesign, $this->tableFields);
 
                 foreach ($formDesign as $key => $value) {
                     $formItem[$key] = Form::itemElem($value, $formType);
@@ -400,9 +403,10 @@ class Curd extends AdminController
      * 获取列表字段
      * @param array $colsFields
      * @param array $formDesign
+     * @param array $tableFields
      * @return string
      */
-    public function getColsListFields(array $colsFields = [], array $formDesign = []): string
+    public function getColsListFields(array $colsFields = [], array $formDesign = [], array $tableFields = []): string
     {
         $colsListArr = [];
         foreach ($colsFields as $key => $value) {
@@ -417,8 +421,17 @@ class Curd extends AdminController
 
             // 获取每一列参数合集
             $colsLine[] = "field:'$colsField'";
+            
+            // 检查是否是 status 字段且是 enum 类型
+            $isStatusEnum = false;
             if ($colsField == $this->keepField) {
-                $colsLine[] = "templet: '#columnStatus'";
+                // 检查是否是 enum 类型
+                $fieldType = $tableFields[$colsField]['type'] ?? '';
+                if (stripos($fieldType, 'enum') !== false) {
+                    $isStatusEnum = true;
+                } else {
+                    $colsLine[] = "templet: '#columnStatus'";
+                }
             }
 
             $item = $this->recursiveComponent($colsField, $formDesign);
@@ -427,18 +440,55 @@ class Curd extends AdminController
                 $colsTag = $item['tag'];
                 if (in_array($colsTag, $this->dropdown)) {
                     $colsArr = $item['options'];
+                    // 将选项数组转换为对象映射，方便直接访问
+                    $colsArrMap = [];
                     foreach ($colsArr as $index => $elem) {
-                        $colsArr[$index]['title'] = "{:__('" . $elem['title'] . "')}";
+                        $colsArrMap[$elem['value']] = ['title' => "{:__('" . $elem['title'] . "')}", 'value' => $elem['value']];
                     }
-                    $colsArr = json_encode($colsArr, JSON_UNESCAPED_UNICODE);
+                    $colsArr = json_encode($colsArrMap, JSON_UNESCAPED_UNICODE);
                     $colsTpl = read_file($this->getStubTpl('list/' . $colsTag));
                 } else if ($colsTag == 'upload') {
                     $colsTpl = read_file($this->getStubTpl('list/' . $item['uploadtype']));
+                } else if ($colsTag == 'date') {
+                    // 日期字段使用简单的字符串显示（因为模型已经转换为字符串）
+                    $colsTpl = '';
                 } else {
                     $colsTpl = read_file($this->getStubTpl('list/' . $colsTag));
                 }
                 if (!empty($colsTpl)) {
                     $colsLine[] = str_replace(['{colsArr}', '{field}'], [$colsArr, $colsField], $colsTpl);
+                }
+            } else {
+                // 如果没有在 formDesign 中找到，检查字段名是否包含 time 或 date
+                $fieldType = $tableFields[$colsField]['type'] ?? '';
+                $fieldNameLower = strtolower($colsField);
+                if (stripos($fieldType, 'bigint') !== false || stripos($fieldType, 'int') !== false) {
+                    if (strpos($fieldNameLower, 'time') !== false || strpos($fieldNameLower, 'date') !== false) {
+                        // 时间戳字段，但模型已经转换为字符串，直接显示即可
+                        // 不需要特殊处理
+                    }
+                }
+            }
+            
+            // 如果是 status enum 类型，生成 enum 显示模板
+            if ($isStatusEnum) {
+                $enumValues = $this->parseEnumValues($tableFields[$colsField]['type'] ?? '');
+                if (!empty($enumValues)) {
+                    // 构建状态映射，使用中文标题
+                    $statusTitles = [
+                        'normal' => '正常',
+                        'completed' => '已完成',
+                        'expired' => '已过期',
+                        'hidden' => '已禁用'
+                    ];
+                    $enumMap = [];
+                    foreach ($enumValues as $enumValue) {
+                        $title = $statusTitles[$enumValue] ?? $enumValue;
+                        $enumMap[] = ['value' => $enumValue, 'title' => "{:__('" . $title . "')}"];
+                    }
+                    $enumJson = json_encode($enumMap, JSON_UNESCAPED_UNICODE);
+                    // 生成简单的显示模板
+                    $colsLine[] = "templet:function(d) { var colsArr = $enumJson; var statusMap = {}; colsArr.forEach(function(item) { statusMap[item.value] = item.title; }); return statusMap[d.$colsField] || d.$colsField; }";
                 }
             }
 
@@ -448,6 +498,32 @@ class Curd extends AdminController
 
         $colsListArr = implode($this->commaEol, $colsListArr);
         return $colsListArr ? $colsListArr . ',' : $colsListArr;
+    }
+
+    /**
+     * 解析 enum 类型的值
+     * @param string $fullType MySQL 字段类型字符串，如 "enum('normal','completed','expired','hidden')"
+     * @return array
+     */
+    protected function parseEnumValues(string $fullType): array
+    {
+        if (stripos($fullType, 'enum') === false) {
+            return [];
+        }
+        
+        // 匹配 enum('value1','value2',...) 格式
+        if (preg_match("/enum\s*\(([^)]+)\)/i", $fullType, $matches)) {
+            $valuesStr = $matches[1];
+            // 分割值，处理引号
+            $values = [];
+            preg_match_all("/'([^']+)'/", $valuesStr, $valueMatches);
+            if (!empty($valueMatches[1])) {
+                $values = $valueMatches[1];
+            }
+            return $values;
+        }
+        
+        return [];
     }
 
     /**
@@ -601,6 +677,77 @@ class Curd extends AdminController
         }
 
         return implode(PHP_EOL . PHP_EOL, $searchHtml);
+    }
+
+    /**
+     * 修正 formDesign 中的字段名
+     * 将临时字段名（如 select_2）替换为正确的数据库字段名
+     * @param array $formDesign
+     * @param array $tableFields
+     * @return array
+     */
+    protected function correctFormDesignFieldNames(array $formDesign, array $tableFields): array
+    {
+        // 构建字段名到标题的映射
+        $fieldTitleMap = [];
+        foreach ($tableFields as $fieldName => $fieldInfo) {
+            $title = $fieldInfo['title'] ?? '';
+            if ($title) {
+                $fieldTitleMap[$fieldName] = $title;
+            }
+        }
+        
+        // 递归修正字段名
+        $correctItem = function($item) use (&$correctItem, $fieldTitleMap, $tableFields) {
+            if (!is_array($item)) {
+                return $item;
+            }
+            
+            // 如果有 name 字段
+            if (isset($item['name'])) {
+                $name = $item['name'];
+                // 如果 name 不在数据库字段列表中，尝试通过 label 匹配
+                if (!isset($tableFields[$name])) {
+                    $label = $item['label'] ?? '';
+                    if ($label) {
+                        // 通过标题查找对应的字段名
+                        foreach ($fieldTitleMap as $fieldName => $title) {
+                            if ($title === $label) {
+                                $item['name'] = $fieldName;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // 递归处理子元素（grid 布局的子元素）
+            if (isset($item['children']) && is_array($item['children'])) {
+                foreach ($item['children'] as $key => $child) {
+                    if (is_array($child)) {
+                        // grid 布局：children 是二维数组
+                        foreach ($child as $subKey => $subChild) {
+                            if (is_array($subChild)) {
+                                $item['children'][$key][$subKey] = $correctItem($subChild);
+                            } else {
+                                $item['children'][$key][$subKey] = $subChild;
+                            }
+                        }
+                    } else {
+                        $item['children'][$key] = $correctItem($child);
+                    }
+                }
+            }
+            
+            return $item;
+        };
+        
+        // 修正所有表单项
+        foreach ($formDesign as $key => $item) {
+            $formDesign[$key] = $correctItem($item);
+        }
+        
+        return $formDesign;
     }
 
     /**
